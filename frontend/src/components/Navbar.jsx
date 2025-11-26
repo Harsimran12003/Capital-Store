@@ -9,17 +9,17 @@ import {
 } from "react-icons/fi";
 import PromoTicker from "./PromoTicker";
 
-const WINE = "#6D0A1E";
+const BRAND = "#4D192B"; // Deep premium wine
 
 export default function Navbar({ onOpenCart }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scroll, setScroll] = useState(false);
-  const [searchFocus, setSearchFocus] = useState(false);
+  const [focus, setFocus] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => setScroll(window.scrollY > 50);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    const onScroll = () => setScroll(window.scrollY > 20);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   const navItems = [
@@ -34,96 +34,138 @@ export default function Navbar({ onOpenCart }) {
 
   return (
     <>
+      {/* MAIN NAVBAR */}
       <header
-        className={`fixed top-0 w-full z-[200] 
-        transition-all duration-500
-        ${scroll ? "backdrop-blur-2xl bg-white/95 shadow-xl h-[70px]" : "bg-white/70 h-[95px]"}`}
+        className={`fixed top-0 left-0 w-full z-[200] backdrop-blur-xl transition-all duration-500
+        ${scroll ? "bg-white/95 shadow-[0_4px_15px_rgba(0,0,0,0.08)]" : "bg-white/80"}`}
       >
-        <div className="max-w-7xl mx-auto px-6 flex items-center justify-between h-full">
-          
+        {/* TOP ROW: logo + search + icons */}
+        <div
+          className={`max-w-7xl mx-auto px-6 flex items-center justify-between transition-all duration-500
+          ${scroll ? "py-2" : "py-4"}`}
+        >
           {/* LOGO */}
-          <h1
-            className={`font-extrabold tracking-[6px] cursor-pointer uppercase transition-all duration-500 ${
-              scroll ? "text-3xl" : "text-4xl"
-            }`}
-            style={{ color: WINE, fontFamily: "serif" }}
-          >
-            Capital Store
-          </h1>
-
-          {/* SEARCH BOX */}
-          <div
-            className={`hidden md:flex items-center rounded-full px-5 py-2 transition-all duration-300 shadow-inner
-            ${searchFocus ? "w-96 bg-white border border-gray-300" : "w-72 bg-gray-100"}`}
-          >
-            <FiSearch className="text-gray-600 text-lg" />
-            <input
-              onFocus={() => setSearchFocus(true)}
-              onBlur={() => setSearchFocus(false)}
-              type="text"
-              placeholder="Search your style..."
-              className="bg-transparent w-full outline-none ml-3 text-sm"
+          <div className="flex-shrink-0">
+            <img
+              src="/logo.png"
+              alt="Capital Store"
+              className={`cursor-pointer transition-all duration-500
+              ${scroll ? "h-[52px]" : "h-[68px]"} w-auto`}
             />
           </div>
 
-          {/* ACTION ICONS */}
-          <div className="flex items-center gap-6">
-            <button className="relative hover:scale-110 transition group">
-              <FiHeart className="text-2xl" />
-              <span className="absolute -top-1 -right-2 text-[10px] bg-[#6D0A1E] text-white w-4 h-4 flex items-center justify-center rounded-full">3</span>
-              <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-xs bg-black text-white px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition">Wishlist</span>
+          {/* SEARCH */}
+          <div className="flex-1 flex justify-center px-4">
+            <div
+              className={`hidden md:flex items-center gap-3 rounded-full shadow-inner transition-all duration-300 border px-5
+              ${
+                focus
+                  ? "w-[360px] bg-white border-gray-300"
+                  : "w-[320px] bg-gray-100 border-transparent"
+              }
+              ${scroll ? "py-1.5" : "py-2.5"}`}
+            >
+              <FiSearch className="text-gray-600 text-lg" />
+              <input
+                onFocus={() => setFocus(true)}
+                onBlur={() => setFocus(false)}
+                placeholder="Search your style..."
+                className="bg-transparent w-full outline-none text-sm"
+              />
+            </div>
+          </div>
+
+          {/* ICONS */}
+          <div
+            className={`flex items-center gap-5 flex-shrink-0 transition-all duration-500
+            ${scroll ? "scale-90" : "scale-100"}`}
+          >
+            {/* Wishlist */}
+            <button className="relative group hover:scale-110 transition">
+              <FiHeart className="text-2xl text-slate-800 group-hover:text-[#AF1238] transition" />
+              <span className="absolute -top-1 -right-2 bg-[#AF1238] text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
+                3
+              </span>
+              <span className="absolute opacity-0 group-hover:opacity-100 transition-all bg-black text-white text-xs px-2 py-1 rounded top-7 left-1/2 -translate-x-1/2">
+                Wishlist
+              </span>
             </button>
 
-            <button onClick={onOpenCart} className="relative hover:scale-110 transition group">
-              <FiShoppingCart className="text-2xl" />
-              <span className="absolute -top-1 -right-2 text-[10px] bg-green-600 text-white w-4 h-4 flex items-center justify-center rounded-full">2</span>
-              <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-xs bg-black text-white px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition">Cart</span>
-            </button>
-
-            <button className="hover:scale-110 transition group">
-              <FiUser className="text-2xl" />
-              <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-xs bg-black text-white px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition">Account</span>
-            </button>
-
+            {/* Cart */}
             <button
-              className="xl:hidden text-4xl transition hover:scale-110"
-              onClick={() => setMobileOpen(!mobileOpen)}
+              onClick={onOpenCart}
+              className="relative group hover:scale-110 transition"
+            >
+              <FiShoppingCart className="text-2xl text-slate-800 group-hover:text-green-700 transition" />
+              <span className="absolute -top-1 -right-2 bg-green-600 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
+                2
+              </span>
+              <span className="absolute opacity-0 group-hover:opacity-100 transition-all bg-black text-white text-xs px-2 py-1 rounded top-7 left-1/2 -translate-x-1/2">
+                Cart
+              </span>
+            </button>
+
+            {/* User */}
+            <button className="relative group hover:scale-110 transition">
+              <FiUser className="text-2xl text-slate-800 group-hover:text-[#5C0E23] transition" />
+              <span className="absolute opacity-0 group-hover:opacity-100 transition-all bg-black text-white text-xs px-2 py-1 rounded top-7 left-1/2 -translate-x-1/2">
+                Account
+              </span>
+            </button>
+
+            {/* Mobile menu toggle */}
+            <button
+              className="xl:hidden text-3xl transition hover:scale-110"
+              onClick={() => setMobileOpen((prev) => !prev)}
             >
               {mobileOpen ? <FiX /> : <FiMenu />}
             </button>
           </div>
         </div>
 
-        {/* DESKTOP NAV MENU */}
-        <nav className="hidden xl:flex items-center justify-center gap-10 mt-1 pb-3 font-medium text-[18px]">
-          {navItems.map((item) => (
-            <p
-              key={item}
-              className="relative cursor-pointer hover:text-[#6D0A1E] transition-all group"
-            >
-              {item}
-              <span className="absolute w-0 h-[2px] bg-[#6D0A1E] left-0 -bottom-1 group-hover:w-full transition-all duration-500"></span>
-            </p>
-          ))}
-        </nav>
+        {/* DESKTOP CATEGORY ROW */}
+        <div
+          className={`border-t border-gray-100 transition-all duration-500
+          ${scroll ? "py-2" : "py-3"}`}
+        >
+          <nav className="hidden xl:flex max-w-7xl mx-auto px-6 items-center justify-center gap-10 text-[16px] font-medium text-slate-800">
+            {navItems.map((item) => (
+              <button
+                key={item}
+                className="relative cursor-pointer group tracking-wide"
+              >
+                <span className="group-hover:text-[#6D0A1E] transition-colors">
+                  {item}
+                </span>
+                <span
+                  className="absolute left-0 -bottom-1 h-[2px] w-0 bg-[#6D0A1E]
+                  group-hover:w-full transition-all duration-500"
+                />
+              </button>
+            ))}
+          </nav>
+        </div>
+
+        
       </header>
-
-      {/* SCROLL GAP FOR TICKER */}
-      <div className="mt-[50px]">
+      <div className="mt-[50px]"></div>
+      {/* TICKER ALWAYS ATTACHED TO NAVBAR BOTTOM */}
         <PromoTicker />
-      </div>
+        
 
-      {/* MOBILE SIDEBAR */}
+      {/* MOBILE SIDEBAR MENU */}
       <div
-        className={`fixed top-0 right-0 w-[270px] h-full bg-white shadow-2xl p-6 z-[500] transition-transform duration-500 ${
-          mobileOpen ? "translate-x-0" : "translate-x-full"
-        }`}
+        className={`fixed top-0 right-0 w-[280px] h-full bg-white shadow-2xl p-6 z-[300] transition-transform duration-500
+        ${mobileOpen ? "translate-x-0" : "translate-x-full"}`}
       >
-        <h2 className="text-xl font-bold mb-6" style={{ color: WINE }}>
+        <h2 className="text-xl font-bold mb-6" style={{ color: BRAND }}>
           Menu
         </h2>
         {navItems.map((item) => (
-          <p className="py-3 border-b cursor-pointer hover:text-[#6D0A1E]" key={item}>
+          <p
+            key={item}
+            className="py-3 border-b cursor-pointer hover:text-[#6D0A1E] transition"
+          >
             {item}
           </p>
         ))}

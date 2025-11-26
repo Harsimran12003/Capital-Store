@@ -1,7 +1,7 @@
 import React from "react";
 import ProductCard from "./ProductCard";
 
-const WINE = "#7B1F2E";
+const WINE = "#4D192B";
 
 export default function BestsellerGrid({ items }) {
   return (

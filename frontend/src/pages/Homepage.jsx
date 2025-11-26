@@ -7,6 +7,7 @@ import BestsellerGrid from "../components/BestsellerGrid";
 import VideoSection from "../components/VideoSection";
 import WhatsAppToggle from "../components/WhatsAppToggle";
 import Footer from "../components/Footer";
+import IntroScreen from "../components/IntroScreen";
 
 // Sample product data
 const sampleBestsellers = new Array(8).fill(0).map((_, i) => ({
@@ -27,7 +28,9 @@ export default function Homepage() {
 
   return (
     <div className="bg-white text-gray-800 pt-[100px]">
-      <Navbar onOpenCart={() => setCartOpen(true)} />
+      <IntroScreen />
+      <Navbar />
+      
 
       <HeroSlider />
       <CategoryCards />
@@ -36,16 +39,7 @@ export default function Homepage() {
       <Footer />
       <WhatsAppToggle />
 
-      {cartOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-30 z-50 flex justify-end">
-          <div className="w-full sm:w-96 bg-white h-full p-6">
-            <div className="flex justify-between">
-              <h3 className="font-semibold text-lg">Your Cart</h3>
-              <button onClick={() => setCartOpen(false)}>Close</button>
-            </div>
-          </div>
-        </div>
-      )}
+      
     </div>
   );
 }

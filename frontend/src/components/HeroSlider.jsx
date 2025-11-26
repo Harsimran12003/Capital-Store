@@ -2,48 +2,12 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
 const heroSlides = [
-  {
-    id: 1,
-    title: "Summer Collection 2025",
-    subtitle: "Cool & Breezy Fabrics",
-    tag: "NEW DROP",
-    img: "/assets/banner1.jpg",
-  },
-  {
-    id: 2,
-    title: "Wedding & Festive",
-    subtitle: "Handcrafted glamour for big moments",
-    tag: "WEDDING EDIT",
-    img: "/assets/banner2.jpg",
-  },
-  {
-    id: 3,
-    title: "New Arrivals",
-    subtitle: "Fresh fashion every week",
-    tag: "TRENDING",
-    img: "/assets/banner3.jpg",
-  },
-  {
-    id: 4,
-    title: "Designer Lehengas",
-    subtitle: "Luxury with elegance",
-    tag: "EXCLUSIVE",
-    img: "/assets/banner4.jpg",
-  },
-  {
-    id: 5,
-    title: "Traditional Sarees",
-    subtitle: "Timeless beauty that lasts forever",
-    tag: "ETHNIC",
-    img: "/assets/banner5.jpg",
-  },
-  {
-    id: 6,
-    title: "Party Wear Gowns",
-    subtitle: "Celebrate in glamour",
-    tag: "PARTY",
-    img: "/assets/banner6.jpg",
-  },
+  { id: 1, img: "/assets/banner1.jpg" },
+  { id: 2, img: "/assets/banner2.jpg" },
+  { id: 3, img: "/assets/banner3.jpg" },
+  { id: 4, img: "/assets/banner4.jpg" },
+  { id: 5, img: "/assets/banner5.jpg" },
+  { id: 6, img: "/assets/banner6.jpg" },
 ];
 
 export default function HeroSlider() {
@@ -63,7 +27,7 @@ export default function HeroSlider() {
     setProgress(0);
   };
 
-  // Autoplay progress bar
+  // Autoplay
   useEffect(() => {
     intervalRef.current = setInterval(() => {
       setProgress((p) => {
@@ -77,7 +41,7 @@ export default function HeroSlider() {
     return () => clearInterval(intervalRef.current);
   }, [goNext]);
 
-  // Mouse Parallax Movement
+  // Mouse Parallax
   const handleMouseMove = (e) => {
     const { innerWidth, innerHeight } = window;
     const x = (e.clientX - innerWidth / 2) / 40;
@@ -87,72 +51,48 @@ export default function HeroSlider() {
 
   return (
     <section
-      className="relative w-full mt-[90px] overflow-hidden select-none"
+      className="relative w-full overflow-hidden select-none"
       onMouseMove={handleMouseMove}
     >
-      {/* BACKGROUND IMAGE LAYER (slow parallax) */}
+      {/* SLIDES */}
       <div className="relative w-full h-[80vh] md:h-[90vh] overflow-hidden">
         {heroSlides.map((slide, i) => (
           <div
             key={slide.id}
-            className={`absolute inset-0 bg-cover bg-center transition-opacity duration-[1200ms] ${
-              index === i ? "opacity-100" : "opacity-0"
-            }`}
+            className={`
+              absolute inset-0 bg-cover bg-center transition-all duration-[1200ms] ease-[cubic-bezier(0.4,0,0.2,1)]
+              ${index === i ? "opacity-100 scale-105" : "opacity-0 scale-100"}
+            `}
             style={{
               backgroundImage: `url(${slide.img})`,
-              transform: `translate(${pos.x / 6}px, ${pos.y / 6}px)`
+              transform: `translate(${pos.x / 6}px, ${pos.y / 6}px)`,
+              filter: index === i ? "brightness(100%)" : "brightness(60%)",
             }}
           />
         ))}
       </div>
 
-      {/* GRADIENT OVERLAY (mid-layer parallax) */}
-      <div
-        className="absolute inset-0 bg-gradient-to-r from-black/70 to-transparent"
-        style={{
-          transform: `translate(${pos.x / 12}px, ${pos.y / 12}px)`
-        }}
-      />
+      {/* DARK GRADIENT OVERLAY (cinematic) */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/30 pointer-events-none" />
 
-      {/* TEXT + CTA FOREGROUND (strong parallax) */}
-      <div
-        className="absolute inset-0 flex flex-col justify-center px-10 md:px-24 text-white"
-        style={{
-          transform: `translate(${pos.x / 4}px, ${pos.y / 4}px)`
-        }}
-      >
-        <span className="px-4 py-1 bg-white/20 text-xs md:text-sm font-semibold rounded-full w-fit backdrop-blur-sm">
-          {heroSlides[index].tag}
-        </span>
-
-        <h1 className="text-4xl md:text-6xl font-bold leading-tight mt-4">
-          {heroSlides[index].title}
-        </h1>
-
-        <p className="text-lg md:text-2xl mt-4 opacity-90">
-          {heroSlides[index].subtitle}
-        </p>
-
-        <button className="mt-6 bg-white text-black font-semibold px-8 py-3 rounded-full shadow-lg hover:scale-110 transition-all">
-          Shop Now
-        </button>
-      </div>
-
-      {/* PROGRESS BAR (Nykaa style) */}
-      <div className="absolute bottom-4 left-0 w-full px-20 flex gap-3">
+      {/* PROGRESS INDICATORS */}
+      <div className="absolute bottom-6 left-0 w-full px-20 flex gap-3">
         {heroSlides.map((_, i) => (
           <div
             key={i}
-            className="h-[3px] bg-white/40 rounded-lg cursor-pointer flex-1 overflow-hidden"
             onClick={() => {
               setIndex(i);
               setProgress(0);
             }}
+            className="
+              h-[4px] bg-white/40 rounded-full cursor-pointer flex-1 overflow-hidden
+              hover:bg-white/60 transition
+            "
           >
             <div
               className="h-full bg-white transition-all duration-75"
               style={{ width: index === i ? `${progress}%` : 0 }}
-            />
+            ></div>
           </div>
         ))}
       </div>
@@ -160,15 +100,16 @@ export default function HeroSlider() {
       {/* ARROWS */}
       <button
         onClick={goPrev}
-        className="absolute top-1/2 left-6 -translate-y-1/2 bg-white/60 p-3 rounded-full hover:bg-white"
+        className="absolute top-1/2 left-6 -translate-y-1/2 bg-black/30 backdrop-blur-sm p-3 rounded-full hover:bg-black/60 transition text-white"
       >
-        <FiChevronLeft size={28} />
+        <FiChevronLeft size={26} />
       </button>
+
       <button
         onClick={goNext}
-        className="absolute top-1/2 right-6 -translate-y-1/2 bg-white/60 p-3 rounded-full hover:bg-white"
+        className="absolute top-1/2 right-6 -translate-y-1/2 bg-black/30 backdrop-blur-sm p-3 rounded-full hover:bg-black/60 transition text-white"
       >
-        <FiChevronRight size={28} />
+        <FiChevronRight size={26} />
       </button>
     </section>
   );

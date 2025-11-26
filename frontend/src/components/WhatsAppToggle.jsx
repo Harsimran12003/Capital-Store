@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const WINE = "#7B1F2E";
+const WINE = "#4D192B";
 
 export default function WhatsAppToggle() {
   const [open, setOpen] = useState(false);
