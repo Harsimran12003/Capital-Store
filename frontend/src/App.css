@@ -93,21 +93,6 @@
   animation: slideDown 0.5s ease forwards;
 }
 
-.badge {
-  position: absolute;
-  top: -4px;
-  right: -8px;
-  background: #6D0A1E;
-  color: white;
-  font-size: 10px;
-  width: 18px;
-  height: 18px;
-  border-radius: 999px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .nav-underline {
   position: absolute;
   left: 0;
@@ -121,7 +106,6 @@
 .group:hover .nav-underline {
   width: 100%;
 }
-
 
 .animate-marquee {
   animation: marquee 18s linear infinite;
