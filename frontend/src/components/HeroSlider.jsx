@@ -51,6 +51,7 @@ export default function HeroSlider() {
 
   return (
     <section
+    id="slider"
       className="relative w-full overflow-hidden select-none"
       onMouseMove={handleMouseMove}
     >

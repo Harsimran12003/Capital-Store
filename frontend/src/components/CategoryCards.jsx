@@ -42,7 +42,8 @@ export default function CategoryCards() {
     className="text-4xl font-bold mb-12 text-center tracking-wide relative"
     style={{ color: WINE }}
   >
-    Shop by Category
+    
+    Shop by Category 
 
     {/* Underline Reveal */}
     <motion.span
