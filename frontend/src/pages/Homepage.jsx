@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
-import PromoTicker from "../components/PromoTicker";
 import HeroSlider from "../components/HeroSlider";
 import CategoryCards from "../components/CategoryCards";
 import BestsellerGrid from "../components/BestsellerGrid";
@@ -8,6 +7,7 @@ import VideoSection from "../components/VideoSection";
 import WhatsAppToggle from "../components/WhatsAppToggle";
 import Footer from "../components/Footer";
 import IntroScreen from "../components/IntroScreen";
+import { bestsellerItems } from "../data/products";
 
 // Sample product data
 const sampleBestsellers = new Array(8).fill(0).map((_, i) => ({
@@ -34,7 +34,7 @@ export default function Homepage() {
 
       <HeroSlider />
       <CategoryCards />
-      <BestsellerGrid items={bestsellers} />
+      <BestsellerGrid items={ bestsellerItems } />
       <VideoSection />
       <Footer />
       <WhatsAppToggle />

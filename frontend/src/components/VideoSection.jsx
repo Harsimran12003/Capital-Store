@@ -134,7 +134,7 @@ export default function VideoSection() {
               w-full h-64 md:h-60 lg:h-72 
               rounded-2xl shadow-2xl border border-white/40
             "
-            src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+            src="https://www.youtube.com/embed/12rN7hpbpIo?si=085YZoJzC1pIac9b"
             title="Brand Video"
             allowFullScreen
           />

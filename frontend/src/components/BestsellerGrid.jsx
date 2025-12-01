@@ -1,6 +1,7 @@
 import React from "react";
 import ProductCard from "./ProductCard";
 import { motion } from "framer-motion";
+import { bestsellerItems } from "../data/products";
 
 const WINE = "#4D192B";
 

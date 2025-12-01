@@ -68,43 +68,41 @@ export default function ProductCard({ p }) {
     >
 
       {/* Soft White Glow (subtle premium) */}
-<div
-  className="
-    absolute inset-0 rounded-3xl 
-    opacity-0 group-hover:opacity-100 
-    blur-3xl pointer-events-none
-    transition-all duration-700
-  "
-  style={{
-    background:
-      "radial-gradient(circle at 50% 20%, rgba(255,255,255,0.45), rgba(255,255,255,0.12), rgba(255,255,255,0))"
-  }}
-/>
-
+        <div
+          className="
+            absolute inset-0 rounded-3xl 
+            opacity-0 group-hover:opacity-100 
+            blur-3xl pointer-events-none
+            transition-all duration-700
+          "
+          style={{
+            background:
+              "radial-gradient(circle at 50% 20%, rgba(255,255,255,0.45), rgba(255,255,255,0.12), rgba(255,255,255,0))"
+          }}
+        />
 
       {/* Soft Glass Reflection */}
-<div
-  className="
-    absolute top-0 left-0 w-full h-1/3
-    bg-gradient-to-b from-white/40 to-transparent
-    opacity-40 group-hover:opacity-70 
-    transition-all duration-700
-    pointer-events-none
-  "
-/>
-{/* Gold-ish border flash */}
-<div
-  className="
-    absolute inset-0 rounded-3xl border 
-    border-transparent group-hover:border-[#d4b98c]/60 
-    transition-all duration-500 pointer-events-none
-  "
-/>
-
+        <div
+          className="
+            absolute top-0 left-0 w-full h-1/3
+            bg-gradient-to-b from-white/40 to-transparent
+            opacity-40 group-hover:opacity-70 
+            transition-all duration-700
+            pointer-events-none
+          "
+        />
+        {/* Gold-ish border flash */}
+        <div
+          className="
+            absolute inset-0 rounded-3xl border 
+            border-transparent group-hover:border-[#d4b98c]/60 
+            transition-all duration-500 pointer-events-none
+          "
+        />
 
 
       {/* PRODUCT IMAGE */}
-      <div className="relative h-56 overflow-hidden rounded-3xl">
+      <div className="relative h-70 overflow-hidden rounded-3xl">
         <motion.img
           src={p.img}
           alt={p.name}
@@ -114,13 +112,13 @@ export default function ProductCard({ p }) {
         />
 
         {/* Clean Shine Sweep */}
-<motion.div
-  animate={{ x: ["-150%", "160%"] }}
-  transition={{ duration: 1.9, repeat: Infinity }}
-  className="absolute top-0 left-0 h-full w-[35%] 
-             bg-gradient-to-r from-transparent via-white/35 to-transparent
-             skew-x-12 blur-sm"
-/>
+          <motion.div
+            animate={{ x: ["-150%", "160%"] }}
+            transition={{ duration: 1.9, repeat: Infinity }}
+            className="absolute top-0 left-0 h-full w-[35%] 
+                      bg-gradient-to-r from-transparent via-white/35 to-transparent
+                      skew-x-12 blur-sm"
+          />
 
 
         {/* ❤️ Heart Button */}
