@@ -4,8 +4,8 @@ import { motion } from "framer-motion";
 const WINE = "#4D192B";
 
 const sampleCategories = [
-  { id: 1, name: "Stitched", img: "/public/stitched.jpeg" },
-  { id: 2, name: "Readymade", img: "/public/readymade.webp" },
+  { id: 1, name: "Stitched", img: "stitched.jpeg" },
+  { id: 2, name: "Readymade", img: "readymade.webp" },
 ];
 
 // Floating Animation for card bobbing

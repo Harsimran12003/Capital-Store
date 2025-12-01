@@ -2,12 +2,12 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
 const heroSlides = [
-  { id: 1, img: "/public/slider1.webp" },
-  { id: 2, img: "/public/slider2.webp" },
-  { id: 3, img: "/public/slider3.webp" },
-  { id: 4, img: "/public/slider4.jpg" },
-  { id: 5, img: "/public/slider5.jpg" },
-  { id: 6, img: "/public/slider6.webp" },
+  { id: 1, img: "slider1.webp" },
+  { id: 2, img: "slider2.webp" },
+  { id: 3, img: "slider3.webp" },
+  { id: 4, img: "slider4.jpg" },
+  { id: 5, img: "slider5.jpg" },
+  { id: 6, img: "slider6.webp" },
 ];
 
 export default function HeroSlider() {
