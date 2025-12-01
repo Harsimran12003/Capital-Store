@@ -42,7 +42,7 @@ export default function Navbar({ onOpenCart }) {
         {/* TOP ROW: logo + search + icons */}
         <div
           className={`max-w-7xl mx-auto px-6 flex items-center justify-between transition-all duration-500
-          ${scroll ? "py-2" : "py-4"}`}
+          ${scroll ? "py-0" : "py-4"}`}
         >
           {/* LOGO */}
           <div className="flex-shrink-0">

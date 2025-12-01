@@ -41,7 +41,7 @@ export default function WhatsAppToggle() {
           <p className="text-xs text-gray-500 mt-1">Hello 👋 How can we help you?</p>
 
           <a
-            href="https://wa.me/919999999999"
+            href="https://wa.me/9888320496"
             target="_blank"
             rel="noreferrer"
             className="block text-center mt-3 px-3 py-2 rounded font-semibold 

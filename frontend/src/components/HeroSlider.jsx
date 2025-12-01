@@ -2,12 +2,12 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
 const heroSlides = [
-  { id: 1, img: "/assets/banner1.jpg" },
-  { id: 2, img: "/assets/banner2.jpg" },
-  { id: 3, img: "/assets/banner3.jpg" },
-  { id: 4, img: "/assets/banner4.jpg" },
-  { id: 5, img: "/assets/banner5.jpg" },
-  { id: 6, img: "/assets/banner6.jpg" },
+  { id: 1, img: "/public/slider1.webp" },
+  { id: 2, img: "/public/slider2.webp" },
+  { id: 3, img: "/public/slider3.webp" },
+  { id: 4, img: "/public/slider4.jpg" },
+  { id: 5, img: "/public/slider5.jpg" },
+  { id: 6, img: "/public/slider6.webp" },
 ];
 
 export default function HeroSlider() {
@@ -56,7 +56,7 @@ export default function HeroSlider() {
       onMouseMove={handleMouseMove}
     >
       {/* SLIDES */}
-      <div className="relative w-full h-[80vh] md:h-[90vh] overflow-hidden">
+      <div className="relative w-full h-[30vh] md:h-[90vh] overflow-hidden">
         {heroSlides.map((slide, i) => (
           <div
             key={slide.id}

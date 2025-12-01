@@ -130,12 +130,12 @@ export default function Footer() {
 
             <ul className="space-y-3">
               <motion.li whileHover={{ x: 6 }} className="relative group cursor-pointer">
-                contact@capitalstore.in
+                capitalstorecs@yahoo.com
                 <span className="absolute left-0 -bottom-[3px] h-[2px] w-0 bg-[#4D192B] group-hover:w-full transition-all"></span>
               </motion.li>
 
               <motion.li whileHover={{ x: 6 }} className="relative group cursor-pointer">
-                +91 99999 99999
+                +91 98883 20496
                 <span className="absolute left-0 -bottom-[3px] h-[2px] w-0 bg-[#4D192B] group-hover:w-full transition-all"></span>
               </motion.li>
             </ul>

@@ -4,8 +4,8 @@ import { motion } from "framer-motion";
 const WINE = "#4D192B";
 
 const sampleCategories = [
-  { id: 1, name: "Stitched", img: "/categories/stitched.jpg" },
-  { id: 2, name: "Readymade", img: "/categories/readymade.jpg" },
+  { id: 1, name: "Stitched", img: "/public/stitched.jpeg" },
+  { id: 2, name: "Readymade", img: "/public/readymade.webp" },
 ];
 
 // Floating Animation for card bobbing
@@ -113,7 +113,7 @@ export default function CategoryCards() {
               <motion.img
                 src={c.img}
                 alt={c.name}
-                className="w-full h-72 object-cover rounded-3xl"
+                className="w-full h-78 object-cover rounded-3xl"
                 whileHover={{
                   scale: 1.12,
                   filter: "brightness(1.15) contrast(1.1)",
@@ -140,7 +140,7 @@ export default function CategoryCards() {
 
               {/* Bottom fade */}
               <div className="
-                absolute bottom-0 w-full h-20 
+                absolute bottom-0 w-full h-15 
                 bg-gradient-to-t from-black/60 to-transparent 
                 backdrop-blur-sm
               "></div>
