@@ -25,13 +25,11 @@ export default function ProductCard({ p }) {
 
   const handleAddToCart = () => {
     setQty(1);
-    setFlip(true);
     setTimeout(() => setFlip(false), 250);
   };
 
   const handleInc = () => {
     setQty((prev) => prev + 1);
-    setFlip(true);
     setTimeout(() => setFlip(false), 250);
   };
 
@@ -40,7 +38,7 @@ export default function ProductCard({ p }) {
       if (prev <= 1) return 0;
       return prev - 1;
     });
-    setFlip(true);
+  
     setTimeout(() => setFlip(false), 250);
   };
 
@@ -52,8 +50,9 @@ export default function ProductCard({ p }) {
     viewport={{ once: true }}
   >
     <motion.div
-      className="relative rounded-3xl bg-white shadow-xl overflow-hidden group cursor-pointer
-                 transition-all duration-500"
+      className="relative rounded-3xl bg-white shadow-xl overflow-hidden group cursor-pointer 
+           transition-all duration-500 flex flex-col h-[420px]"
+
       style={{
         transformStyle: "preserve-3d",
       }}
@@ -64,7 +63,6 @@ export default function ProductCard({ p }) {
   boxShadow: "0 18px 35px rgba(0,0,0,0.15)",
   transition: { duration: 0.35 }
 }}
-
     >
 
       {/* Soft White Glow (subtle premium) */}
@@ -111,31 +109,22 @@ export default function ProductCard({ p }) {
           transition={{ duration: 1.1 }}
         />
 
-        {/* Clean Shine Sweep */}
-          <motion.div
-            animate={{ x: ["-150%", "160%"] }}
-            transition={{ duration: 1.9, repeat: Infinity }}
-            className="absolute top-0 left-0 h-full w-[35%] 
-                      bg-gradient-to-r from-transparent via-white/35 to-transparent
-                      skew-x-12 blur-sm"
-          />
-
-
+        
         {/* ❤️ Heart Button */}
         <motion.button
           onClick={() => {
-            setLiked(true);
+            setLiked(prev => !prev);   // ❤️ toggle like
             setExplode(true);
             setTimeout(() => setExplode(false), 700);
-            setTimeout(() => setLiked(false), 1200);
           }}
+
           whileTap={{ scale: 0.75 }}
           className="
             absolute top-3 right-3 z-20
             bg-white/70 backdrop-blur-xl p-2 rounded-full shadow-lg
             border border-white/50
             transition-all duration-300
-            hover:scale-110 hover:bg-white
+            hover:scale-110 hover:bg-white cursor-pointer
           "
         >
           <FiHeart
@@ -173,7 +162,7 @@ export default function ProductCard({ p }) {
         <h4 className="font-bold text-sm tracking-wide text-gray-900">
           {p.name}
         </h4>
-        <p className="text-xs text-gray-500 mt-1">{p.desc}</p>
+        <p className="text-xs text-gray-500 mt-1 line-clamp-2">{p.desc}</p>
 
         <div className="mt-4 flex justify-between items-center">
           {/* PRICE */}
@@ -211,7 +200,7 @@ export default function ProductCard({ p }) {
               className="
                 px-4 py-2 bg-black text-white rounded-full shadow-md text-xs flex items-center gap-2
                 hover:bg-gray-900
-                transition-all duration-300
+                transition-all duration-300 cursor-pointer
               "
             >
               <FiShoppingCart size={16} />
@@ -227,7 +216,7 @@ export default function ProductCard({ p }) {
               <motion.button
                 whileTap={{ scale: 0.8 }}
                 onClick={handleDec}
-                className="text-lg leading-none px-1"
+                className="text-lg leading-none px-1 cursor-pointer"
               >
                 –
               </motion.button>
@@ -245,7 +234,7 @@ export default function ProductCard({ p }) {
               <motion.button
                 whileTap={{ scale: 0.8 }}
                 onClick={handleInc}
-                className="text-lg leading-none px-1"
+                className="text-lg leading-none px-1 cursor-pointer"
               >
                 +
               </motion.button>
