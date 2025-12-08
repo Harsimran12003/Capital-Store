@@ -1,6 +1,54 @@
 @import "tailwindcss";
 @import "aos/dist/aos.css";
 
+@import "swiper/css";
+@import "swiper/css/navigation";
+@import "swiper/css/pagination";
+@import "swiper/css/thumbs";
+@import "swiper/css/free-mode";
+
+@keyframes logoFocusLux {
+  0% {
+    opacity: 0;
+    transform: scale(0.85);
+    filter: blur(6px);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1.05);
+    filter: blur(2px);
+  }
+  70% {
+    transform: scale(1);
+    filter: blur(0px);
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOutLux {
+  0% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.animate-logoFocusLux {
+  animation: logoFocusLux 1.4s ease-out forwards;
+}
+
+.animate-fadeOutLux {
+  animation: fadeOutLux 2s ease-in forwards;
+}
+
+
+
 /* Cinematic Luxury Logo Animation */
 @keyframes introLogoLux {
   0% {

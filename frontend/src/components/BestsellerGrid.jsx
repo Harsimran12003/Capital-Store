@@ -36,7 +36,7 @@ export default function BestsellerGrid({ items }) {
       {/* View All – centered */}
       <div className="text-center mt-1 mb-6">
         <a
-          href="/products"
+          href="/bestseller"
           className="text-sm text-gray-500 relative inline-block group"
         >
           View All

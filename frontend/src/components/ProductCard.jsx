@@ -59,11 +59,11 @@ export default function ProductCard({ p }) {
       onMouseMove={handleMove}
       onMouseLeave={resetTilt}
       whileHover={{
-  y: -6,
-  boxShadow: "0 18px 35px rgba(0,0,0,0.15)",
-  transition: { duration: 0.35 }
-}}
-    >
+      y: -6,
+      boxShadow: "0 18px 35px rgba(0,0,0,0.15)",
+      transition: { duration: 0.35 }
+    }}
+        >
 
       {/* Soft White Glow (subtle premium) */}
         <div
@@ -98,7 +98,6 @@ export default function ProductCard({ p }) {
           "
         />
 
-
       {/* PRODUCT IMAGE */}
       <div className="relative h-70 overflow-hidden rounded-3xl">
         <motion.img
@@ -108,12 +107,11 @@ export default function ProductCard({ p }) {
           whileHover={{ scale: 1.12 }}
           transition={{ duration: 1.1 }}
         />
-
         
-        {/* ❤️ Heart Button */}
+        {/* Heart Button */}
         <motion.button
           onClick={() => {
-            setLiked(prev => !prev);   // ❤️ toggle like
+            setLiked(prev => !prev);  
             setExplode(true);
             setTimeout(() => setExplode(false), 700);
           }}
@@ -192,7 +190,7 @@ export default function ProductCard({ p }) {
             </div>
           </div>
 
-          {/* 🛒 ADD TO CART / QUANTITY */}
+          {/* ADD TO CART / QUANTITY */}
           {qty === 0 ? (
             <motion.button
               onClick={handleAddToCart}
@@ -243,10 +241,9 @@ export default function ProductCard({ p }) {
         </div>
       </div>
 
-      {/* Glow overlay — non-blocking */}
+      {/* Glow overlay */}
       <motion.div className="absolute inset-0 rounded-3xl bg-white/5 blur-xl opacity-0 group-hover:opacity-100 pointer-events-none" />
     </motion.div>
   </motion.div>
 );
-
 }
