@@ -9,7 +9,6 @@ const sampleCategories = [
   { id: 2, name: "Readymade", img: "readymade.webp", link: "/readymade" },
 ];
 
-// Static blob (no morph animation)
 const staticBlob =
   "M421,305Q410,360,360,402Q310,444,246,453Q182,462,128,424Q74,386,62,323Q50,260,69,205Q88,150,139,114Q190,78,249,73Q308,68,360,103Q412,138,422,199Q432,260,421,305Z";
 
@@ -20,16 +19,16 @@ export default function CategoryCards() {
       whileInView={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ duration: 0.9, ease: "easeOut" }}
       viewport={{ once: true }}
-      className="relative max-w-5xl mx-auto px-4 mt-24 mb-20"
+      className="relative max-w-5xl mx-auto px-4 mt-12 sm:mt-14 mb-10 sm:mb-14"
     >
       {/* HEADING */}
       <div className="flex justify-center">
-        <motion.h3
+          <motion.h3
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
           viewport={{ once: true }}
-          className="text-4xl font-bold mb-12 text-center tracking-wide relative"
+          className="text-3xl sm:text-4xl font-bold mb-8 sm:mb-10 text-center tracking-wide relative"
           style={{ color: WINE }}
         >
           Shop by Category
@@ -43,8 +42,8 @@ export default function CategoryCards() {
         </motion.h3>
       </div>
 
-      {/* GRID */}
-      <div className="grid grid-cols-2 gap-12 relative">
+      {/* RESPONSIVE GRID */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 relative overflow-hidden">
         {sampleCategories.map((c, index) => (
           <motion.div
             key={c.id}
@@ -54,40 +53,40 @@ export default function CategoryCards() {
             viewport={{ once: true }}
             className="relative group cursor-pointer"
           >
-            {/* Static Blob (no animation) */}
-            <svg
+            {/* SAFE BLOB — Does NOT overflow on mobile */}
+              <svg
               viewBox="0 0 500 500"
               xmlns="http://www.w3.org/2000/svg"
-              className="absolute -top-10 -left-10 w-[260px] h-[260px] -z-20 blur-2xl opacity-70"
+              className="absolute -top-6 left-1/2 -translate-x-1/2 sm:left-auto sm:translate-x-0 sm:-top-10 sm:-left-10 w-[160px] sm:w-[220px] h-auto -z-20 blur-2xl opacity-70"
             >
               <path d={staticBlob} fill="rgba(255,180,180,0.40)" />
             </svg>
 
             {/* LINK WRAP */}
             <Link to={c.link} aria-label={`Shop ${c.name}`}>
-              {/* CARD – No floating, no movement */}
               <div className="relative rounded-3xl overflow-hidden shadow-xl shadow-black/20 transform transition-transform duration-300 hover:-translate-y-2">
-                {/* IMAGE */}
+                
+                {/* IMAGE — fully responsive height */}
                 <motion.img
                   src={c.img}
                   alt={c.name}
-                  className="w-full h-78 object-cover rounded-3xl"
+                  className="w-full h-64 sm:h-80 object-cover rounded-3xl"
                   whileHover={{
-                    scale: 1.08,
-                    filter: "brightness(1.08)",
+                    scale: 1.04,
+                    filter: "brightness(1.04)",
                   }}
-                  transition={{ duration: 0.5 }}
+                  transition={{ duration: 0.45 }}
                 />
 
                 {/* Inner Glow */}
                 <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-all duration-500"></div>
 
                 {/* Bottom fade */}
-                <div className="absolute bottom-0 w-full h-15 bg-gradient-to-t from-black/60 to-transparent backdrop-blur-sm"></div>
+                <div className="absolute bottom-0 w-full h-16 bg-gradient-to-t from-black/60 to-transparent backdrop-blur-sm"></div>
 
                 {/* TEXT */}
-                <div className="absolute bottom-5 w-full text-center">
-                  <span className="text-white font-bold tracking-wide text-xl drop-shadow-[2px_2px_8px_rgba(0,0,0,0.7)]">
+                <div className="absolute bottom-4 w-full text-center">
+                  <span className="text-white font-bold tracking-wide text-lg drop-shadow-[2px_2px_8px_rgba(0,0,0,0.7)]">
                     {c.name}
                   </span>
                 </div>

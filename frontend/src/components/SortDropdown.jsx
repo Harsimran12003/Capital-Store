@@ -10,13 +10,12 @@ import {
   FiTrendingDown,
 } from "react-icons/fi";
 
-export default function SortDropdown({ setSort }) {
+export default function SortDropdown({ setSort, mobile }) {
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState("Sort By");
 
   const menuRef = useRef(null);
 
-  // Close dropdown on outside click
   useEffect(() => {
     function handleClick(event) {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
@@ -44,12 +43,12 @@ export default function SortDropdown({ setSort }) {
   };
 
   return (
-    <div className="relative" ref={menuRef}>
-      {/* Trigger Button */}
+    <div className="relative w-full" ref={menuRef}>
+      {/* TRIGGER BUTTON */}
       <button
         onClick={() => setOpen(!open)}
         className="
-          w-56 px-4 py-2.5 text-sm font-medium
+          w-full sm:w-56 px-4 py-2.5 text-sm font-medium
           bg-white/80 backdrop-blur-xl
           border border-[#e5c7cf]
           rounded-xl shadow-md hover:shadow-lg
@@ -62,12 +61,10 @@ export default function SortDropdown({ setSort }) {
           {selected}
         </span>
 
-        <FiChevronDown
-          className={`transition-all ${open ? "rotate-180" : ""}`}
-        />
+        <FiChevronDown className={`transition-all ${open ? "rotate-180" : ""}`} />
       </button>
 
-      {/* Dropdown Menu */}
+      {/* DROPDOWN MENU */}
       <AnimatePresence>
         {open && (
           <motion.div
@@ -75,15 +72,15 @@ export default function SortDropdown({ setSort }) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}
             transition={{ duration: 0.15 }}
-            className="
-              absolute right-0 mt-2 w-56 rounded-xl z-20
-              bg-white border border-[#e5c7cf] shadow-xl
-              overflow-hidden
-            "
+            className={`
+              absolute mt-2 w-full sm:w-56 rounded-xl z-20
+              bg-white border border-[#e5c7cf] shadow-xl overflow-hidden
+
+              ${mobile ? "right-0" : "left-0"}
+            `}
           >
             {options.map((opt) => {
               const isSelected = selected === opt.label;
-
               return (
                 <button
                   key={opt.value}

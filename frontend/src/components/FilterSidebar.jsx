@@ -74,7 +74,7 @@ export default function FilterSidebar({ filters, setFilters }) {
   pr-10
   outline-none
   focus:ring-2 focus:ring-[#4D192B]/40
-  focus:border-[#4D192B]
+  focus:border-[#4D192B] 
 `;
 
 
@@ -84,11 +84,11 @@ export default function FilterSidebar({ filters, setFilters }) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
       className="
-        w-72 p-7 rounded-3xl shadow-2xl 
+        w-68 p-7 rounded-3xl shadow-2xl 
         bg-gradient-to-br from-white via-[#fff6f9] to-[#fbe8ee]
         border border-[#e9cfd6]
         backdrop-blur-xl
-        sticky top-32 h-max
+        sticky top-32 h-max 
       "
     >
       {/* Header */}

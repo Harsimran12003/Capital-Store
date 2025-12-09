@@ -27,19 +27,16 @@ export default function Homepage() {
   useEffect(() => setBestsellers(sampleBestsellers), []);
 
   return (
-    <div className="bg-white text-gray-800 pt-[100px]">
+    <div className="bg-white text-gray-800">
       <IntroScreen />
       <Navbar />
-      
 
       <HeroSlider />
       <CategoryCards />
-      <BestsellerGrid items={ bestsellerItems } />
+      <BestsellerGrid items={bestsellerItems} />
       <VideoSection />
       <Footer />
       <WhatsAppToggle />
-
-      
     </div>
   );
 }

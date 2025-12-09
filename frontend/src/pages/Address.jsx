@@ -48,7 +48,7 @@ export default function Address() {
       <Navbar />
 
       <div
-        className="min-h-screen py-15 mt-35 pb-32"
+        className="min-h-screen py-15 mt-5 pb-32"
         style={{
           background:
             "radial-gradient(1200px 600px at 10% 10%, rgba(77,25,43,0.12), transparent 10%), radial-gradient(900px 500px at 90% 90%, rgba(60,20,30,0.08), transparent 10%), linear-gradient(180deg, #fffaf8 0%, #f9f6f4 100%)",

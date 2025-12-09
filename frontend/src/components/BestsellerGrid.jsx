@@ -1,7 +1,6 @@
 import React from "react";
 import ProductCard from "./ProductCard";
 import { motion } from "framer-motion";
-import { bestsellerItems } from "../data/products";
 
 const WINE = "#4D192B";
 
@@ -9,22 +8,22 @@ export default function BestsellerGrid({ items }) {
   return (
     <motion.section
       id="bestseller"
-      className="max-w-7xl mx-auto px-4 mt-20 overflow-visible relative"
+      className="max-w-7xl mx-auto px-4 mt-16 sm:mt-20 mb-16 sm:mb-24 relative"
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.7, ease: "easeOut" }}
       viewport={{ once: true }}
     >
       {/* ===================== HEADING ===================== */}
-      <div className="text-center relative w-fit mx-auto mb-3">
+      <div className="text-center relative w-fit mx-auto mb-4">
         <h3
-          className="text-5xl font-bold tracking-wide"
+          className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-wide"
           style={{ color: WINE }}
         >
           Bestsellers
         </h3>
 
-        {/* ✨ Underline Sweep */}
+        {/* ✨ Underline */}
         <motion.div
           className="absolute left-0 right-0 mx-auto bottom-[-6px] h-[3px] bg-[#4D192B]"
           initial={{ width: 0 }}
@@ -33,7 +32,7 @@ export default function BestsellerGrid({ items }) {
         />
       </div>
 
-      {/* View All – centered */}
+      {/* View All */}
       <div className="text-center mt-1 mb-6">
         <a
           href="/bestseller"
@@ -49,9 +48,18 @@ export default function BestsellerGrid({ items }) {
         </a>
       </div>
 
-      {/* ===================== GRID ===================== */}
+      {/* ===================== RESPONSIVE GRID ===================== */}
       <motion.div
-        className="grid grid-cols-2 sm:grid-cols-4 gap-6 mt-6 overflow-visible relative"
+        className="
+          grid 
+          grid-cols-2 
+          xs:grid-cols-2 
+          sm:grid-cols-3 
+          md:grid-cols-3 
+          lg:grid-cols-4 
+          gap-4 sm:gap-6 md:gap-8 
+          mt-6
+        "
         initial="hidden"
         whileInView="visible"
         variants={{
