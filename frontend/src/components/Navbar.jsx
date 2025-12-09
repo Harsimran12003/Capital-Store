@@ -106,7 +106,7 @@ export default function Navbar() {
                 2
               </span>
             </Link>
-            <Link to="/account" className="relative">
+            <Link to="/account" className="relative md:hidden">
               <FiUser className="text-xl text-gray-800" />
             </Link>
 
