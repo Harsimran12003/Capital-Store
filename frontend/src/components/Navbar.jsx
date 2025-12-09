@@ -59,7 +59,7 @@ export default function Navbar() {
               src="/logo.png"
               alt="Capital Store"
               className={`w-auto transition-all duration-500 ${
-                scroll ? "h-[36px]" : "h-[55px]"
+                scroll ? "h-[36px]" : "h-[44px]"
               }`}
             />
           </Link>
