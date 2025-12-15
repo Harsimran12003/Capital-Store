@@ -21,12 +21,20 @@ import Wishlist from "./pages/Wishlist";
 import Address from "./pages/Address";
 import Payment from "./pages/Payment";
 import OrderSummary from "./pages/OrderSummary";
+import Dashboard from "./pages/admin/Dashboard";
+import AddSliderImages from "./pages/admin/AddSliderImages";
+import AddProduct from "./pages/admin/AddProduct";
+import ViewProducts from "./pages/admin/ViewProducts";
+import Register from "./pages/Register";
+import Login from "./pages/Login";
 
 function App() {
   return (
     <>
       <Router>
         <Routes>
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/" element={<Homepage />} />
 
           <Route path="/readymade" element={<ReadymadePage />} />
@@ -54,6 +62,13 @@ function App() {
           <Route path="/payment" element={<Payment />} />
           <Route path="/order-summary" element={<OrderSummary />} />
 
+
+          {/* Admin */}
+          <Route path="/admin" element={<Dashboard />} />
+          <Route path="/admin/slider" element={<AddSliderImages />} />
+          <Route path="/admin/add-product" element={<AddProduct />} />
+          <Route path="/admin/products" element={<ViewProducts />} />
+          
         </Routes>
       </Router>
     </>

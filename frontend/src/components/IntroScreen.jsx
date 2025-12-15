@@ -176,15 +176,7 @@ export default function IntroScreen() {
                 ))}
               </div>
 
-              <motion.p
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.45, duration: 0.45 }}
-                className="mt-1 sm:mt-2 text-gray-600"
-                style={{ fontSize: isMobile ? "12px" : "14px" }}
-              >
-                Luxury pieces, curated for you
-              </motion.p>
+              
             </div>
 
             {/* SHIMMER */}

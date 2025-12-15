@@ -106,12 +106,12 @@ export default function Navbar() {
                 2
               </span>
             </Link>
-            <Link to="/account" className="relative md:hidden">
+            <Link to="/login" className="relative md:hidden">
               <FiUser className="text-xl text-gray-800" />
             </Link>
 
             {/* Account (desktop only) */}
-            <Link to="/account" className="hidden sm:block">
+            <Link to="/login" className="hidden sm:block">
               <FiUser className="text-xl text-gray-800" />
             </Link>
 

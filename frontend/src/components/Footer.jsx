@@ -6,7 +6,7 @@ const WINE = "#4D192B";
 
 export default function Footer() {
   return (
-    <footer className="relative overflow-hidden bg-gradient-to-b from-white via-[#fff4f6] to-[#f7e6e9] pt-20 pb-12 mt-32">
+    <footer className="relative overflow-hidden bg-gradient-to-b from-white via-[#fff4f6] to-[#f7e6e9] pt-20 pb-12 ">
 
       {/* ====================== SOFT BACKGROUND GLOW (Optimized) ===================== */}
       <motion.div
