@@ -12,6 +12,9 @@ import {
 import PromoTicker from "./PromoTicker";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAuth } from "../context/AuthContext.jsx";
+import InitialsBadge from "./InitialsBadge.jsx";
+import Tooltip from "./Tooltip.jsx";
 
 const BRAND = "#4D192B";
 
@@ -22,6 +25,8 @@ export default function Navbar() {
   const [mobileSearch, setMobileSearch] = useState(false);
 
   const location = useLocation();
+  const { user, logout } = useAuth();
+
 
   useEffect(() => {
     const onScroll = () => setScroll(window.scrollY > 15);
@@ -93,27 +98,46 @@ export default function Navbar() {
               <FiSearch />
             </button>
 
-            <Link to="/wishlist" className="relative">
-              <FiHeart className="text-xl text-gray-800" />
-              <span className="absolute -top-1 -right-2 bg-[#AF1238] text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">
-                3
-              </span>
-            </Link>
+            <Tooltip text="Wishlist">
+  <Link to="/wishlist" className="relative">
+    <FiHeart className="text-xl text-gray-800" />
+    <span className="absolute -top-1 -right-2 bg-[#AF1238] text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">
+      3
+    </span>
+  </Link>
+</Tooltip>
 
-            <Link to="/cart" className="relative">
-              <FiShoppingCart className="text-xl text-gray-800" />
-              <span className="absolute -top-1 -right-2 bg-green-600 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">
-                2
-              </span>
-            </Link>
-            <Link to="/login" className="relative md:hidden">
-              <FiUser className="text-xl text-gray-800" />
-            </Link>
+            <Tooltip text="Cart">
+  <Link to="/cart" className="relative">
+    <FiShoppingCart className="text-xl text-gray-800" />
+    <span className="absolute -top-1 -right-2 bg-green-600 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">
+      2
+    </span>
+  </Link>
+</Tooltip>
 
-            {/* Account (desktop only) */}
-            <Link to="/login" className="hidden sm:block">
-              <FiUser className="text-xl text-gray-800" />
-            </Link>
+            {/* ACCOUNT ICON – MOBILE */}
+            <Link
+  to={user ? "/profile" : "/login"}
+  className="relative md:hidden"
+>
+  {user ? (
+    <InitialsBadge name={user.name} size={34} />
+  ) : (
+    <FiUser className="text-xl text-gray-800" />
+  )}
+</Link>
+            {/* ACCOUNT ICON – DESKTOP */}
+            <Link
+  to={user ? "/profile" : "/login"}
+  className="hidden sm:block"
+>
+  {user ? (
+    <InitialsBadge name={user.name} size={36} />
+  ) : (
+    <FiUser className="text-xl text-gray-800" />
+  )}
+</Link>
 
             {/* MOBILE MENU BUTTON */}
             <button
@@ -230,9 +254,14 @@ export default function Navbar() {
                                  
               <div className="mt-6 text-sm text-gray-600 flex items-center justify-between">
                 
-                <button className="flex items-center gap-2 text-sm text-[#3b0b11]">
-                  <FiLogOut /> Sign out
-                </button>
+                {user && (
+  <button
+    onClick={logout}
+    className="flex items-center gap-2 text-sm text-[#3b0b11]"
+  >
+    <FiLogOut /> Sign out
+  </button>
+)}
               </div>
 
               <div className="mt-6 text-xs text-gray-400">

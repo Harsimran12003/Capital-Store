@@ -27,14 +27,25 @@ import AddProduct from "./pages/admin/AddProduct";
 import ViewProducts from "./pages/admin/ViewProducts";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
+import LoginSuccess from "./pages/LoginSuccess";
+import Profile from "./pages/Profile";
+import { Navigate } from "react-router-dom";
+import { useAuth } from "./context/AuthContext.jsx";
+
 
 function App() {
+  const { user, loading } = useAuth();
+
+  if (loading) return null; //
   return (
+    
     <>
       <Router>
         <Routes>
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/login-success" element={<LoginSuccess />} />
+
           <Route path="/" element={<Homepage />} />
 
           <Route path="/readymade" element={<ReadymadePage />} />
@@ -47,6 +58,10 @@ function App() {
 
           <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/cart" element={<Cart />} />
+          <Route
+            path="/profile"
+            element={user ? <Profile /> : <Navigate to="/login" />}
+          />
 
           <Route path="/readymade/cotton" element={<ReadymadeCottonPage />} />
           <Route path="/readymade/winter" element={<ReadymadeWinterPage />} />
