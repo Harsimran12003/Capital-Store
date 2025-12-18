@@ -11,6 +11,8 @@ dotenv.config();
 connectDB();
 
 import authRoutes from "./routes/authRoutes.js";
+import heroSliderRoutes from "./routes/heroSliderRoutes.js";
+import uploadRoutes from "./routes/uploadRoutes.js";
 
 const app = express();
 app.use(cookieParser());
@@ -28,6 +30,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(passport.initialize());
 
 app.use("/api/auth", authRoutes);
+app.use("/uploads", express.static("uploads"));
+app.use("/api/upload", uploadRoutes);
+app.use("/api/hero-slides", heroSliderRoutes);
+
+
 
 app.get("/", (req, res) => {
   res.send("Capital Store API is running 🚀");

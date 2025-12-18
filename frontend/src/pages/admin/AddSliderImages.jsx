@@ -1,25 +1,80 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import AdminLayout from "./AdminLayout";
 import { FiUpload, FiSave } from "react-icons/fi";
 
 export default function AddSliderImages() {
   const [sliders, setSliders] = useState(Array(6).fill(null));
 
-  const handleImageChange = (index, file) => {
+  /* ✅ FETCH EXISTING SLIDES ON PAGE LOAD */
+  useEffect(() => {
+    const fetchSlides = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/hero-slides");
+        const data = await res.json();
+
+        const filled = Array(6).fill(null);
+        data.forEach((slide) => {
+          filled[slide.order - 1] = slide.imageUrl;
+        });
+
+        setSliders(filled);
+      } catch (err) {
+        console.error("Failed to fetch hero slides", err);
+      }
+    };
+
+    fetchSlides();
+  }, []);
+
+  /* ✅ CLOUDINARY IMAGE UPLOAD */
+  const handleImageChange = async (index, file) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "capitalstore_unsigned");
+
+    const res = await fetch(
+      "https://api.cloudinary.com/v1_1/daffddkqb/image/upload",
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
+
+    const data = await res.json();
+
     const updated = [...sliders];
-    updated[index] = URL.createObjectURL(file);
+    updated[index] = data.secure_url;
     setSliders(updated);
+  };
+
+  /* ✅ SAVE SLIDES (NO HOOKS HERE) */
+  const handleSave = async () => {
+    const slides = sliders
+      .filter(Boolean)
+      .map((img, index) => ({
+        imageUrl: img,
+        order: index + 1,
+      }));
+
+    await fetch("http://localhost:5000/api/hero-slides", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify(slides),
+    });
+
+    alert("Hero slider updated successfully");
   };
 
   return (
     <AdminLayout>
       {/* PAGE HEADER */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-800 ">
+        <h1 className="text-3xl font-bold text-gray-800">
           Hero Slider Images
         </h1>
         <p className="text-gray-500 mt-1">
-          Upload or replace homepage hero slider images 
+          Upload or replace homepage hero slider images
         </p>
       </div>
 
@@ -74,7 +129,7 @@ export default function AddSliderImages() {
         <button
           className="flex items-center gap-2 px-6 py-3 rounded-xl bg-green-600 text-white font-semibold
           hover:bg-green-700 transition shadow-md"
-          onClick={() => alert("Slider images saved (frontend only)")}
+          onClick={handleSave}
         >
           <FiSave />
           Save Changes

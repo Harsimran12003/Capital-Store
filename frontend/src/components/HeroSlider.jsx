@@ -1,16 +1,8 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
-const heroSlides = [
-  { id: 1, img: "slider1.webp" },
-  { id: 2, img: "slider2.webp" },
-  { id: 3, img: "slider3.webp" },
-  { id: 4, img: "slider4.jpg" },
-  { id: 5, img: "slider5.jpg" },
-  { id: 6, img: "slider6.webp" },
-];
-
 export default function HeroSlider() {
+  const [heroSlides, setHeroSlides] = useState([]);
   const [index, setIndex] = useState(0);
   const [progress, setProgress] = useState(0);
   const [pos, setPos] = useState({ x: 0, y: 0 });
@@ -19,25 +11,42 @@ export default function HeroSlider() {
 
   const AUTO_TIME = 5000;
 
-  const goNext = useCallback(() => {
-    setIndex((prev) => (prev + 1) % heroSlides.length);
-    setProgress(0);
+  /* ✅ FETCH SLIDES */
+  useEffect(() => {
+    fetch("http://localhost:5000/api/hero-slides")
+      .then((res) => res.json())
+      .then((data) => {
+        setHeroSlides(data);
+        setIndex(0); // reset index
+      });
   }, []);
 
+  /* ✅ SAFE NEXT */
+  const goNext = useCallback(() => {
+    if (heroSlides.length === 0) return;
+    setIndex((prev) => (prev + 1) % heroSlides.length);
+    setProgress(0);
+  }, [heroSlides.length]);
+
   const goPrev = () => {
-    setIndex((prev) => (prev === 0 ? heroSlides.length - 1 : prev - 1));
+    if (heroSlides.length === 0) return;
+    setIndex((prev) =>
+      prev === 0 ? heroSlides.length - 1 : prev - 1
+    );
     setProgress(0);
   };
 
-  // Responsive check
+  /* ✅ RESPONSIVE */
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Autoplay
+  /* ✅ AUTOPLAY (ONLY IF SLIDES EXIST) */
   useEffect(() => {
+    if (heroSlides.length === 0) return;
+
     intervalRef.current = setInterval(() => {
       setProgress((p) => {
         if (p >= 100) {
@@ -49,26 +58,28 @@ export default function HeroSlider() {
     }, AUTO_TIME / 50);
 
     return () => clearInterval(intervalRef.current);
-  }, [goNext]);
+  }, [goNext, heroSlides.length]);
 
-  // Parallax — Desktop only
+  /* PARALLAX */
   const handleMouseMove = (e) => {
     if (isMobile) return;
-
-    const x = (e.clientX - window.innerWidth / 2) / 60;
-    const y = (e.clientY - window.innerHeight / 2) / 60;
-
-    setPos({ x, y });
+    setPos({
+      x: (e.clientX - window.innerWidth / 2) / 60,
+      y: (e.clientY - window.innerHeight / 2) / 60,
+    });
   };
 
-  // Touch swipe — Mobile
+  /* TOUCH */
   const touchStartX = useRef(0);
-  const handleTouchStart = (e) => (touchStartX.current = e.touches[0].clientX);
+  const handleTouchStart = (e) =>
+    (touchStartX.current = e.touches[0].clientX);
   const handleTouchEnd = (e) => {
     const diff = e.changedTouches[0].clientX - touchStartX.current;
     if (diff > 60) goPrev();
     if (diff < -60) goNext();
   };
+
+  if (heroSlides.length === 0) return null; // optional loader
 
   return (
     <section
@@ -82,18 +93,15 @@ export default function HeroSlider() {
       <div className="relative w-full h-[38vh] sm:h-[55vh] md:h-[80vh] lg:h-[90vh] overflow-hidden">
         {heroSlides.map((slide, i) => (
           <div
-            key={slide.id}
-            className={`absolute inset-0 bg-cover bg-center transition-all duration-[1200ms] ease-[cubic-bezier(0.4,0,0.2,1)]
+            key={slide._id || i}
+            className={`absolute inset-0 bg-cover bg-center transition-all duration-[1200ms]
               ${index === i ? "opacity-100" : "opacity-0"}
             `}
             style={{
-              backgroundImage: `url(${slide.img})`,
-
-              // FIX: Scale less on mobile to prevent horizontal overflow
+              backgroundImage: `url(${slide.imageUrl})`, // ✅ FIXED
               transform: isMobile
                 ? "scale(1.02)"
                 : `translate(${pos.x}px, ${pos.y}px) scale(1.05)`,
-
               filter: index === i ? "brightness(100%)" : "brightness(70%)",
             }}
           />
@@ -103,8 +111,8 @@ export default function HeroSlider() {
       {/* OVERLAY */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/40 pointer-events-none" />
 
-      {/* DOTS / PROGRESS */}
-      <div className="absolute bottom-4 sm:bottom-7 left-0 w-full px-6 sm:px-12 flex gap-2 sm:gap-3">
+      {/* PROGRESS */}
+      <div className="absolute bottom-4 sm:bottom-7 left-0 w-full px-6 sm:px-12 flex gap-2">
         {heroSlides.map((_, i) => (
           <div
             key={i}
@@ -112,29 +120,29 @@ export default function HeroSlider() {
               setIndex(i);
               setProgress(0);
             }}
-            className="h-[4px] bg-white/40 rounded-full cursor-pointer flex-1 overflow-hidden hover:bg-white/60 transition"
+            className="h-[4px] bg-white/40 rounded-full cursor-pointer flex-1 overflow-hidden"
           >
             <div
               className="h-full bg-white transition-all"
               style={{ width: index === i ? `${progress}%` : "0%" }}
-            ></div>
+            />
           </div>
         ))}
       </div>
 
-      {/* ARROWS — Desktop only */}
+      {/* ARROWS */}
       {!isMobile && (
         <>
           <button
             onClick={goPrev}
-            className="absolute top-1/2 left-6 -translate-y-1/2 bg-black/30 backdrop-blur-sm p-3 rounded-full hover:bg-black/60 transition text-white"
+            className="absolute top-1/2 left-6 -translate-y-1/2 bg-black/30 p-3 rounded-full text-white"
           >
             <FiChevronLeft size={26} />
           </button>
 
           <button
             onClick={goNext}
-            className="absolute top-1/2 right-6 -translate-y-1/2 bg-black/30 backdrop-blur-sm p-3 rounded-full hover:bg-black/60 transition text-white"
+            className="absolute top-1/2 right-6 -translate-y-1/2 bg-black/30 p-3 rounded-full text-white"
           >
             <FiChevronRight size={26} />
           </button>
