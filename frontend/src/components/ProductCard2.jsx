@@ -43,7 +43,7 @@ export default function ProductCard({ product }) {
         <div className="relative">
 
           <img
-            src={product.img}
+            src={product.images[0]}
             alt={product.name}
             className="
               w-full 
@@ -68,7 +68,7 @@ export default function ProductCard({ product }) {
               className="
                 relative bg-white/90 p-1.5 sm:p-2 rounded-full shadow-lg 
                 backdrop-blur-xl border border-[#e5c7cf]
-                transition hover:scale-110
+                transition hover:scale-110 cursor-pointer
               "
             >
               <FiHeart
@@ -108,7 +108,7 @@ export default function ProductCard({ product }) {
           </div>
 
           {/* ================= DISCOUNT TAG ================= */}
-          {product.off > 0 && (
+          {product.discountPercent > 0 && (
             <div
               className="
                 absolute top-2 left-2 sm:top-3 sm:left-3 
@@ -117,7 +117,7 @@ export default function ProductCard({ product }) {
                 text-white rounded-lg shadow-md
               "
             >
-              {product.off}% OFF
+              {product.discountPercent}% OFF
             </div>
           )}
         </div>
@@ -144,10 +144,10 @@ export default function ProductCard({ product }) {
           {/* Price */}
           <div className="mt-2 flex items-center gap-1 sm:gap-2">
             <span className="font-bold text-gray-900 text-base sm:text-lg">
-              ₹{product.price}
+              ₹{product.discountedPrice}
             </span>
             <span className="line-through text-gray-400 text-xs sm:text-sm">
-              ₹{product.mrp}
+              ₹{product.originalPrice}
             </span>
           </div>
         </div>
@@ -166,7 +166,7 @@ export default function ProductCard({ product }) {
               flex items-center justify-center gap-1.5 sm:gap-2
               bg-gradient-to-r from-[#4D192B] to-[#2a0e19]
               text-white shadow-md hover:shadow-lg
-              transition-all
+              transition-all cursor-pointer
             "
           >
             <FiShoppingCart size={14} className="sm:hidden" />
@@ -185,14 +185,14 @@ export default function ProductCard({ product }) {
           >
             <button
               onClick={() => setQty(qty - 1)}
-              className="text-lg font-bold px-2 sm:px-3"
+              className="text-lg font-bold px-2 sm:px-3 cursor-pointer"
             >
               –
             </button>
             <span className="font-semibold text-sm">{qty}</span>
             <button
               onClick={() => setQty(qty + 1)}
-              className="text-lg font-bold px-2 sm:px-3"
+              className="text-lg font-bold px-2 sm:px-3 cursor-pointer"
             >
               +
             </button>

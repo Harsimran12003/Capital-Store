@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState , useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import ProductCard from "../components/ProductCard2";
@@ -6,40 +6,33 @@ import FilterSidebar from "../components/FilterSidebar";
 import SortBar from "../components/SortBar";
 import Breadcrumb from "../components/Breadcrumb";
 
-const readymadecottonProducts = [
-  {
-    id: 1,
-    name: "Premium Cotton Kurti",
-    img: "/cotton1.webp",
-    price: 899,
-    mrp: 1299,
-    off: 30,
-    rating: 4,
-    new: true,
-  },
-  {
-    id: 2,
-    name: "Designer Cotton Suit",
-    img: "/cotton2.webp",
-    price: 1299,
-    mrp: 1999,
-    off: 35,
-    rating: 5,
-    new: false,
-  },
-  {
-    id: 3,
-    name: "Printed Cotton Set",
-    img: "/cotton3.webp",
-    price: 749,
-    mrp: 999,
-    off: 25,
-    rating: 4,
-    new: true,
-  },
-];
-
 export default function ReadymadeCottonPage() {
+  const [products, setProducts] = useState([]);
+const [loading, setLoading] = useState(true);
+useEffect(() => {
+  const fetchProducts = async () => {
+    try {
+      const res = await fetch(
+        "http://localhost:5000/api/products?category=Readymade&subCategory=Cotton"
+      );
+      const data = await res.json();
+      setProducts(data);
+    } catch (err) {
+      console.error("Failed to fetch readymade cotton products", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchProducts();
+}, []);
+
+const isNew = (date) => {
+  const diffDays =
+    (new Date() - new Date(date)) / (1000 * 60 * 60 * 24);
+  return diffDays <= 20;
+};
+
   const [filters, setFilters] = useState({
     above1000: false,
     below1000: false,
@@ -52,21 +45,32 @@ export default function ReadymadeCottonPage() {
   const [showMobileFilters, setShowMobileFilters] = useState(false);
 
   // FILTER LOGIC
-  let filtered = readymadecottonProducts.filter((p) => {
-    if (filters.above1000 && p.price <= 1000) return false;
-    if (filters.below1000 && p.price >= 1000) return false;
-    if (filters.newArrival && !p.new) return false;
-    if (filters.discount && p.off < filters.discount) return false;
-    if (filters.rating && p.rating < filters.rating) return false;
-    return true;
-  });
+  let filtered = products.filter((p) => {
+  if (filters.maxPrice && p.discountedPrice > filters.maxPrice) return false;
+  if (filters.above1000 && p.discountedPrice <= 1000) return false;
+  if (filters.below1000 && p.discountedPrice >= 1000) return false;
+  if (filters.newArrival && !isNew(p.createdAt)) return false;
+  if (filters.discount && p.discountPercent < Number(filters.discount)) return false;
+  if (filters.rating && p.rating < Number(filters.rating)) return false;
+  return true;
+});
 
   // SORTING LOGIC
-  if (sort === "low-high") filtered.sort((a, b) => a.price - b.price);
-  if (sort === "high-low") filtered.sort((a, b) => b.price - a.price);
-  if (sort === "new") filtered = filtered.filter((p) => p.new);
-  if (sort === "above1000") filtered = filtered.filter((p) => p.price > 1000);
-  if (sort === "below1000") filtered = filtered.filter((p) => p.price < 1000);
+  if (sort === "low-high")
+  filtered.sort((a, b) => a.discountedPrice - b.discountedPrice);
+
+if (sort === "high-low")
+  filtered.sort((a, b) => b.discountedPrice - a.discountedPrice);
+
+if (sort === "new")
+  filtered = filtered.filter((p) => isNew(p.createdAt));
+
+if (sort === "above1000")
+  filtered = filtered.filter((p) => p.discountedPrice > 1000);
+
+if (sort === "below1000")
+  filtered = filtered.filter((p) => p.discountedPrice < 1000);
+
 
   return (
     <>
@@ -119,10 +123,23 @@ export default function ReadymadeCottonPage() {
               <SortBar setSort={setSort} />
             </div>
 
+            {loading && (
+  <p className="text-center text-gray-500">
+    Loading readymade cotton products...
+  </p>
+)}
+
+{!loading && filtered.length === 0 && (
+  <p className="text-center text-gray-500">
+    No readymade cotton products found.
+  </p>
+)}
+
+
             {/* PRODUCT GRID */}
             <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-10">
               {filtered.map((p) => (
-                <ProductCard key={p.id} product={p} />
+                <ProductCard key={p._id} product={p} />
               ))}
             </div>
 

@@ -54,15 +54,15 @@ export default function FilterSidebar({ filters, setFilters }) {
   const maxPrice = filters.maxPrice || 2000;
 
   const handleReset = () => {
-    setFilters({
-      below1000: false,
-      above1000: false,
-      newArrival: false,
-      discount: "",
-      rating: "",
-      maxPrice: 2000,
-    });
-  };
+  setFilters({
+    below1000: false,
+    above1000: false,
+    newArrival: false,
+    discount: "",
+    rating: "",
+    maxPrice: 5000,
+  });
+};
 
   /** Elegant dropdown card design */
   const dropdownClass = `
