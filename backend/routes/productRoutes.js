@@ -13,7 +13,7 @@ const router = express.Router();
 /* ================= ADMIN ROUTES ================= */
 router.post("/", protect, createProduct);
 router.get("/", getAllProducts); 
-router.get("/:id", protect, getProductById);
+router.get("/:id", getProductById);
 router.put("/:id", protect, updateProduct);
 router.delete("/:id", protect, deleteProduct);
 

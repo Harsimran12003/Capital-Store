@@ -37,7 +37,7 @@ export default function ProductCard({ product }) {
       whileHover={{ y: -4, scale: 1.015 }}
       transition={{ duration: 0.35, ease: "easeOut" }}
     >
-      <Link to={`/product/${product.id}`}>
+      <Link to={`/product/${product._id}`}>
 
         {/* ================= IMAGE ================= */}
         <div className="relative">
