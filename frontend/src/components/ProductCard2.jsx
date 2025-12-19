@@ -46,15 +46,14 @@ export default function ProductCard({ product }) {
             src={product.images[0]}
             alt={product.name}
             className="
-              w-full 
-              object-cover 
+              w-full               
               transition-all duration-700
               group-hover:scale-110
 
               /* ⭐ Reduce image height on mobile */
-              h-40       /* Mobile */
+              h-60       /* Mobile */
               sm:h-55    /* Tablet */
-              md:h-55    /* Desktop */
+              md:h-65    /* Desktop */
             "
           />
 

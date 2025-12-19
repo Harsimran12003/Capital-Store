@@ -124,7 +124,7 @@ export default function ProductDetails() {
                     {item.type === "image" ? (
                       <img
                         src={item.src}
-                        className="w-full h-[420px] object-cover rounded-2xl"
+                        className="w-full h-[420px] object-contain rounded-2xl"
                       />
                     ) : (
                       <video
