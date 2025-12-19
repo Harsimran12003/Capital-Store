@@ -141,14 +141,24 @@ export default function ProductCard({ product }) {
           </div>
 
           {/* Price */}
-          <div className="mt-2 flex items-center gap-1 sm:gap-2">
-            <span className="font-bold text-gray-900 text-base sm:text-lg">
-              ₹{product.discountedPrice}
-            </span>
-            <span className="line-through text-gray-400 text-xs sm:text-sm">
-              ₹{product.originalPrice}
-            </span>
-          </div>
+<div className="mt-2 flex items-center gap-1 sm:gap-2">
+  {product.discountedPrice > 0 &&
+  product.discountedPrice < product.originalPrice ? (
+    <>
+      <span className="font-bold text-gray-900 text-base sm:text-lg">
+        ₹{product.discountedPrice}
+      </span>
+      <span className="line-through text-gray-400 text-xs sm:text-sm">
+        ₹{product.originalPrice}
+      </span>
+    </>
+  ) : (
+    <span className="font-bold text-gray-900 text-base sm:text-lg">
+      ₹{product.originalPrice}
+    </span>
+  )}
+</div>
+
         </div>
       </Link>
 
