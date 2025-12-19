@@ -13,6 +13,7 @@ connectDB();
 import authRoutes from "./routes/authRoutes.js";
 import heroSliderRoutes from "./routes/heroSliderRoutes.js";
 import uploadRoutes from "./routes/uploadRoutes.js";
+import productRoutes from "./routes/productRoutes.js";
 
 const app = express();
 app.use(cookieParser());
@@ -33,7 +34,7 @@ app.use("/api/auth", authRoutes);
 app.use("/uploads", express.static("uploads"));
 app.use("/api/upload", uploadRoutes);
 app.use("/api/hero-slides", heroSliderRoutes);
-
+app.use("/api/products", productRoutes);
 
 
 app.get("/", (req, res) => {

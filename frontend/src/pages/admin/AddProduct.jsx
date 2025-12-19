@@ -3,18 +3,81 @@ import AdminLayout from "./AdminLayout";
 import { FiUpload, FiSave } from "react-icons/fi";
 
 export default function AddProduct() {
+  const [form, setForm] = useState({
+  name: "",
+  description: "",
+  originalPrice: "",
+  discountedPrice: "",
+  category: "",
+  subCategory: "",
+});
+
+
+const handleChange = (e) => {
+  setForm({ ...form, [e.target.name]: e.target.value });
+};
+
   const [images, setImages] = useState(Array(5).fill(null));
   const [video, setVideo] = useState(null);
 
-  const handleImageChange = (index, file) => {
-    const updated = [...images];
-    updated[index] = URL.createObjectURL(file);
-    setImages(updated);
+  const handleImageChange = async (index, file) => {
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append(
+    "upload_preset",
+    "capitalstore_unsigned"
+  );
+
+  const res = await fetch(
+    `https://api.cloudinary.com/v1_1/daffddkqb/image/upload`,
+    { method: "POST", body: formData }
+  );
+
+  const data = await res.json();
+
+  const updated = [...images];
+  updated[index] = data.secure_url; 
+  setImages(updated);
+};
+
+  const handleVideoChange = async (file) => {
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append(
+    "upload_preset",
+    "capitalstore_unsigned"
+  );
+
+  const res = await fetch(
+    `https://api.cloudinary.com/v1_1/daffddkqb/video/upload`,
+    { method: "POST", body: formData }
+  );
+
+  const data = await res.json();
+  setVideo(data.secure_url);
+};
+
+const handleSave = async () => {
+  const payload = {
+    ...form,
+    originalPrice: Number(form.originalPrice),
+    discountedPrice: Number(form.discountedPrice),
+    images: images.filter(Boolean),
+    video,
   };
 
-  const handleVideoChange = (file) => {
-    setVideo(URL.createObjectURL(file));
-  };
+  await fetch("http://localhost:5000/api/products", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify(payload),
+  });
+
+  alert("Product added successfully");
+  setForm(initialForm);
+  setImages(initialImages);
+  setVideo(null);
+};
 
   return (
     <AdminLayout>
@@ -40,7 +103,9 @@ export default function AddProduct() {
                 Product Name
               </label>
               <input
+              name="name"
                 type="text"
+                onChange={handleChange}
                 placeholder="Enter product name"
                 className="mt-2 w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-green-500 outline-none"
               />
@@ -52,7 +117,9 @@ export default function AddProduct() {
                 Description
               </label>
               <textarea
+              name="description"
                 rows="4"
+                onChange={handleChange}
                 placeholder="Product description"
                 className="mt-2 w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-green-500 outline-none"
               />
@@ -65,7 +132,9 @@ export default function AddProduct() {
                   Original Price (₹)
                 </label>
                 <input
+                  name="originalPrice"
                   type="number"
+                  onChange={handleChange}
                   className="mt-2 w-full px-4 py-3 border rounded-xl"
                 />
               </div>
@@ -75,7 +144,9 @@ export default function AddProduct() {
                   Discounted Price (₹)
                 </label>
                 <input
+                  name="discountedPrice"
                   type="number"
+                  onChange={handleChange}
                   className="mt-2 w-full px-4 py-3 border rounded-xl"
                 />
               </div>
@@ -86,7 +157,7 @@ export default function AddProduct() {
               <label className="font-semibold text-sm text-gray-700">
                 Category
               </label>
-              <select className="mt-2 w-full px-4 py-3 border rounded-xl">
+              <select className="mt-2 w-full px-4 py-3 border rounded-xl" name="category" onChange={handleChange}>
                 <option value="">Select category</option>
                 <option>Readymade</option>
                 <option>Unstitched</option>
@@ -98,7 +169,7 @@ export default function AddProduct() {
               <label className="font-semibold text-sm text-gray-700">
                 Sub Category
               </label>
-              <select className="mt-2 w-full px-4 py-3 border rounded-xl">
+              <select className="mt-2 w-full px-4 py-3 border rounded-xl " name="subCategory" onChange={handleChange}>
                 <option value="">Select sub-category</option>
                 <option>Cotton</option>
                 <option>Winter Wear</option>
@@ -135,6 +206,7 @@ export default function AddProduct() {
                       </span>
                     )}
                     <input
+                      
                       type="file"
                       accept="image/*"
                       hidden
@@ -185,7 +257,7 @@ export default function AddProduct() {
             type="button"
             className="flex items-center gap-2 px-7 py-3 rounded-xl bg-green-600 text-white font-semibold
             hover:bg-green-700 transition shadow-lg"
-            onClick={() => alert("Product added (frontend only)")}
+            onClick={handleSave}
           >
             <FiSave />
             Save Product
