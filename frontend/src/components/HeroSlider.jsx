@@ -13,7 +13,7 @@ export default function HeroSlider() {
 
   /* ✅ FETCH SLIDES */
   useEffect(() => {
-    fetch("http://localhost:5000/api/hero-slides")
+    fetch("https://capital-store-backend.vercel.app/api/hero-slides")
       .then((res) => res.json())
       .then((data) => {
         setHeroSlides(data);
