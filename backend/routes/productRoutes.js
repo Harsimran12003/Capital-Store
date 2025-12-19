@@ -1,17 +1,20 @@
 import express from "express";
-import { createProduct } from "../controllers/productController.js";
+import {
+  createProduct,
+  getAllProducts,
+  getProductById,
+  updateProduct,
+  deleteProduct,
+} from "../controllers/productController.js";
 import protect from "../middleware/authMiddleware.js";
-import Product from "../models/Product.js";
 
 const router = express.Router();
 
+/* ================= ADMIN ROUTES ================= */
 router.post("/", protect, createProduct);
-router.get("/", async (req, res) => {
-  const { subCategory } = req.query;
-  const query = subCategory ? { subCategory } : {};
-  const products = await Product.find(query).sort({ createdAt: -1 });
-  res.json(products);
-});
-
+router.get("/", getAllProducts); 
+router.get("/:id", protect, getProductById);
+router.put("/:id", protect, updateProduct);
+router.delete("/:id", protect, deleteProduct);
 
 export default router;

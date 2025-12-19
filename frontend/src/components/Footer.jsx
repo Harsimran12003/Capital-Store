@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { FiInstagram, FiFacebook, FiYoutube } from "react-icons/fi";
+import { Link } from "react-router-dom";
 
 const WINE = "#4D192B";
 
@@ -96,18 +97,29 @@ export default function Footer() {
             </h5>
 
             <ul className="space-y-3">
-              {["Home", "Products", "About Us", "Offers", "Contact"].map((t, i) => (
-                <motion.li
-                  key={i}
-                  whileHover={{ x: 4 }}
-                  transition={{ duration: 0.2 }}
-                  className="cursor-pointer relative"
-                >
-                  {t}
-                  <span className="absolute left-0 -bottom-[3px] w-0 h-[2px] bg-[#4D192B] transition-all duration-300 group-hover:w-full"></span>
-                </motion.li>
-              ))}
-            </ul>
+  {[
+    { name: "Home", path: "/" },
+    { name: "Products", path: "/readymade" },
+    { name: "Readymade", path: "/readymade" },
+    { name: "Unstitched", path: "/unstitched" },
+    { name: "Bestseller", path: "/bestseller" },
+  ].map((item, i) => (
+    <motion.li
+      key={i}
+      whileHover={{ x: 4 }}
+      transition={{ duration: 0.2 }}
+      className="cursor-pointer"
+    >
+      <Link
+        to={item.path}
+        className="hover:text-[#4D192B] transition"
+      >
+        {item.name}
+      </Link>
+    </motion.li>
+  ))}
+</ul>
+
           </div>
 
           {/* ================= CONTACT COLUMN ================= */}
@@ -117,15 +129,56 @@ export default function Footer() {
             </h5>
 
             <ul className="space-y-3">
-              <motion.li whileHover={{ x: 4 }} className="cursor-pointer">
-                capitalstorecs@yahoo.com
-              </motion.li>
-              <motion.li whileHover={{ x: 4 }} className="cursor-pointer">
-                +91 98883 20496
-              </motion.li>
+              <motion.li whileHover={{ x: 4 }}>
+  <a
+    href="mailto:capitalstorecs@yahoo.com"
+    className="hover:text-[#4D192B]"
+  >
+    capitalstorecs@yahoo.com
+  </a>
+</motion.li>
+
+<motion.li whileHover={{ x: 4 }}>
+  <a
+    href="tel:+919888320496"
+    className="hover:text-[#4D192B]"
+  >
+    +91 98883 20496
+  </a>
+</motion.li>
+
+              <motion.li whileHover={{ x: 4 }}>
+  <a
+    href="https://www.google.com/maps/search/?api=1&query=Capital+Store+Ghass+Mandi+Ludhiana+Punjab"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="hover:text-[#4D192B]"
+  >
+    Address: B-IV, Capital Store, Ghass Mandi, Ludhiana, Punjab, 141008
+  </a>
+</motion.li>
+
             </ul>
           </div>
         </div>
+
+        {/* ================= LEGAL LINKS ================= */}
+<div className="flex flex-wrap justify-center gap-4 mt-9 text-sm text-gray-600 font-bold">
+  {[
+    { name: "Privacy Policy", path: "/privacy-policy" },
+    { name: "Terms of Service", path: "/terms-of-service" },
+    { name: "Shipping Policy", path: "/shipping-policy" },
+    { name: "Return, Exchange & Refund Policy", path: "/return-refund-policy" },
+  ].map((item, i) => (
+    <Link
+      key={i}
+      to={item.path}
+      className="hover:text-[#4D192B] transition"
+    >
+      {item.name}   {i < 3 && "|"}
+    </Link>
+  ))}
+</div>
 
         {/* Divider */}
         <div className="w-full h-[1px] bg-gray-300 mt-10"></div>

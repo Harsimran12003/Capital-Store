@@ -31,7 +31,10 @@ import LoginSuccess from "./pages/LoginSuccess";
 import Profile from "./pages/Profile";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "./context/AuthContext.jsx";
-
+import PrivacyPolicy from "./pages/PrivacyPolicy.jsx";
+import TermsOfService from "./pages/TermsOfService.jsx";
+import ShippingPolicy from "./pages/ShippingPolicy.jsx";
+import RefundExchangePolicy from "./pages/RefundExchangePolicy.jsx";
 
 function App() {
   const { user, loading } = useAuth();
@@ -83,7 +86,12 @@ function App() {
           <Route path="/admin/slider" element={<AddSliderImages />} />
           <Route path="/admin/add-product" element={<AddProduct />} />
           <Route path="/admin/products" element={<ViewProducts />} />
-          
+
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/terms-of-service" element={<TermsOfService />} />
+          <Route path="/shipping-policy" element={<ShippingPolicy />} />
+          <Route path="/return-refund-policy" element={<RefundExchangePolicy />} />
+
         </Routes>
       </Router>
     </>
