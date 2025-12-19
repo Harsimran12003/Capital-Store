@@ -24,7 +24,7 @@ export default function Login() {
     try {
       setLoading(true);
 
-      const res = await fetch("http://localhost:5000/api/auth/login", {
+      const res = await fetch("https://capital-store-backend.vercel.app/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -52,7 +52,7 @@ export default function Login() {
 
   /* GOOGLE LOGIN */
   const handleGoogleLogin = () => {
-    window.location.href = "http://localhost:5000/api/auth/google";
+    window.location.href = "https://capital-store-backend.vercel.app/api/auth/google";
   };
 
   return (

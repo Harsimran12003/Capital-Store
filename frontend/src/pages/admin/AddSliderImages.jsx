@@ -9,7 +9,7 @@ export default function AddSliderImages() {
   useEffect(() => {
     const fetchSlides = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/hero-slides");
+        const res = await fetch("https://capital-store-backend.vercel.app/api/hero-slides");
         const data = await res.json();
 
         const filled = Array(6).fill(null);
@@ -56,7 +56,7 @@ export default function AddSliderImages() {
         order: index + 1,
       }));
 
-    await fetch("http://localhost:5000/api/hero-slides", {
+    await fetch("https://capital-store-backend.vercel.app/api/hero-slides", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",

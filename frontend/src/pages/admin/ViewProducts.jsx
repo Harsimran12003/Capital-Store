@@ -12,7 +12,7 @@ const [loading, setLoading] = useState(true);
   useEffect(() => {
   const fetchProducts = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/products", {
+      const res = await fetch("https://capital-store-backend.vercel.app/api/products", {
         credentials: "include",
       });
       const data = await res.json();
@@ -32,7 +32,7 @@ const handleEditChange = (e) => {
 };
 
 const handleSaveEdit = async (_id) => {
-  const res = await fetch(`http://localhost:5000/api/products/${_id}`, {
+  const res = await fetch(`https://capital-store-backend.vercel.app/api/products/${_id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     credentials: "include",
@@ -49,7 +49,7 @@ const handleSaveEdit = async (_id) => {
   const handleDelete = async (_id) => {
   if (!window.confirm("Are you sure you want to delete this product?")) return;
 
-  await fetch(`http://localhost:5000/api/products/${_id}`, {
+  await fetch(`https://capital-store-backend.vercel.app/api/products/${_id}`, {
     method: "DELETE",
     credentials: "include",
   });

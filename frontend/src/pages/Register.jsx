@@ -36,7 +36,7 @@ export default function Register() {
     try {
       setLoading(true);
 
-      const res = await fetch("http://localhost:5000/api/auth/register", {
+      const res = await fetch("https://capital-store-backend.vercel.app/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include", 
@@ -88,7 +88,7 @@ export default function Register() {
           <button
             onClick={() =>
               (window.location.href =
-                "http://localhost:5000/api/auth/google")
+                  "https://capital-store-backend.vercel.app/api/auth/google")
             }
             className="w-full flex items-center justify-center gap-3 py-3 rounded-xl
             border border-gray-200 bg-white hover:bg-gray-50 transition font-medium mt-6 mb-4"

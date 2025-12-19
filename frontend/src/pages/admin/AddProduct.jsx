@@ -66,7 +66,7 @@ const handleSave = async () => {
     video,
   };
 
-  await fetch("http://localhost:5000/api/products", {
+  await fetch("https://capital-store-backend.vercel.app/api/products", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     credentials: "include",

@@ -13,7 +13,7 @@ useEffect(() => {
   const fetchProducts = async () => {
     try {
       const res = await fetch(
-        "http://localhost:5000/api/products?category=Unstitched&subCategory=Cotton"
+        "https://capital-store-backend.vercel.app/api/products?category=Unstitched&subCategory=Cotton"
       );
       const data = await res.json();
       setProducts(data);

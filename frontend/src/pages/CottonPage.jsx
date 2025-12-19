@@ -16,7 +16,7 @@ export default function CottonPage() {
   const fetchCottonProducts = async () => {
     try {
       const res = await fetch(
-        "http://localhost:5000/api/products?subCategory=Cotton"
+        "https://capital-store-backend.vercel.app/api/products?subCategory=Cotton"
       );
       const data = await res.json();
       setProducts(data);

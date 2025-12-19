@@ -10,7 +10,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/auth/me", {
+        const res = await fetch("https://capital-store-backend.vercel.app/api/auth/me", {
           credentials: "include",
         });
 
@@ -29,7 +29,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const logout = async () => {
-    await fetch("http://localhost:5000/api/auth/logout", {
+    await fetch("https://capital-store-backend.vercel.app/api/auth/logout", {
       method: "POST",
       credentials: "include",
     });
