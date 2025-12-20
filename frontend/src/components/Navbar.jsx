@@ -15,10 +15,14 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../context/AuthContext.jsx";
 import InitialsBadge from "./InitialsBadge.jsx";
 import Tooltip from "./Tooltip.jsx";
+import { useCart } from "../context/CartContext";
+import { useWishlist } from "../context/WishlistContext";
 
 const BRAND = "#4D192B";
 
 export default function Navbar() {
+  const { cartCount } = useCart();
+const { wishlistCount } = useWishlist();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scroll, setScroll] = useState(false);
   const [focus, setFocus] = useState(false);
@@ -99,19 +103,31 @@ export default function Navbar() {
             </button>
 
             <Tooltip text="Wishlist">
-  <Link to="/wishlist" className="relative">
+  <Link
+  to={user ? "/wishlist" : "#"}
+  onClick={() => {
+    if (!user) alert("Please login to view wishlist");
+  }}
+>
+
     <FiHeart className="text-xl text-gray-800" />
     <span className="absolute -top-1 -right-2 bg-[#AF1238] text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">
-      3
+      {wishlistCount}
     </span>
   </Link>
 </Tooltip>
 
             <Tooltip text="Cart">
-  <Link to="/cart" className="relative">
+  <Link
+  to={user ? "/cart" : "#"}
+  onClick={() => {
+    if (!user) alert("Please login to view wishlist");
+  }}
+>
+
     <FiShoppingCart className="text-xl text-gray-800" />
     <span className="absolute -top-1 -right-2 bg-green-600 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">
-      2
+      {cartCount}
     </span>
   </Link>
 </Tooltip>

@@ -4,28 +4,10 @@ import Footer from "../components/Footer";
 import { FiTrash2 } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { useCart } from "../context/CartContext";
 
 export default function Cart() {
-  const [cart, setCart] = useState([
-    {
-      id: 1,
-      name: "Premium Cotton Kurta",
-      img: "/p1.jpg",
-      price: 999,
-      mrp: 1599,
-      qty: 1,
-      size: "M",
-    },
-    {
-      id: 2,
-      name: "Winter Woolen Suit",
-      img: "/p2.jpg",
-      price: 1499,
-      mrp: 2199,
-      qty: 2,
-      size: "L",
-    },
-  ]);
+  const { cart, updateQty, removeFromCart } = useCart();
 
   const increaseQty = (id) =>
     setCart((items) =>
@@ -101,7 +83,7 @@ export default function Cart() {
                 {/* Quantity Controls */}
                 <div className="flex items-center gap-6 mt-3">
                   <button
-                    onClick={() => decreaseQty(item.id)}
+                    onClick={() => updateQty(item.productId, item.qty - 1)}
                     className="w-9 h-9 bg-gray-200 rounded-full flex items-center justify-center text-xl"
                   >
                     –
@@ -110,7 +92,8 @@ export default function Cart() {
                   <span className="text-lg font-bold">{item.qty}</span>
 
                   <button
-                    onClick={() => increaseQty(item.id)}
+                    onClick={() => updateQty(item.productId, item.qty + 1)}
+
                     className="w-9 h-9 bg-gray-200 rounded-full flex items-center justify-center text-xl"
                   >
                     +

@@ -6,31 +6,30 @@ import { Link } from "react-router-dom";
 import useAuth  from "../hooks/useAuth.js";
 
 export default function ProductCard({ product }) {
-  const { user, loading } = useAuth();
+  const { user } = useAuth();
+  const { addToCart } = useCart();
+  const { toggleWishlist } = useWishlist();
   const [liked, setLiked] = useState(false);
   const [burst, setBurst] = useState(false);
   const [qty, setQty] = useState(0);
 
-  const handleLike = (e) => {
-    e.stopPropagation();
-    e.preventDefault();
-    setLiked(!liked);
-    setBurst(true);
-    setTimeout(() => setBurst(false), 500);
-  };
-
   const handleAddToCart = (e) => {
-  e.stopPropagation();
   e.preventDefault();
-
   if (!user) {
-    alert("Please login first to add items to cart");
+    alert("Please login first");
     return;
   }
-
-  setQty(1);
+  addToCart(product);
 };
 
+const handleLike = (e) => {
+  e.preventDefault();
+  if (!user) {
+    alert("Please login first");
+    return;
+  }
+  toggleWishlist(product);
+};
 
   return (
     <motion.div
