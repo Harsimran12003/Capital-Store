@@ -25,10 +25,14 @@ app.use(
     origin: [
       "http://localhost:5173",
       "https://capital-store.vercel.app",
+      "https://www.capitalstorecs.com", 
+      "https://capitalstorecs.com"      
     ],
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   })
 );
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
