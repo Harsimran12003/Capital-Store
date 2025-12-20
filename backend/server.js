@@ -58,8 +58,8 @@ app.get("/", (req, res) => {
   res.send("Capital Store API is running 🚀");
 });
 
-// ❌ DO NOT LISTEN ON VERCEL
-// const PORT = process.env.PORT || 5000;
-// app.listen(PORT, () => console.log(`🚀 Server running on ${PORT}`));
+// ✅ START SERVER
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`🚀 Server running on ${PORT}`));
 
 export default app;
