@@ -4,6 +4,8 @@ import { FiHeart, FiShoppingCart } from "react-icons/fi";
 import { FaStar } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import useAuth  from "../hooks/useAuth.js";
+import { useCart } from "../context/CartContext";
+import { useWishlist } from "../context/WishlistContext";
 
 export default function ProductCard({ product }) {
   const { user } = useAuth();

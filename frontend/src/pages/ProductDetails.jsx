@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FiHeart, FiShoppingCart, FiCheckCircle } from "react-icons/fi";
 import { FaStar } from "react-icons/fa";
 import useAuth from "../hooks/useAuth";
-
+import { useCart } from "../context/CartContext";
 
 // Swiper
 import { Swiper, SwiperSlide } from "swiper/react";
