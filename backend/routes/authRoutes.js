@@ -44,7 +44,7 @@ router.get(
     });
 
     // ✅ NO token in URL anymore
-    res.redirect("http://localhost:5173/");
+    res.redirect("https://www.capitalstorecs.com/");
   }
 );
 
