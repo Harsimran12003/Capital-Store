@@ -5,12 +5,16 @@ import Footer from "../components/Footer";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiHeart, FiShoppingCart, FiCheckCircle } from "react-icons/fi";
 import { FaStar } from "react-icons/fa";
+import useAuth from "../hooks/useAuth";
+
 
 // Swiper
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Thumbs, FreeMode } from "swiper/modules";
 
 export default function ProductDetails() {
+  const { user } = useAuth();
+
   const { id } = useParams();
 
   const [product, setProduct] = useState(null);
@@ -75,10 +79,16 @@ export default function ProductDetails() {
   };
 
   const handleAddToCart = () => {
-    setQty(1);
-    setShowToast(true);
-    setTimeout(() => setShowToast(false), 2000);
-  };
+  if (!user) {
+    alert("Please login first to add items to cart");
+    return;
+  }
+
+  setQty(1);
+  setShowToast(true);
+  setTimeout(() => setShowToast(false), 2000);
+};
+
 
   return (
     <>
@@ -178,18 +188,25 @@ export default function ProductDetails() {
 
             {/* PRICE */}
             <div className="mt-4 flex items-center gap-4">
-              <span className="text-3xl font-bold">
-                ₹{product.discountedPrice}
-              </span>
-              <span className="line-through text-gray-400">
-                ₹{product.originalPrice}
-              </span>
-              {product.discountPercent > 0 && (
-                <span className="text-red-600 font-semibold">
-                  {product.discountPercent}% OFF
-                </span>
-              )}
-            </div>
+  {product.discountedPrice > 0 &&
+  product.discountedPrice < product.originalPrice ? (
+    <>
+      <span className="text-3xl font-bold">
+        ₹{product.discountedPrice}
+      </span>
+      <span className="line-through text-gray-400">
+        ₹{product.originalPrice}
+      </span>
+      <span className="text-red-600 font-semibold">
+        {product.discountPercent}% OFF
+      </span>
+    </>
+  ) : (
+    <span className="text-3xl font-bold">
+      ₹{product.originalPrice}
+    </span>
+  )}
+</div>
 
             <p className="mt-4 text-gray-700">{product.description}</p>
 

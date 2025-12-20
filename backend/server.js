@@ -14,10 +14,10 @@ import productRoutes from "./routes/productRoutes.js";
 
 dotenv.config();
 
-// ✅ CREATE APP FIRST
+// CREATE APP FIRST
 const app = express();
 
-// ✅ MIDDLEWARES
+// MIDDLEWARES
 app.use(cookieParser());
 
 app.use(
@@ -32,7 +32,6 @@ app.use(
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   })
 );
-
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

@@ -3,8 +3,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FiHeart, FiShoppingCart } from "react-icons/fi";
 import { FaStar } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import useAuth  from "../hooks/useAuth.js";
 
 export default function ProductCard({ product }) {
+  const { user, loading } = useAuth();
   const [liked, setLiked] = useState(false);
   const [burst, setBurst] = useState(false);
   const [qty, setQty] = useState(0);
@@ -18,10 +20,17 @@ export default function ProductCard({ product }) {
   };
 
   const handleAddToCart = (e) => {
-    e.stopPropagation();
-    e.preventDefault();
-    setQty(1);
-  };
+  e.stopPropagation();
+  e.preventDefault();
+
+  if (!user) {
+    alert("Please login first to add items to cart");
+    return;
+  }
+
+  setQty(1);
+};
+
 
   return (
     <motion.div

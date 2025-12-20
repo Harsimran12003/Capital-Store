@@ -11,14 +11,19 @@ router.post("/register", registerUser);
 router.post("/login", loginUser);
 
 router.post("/logout", (req, res) => {
-  res.clearCookie("token");
-  res.json({ success: true });
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: true,       // MUST match cookie
+    sameSite: "none",   // MUST match cookie
+  });
+
+  res.status(200).json({ success: true });
 });
+
+
 router.get("/me", protect, (req, res) => {
   res.json({ user: req.user });
 });
-
-
 
 /* GOOGLE AUTH */
 router.get(
@@ -37,16 +42,15 @@ router.get(
     );
 
     res.cookie("token", token, {
-  httpOnly: true,
-  secure: true,        // REQUIRED on HTTPS
-  sameSite: "none",    // REQUIRED for cross-domain
-  maxAge: 7 * 24 * 60 * 60 * 1000,
-});
+      httpOnly: true,
+      secure: true,       
+      sameSite: "none",    
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
 
-    // ✅ NO token in URL anymore
+    // NO token in URL anymore
     res.redirect("https://www.capitalstorecs.com/");
   }
 );
-
 
 export default router;
