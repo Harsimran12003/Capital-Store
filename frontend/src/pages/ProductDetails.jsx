@@ -32,6 +32,25 @@ export default function ProductDetails() {
   const [added, setAdded] = useState(false);
   const [loginPrompt, setLoginPrompt] = useState(null);
 
+  // Reviews state
+  const [reviews, setReviews] = useState([]);
+
+  const [newReview, setNewReview] = useState({ rating: 0, text: "", images: [] });
+  const [showReviewForm, setShowReviewForm] = useState(false);
+
+  useEffect(() => {
+  const fetchReviews = async () => {
+    const res = await fetch(
+      `https://capital-store-backend.vercel.app/api/reviews/${product._id}`
+    );
+    const data = await res.json();
+    setReviews(data);
+  };
+
+  if (product) fetchReviews();
+}, [product]);
+
+
   /* ================= FETCH PRODUCT ================= */
   useEffect(() => {
     const fetchProduct = async () => {
@@ -94,6 +113,49 @@ export default function ProductDetails() {
     }
     addToCart(product);
     setAdded(true);
+  };
+
+  // Calculate overall rating
+  const overallRating = reviews.length > 0 ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1) : 0;
+
+  // Handle review submission
+  const handleSubmitReview = async () => {
+  if (!user) {
+    setLoginPrompt("review");
+    return;
+  }
+
+  const res = await fetch(
+    `https://capital-store-backend.vercel.app/api/reviews/${product._id}`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        rating: newReview.rating,
+        text: newReview.text,
+        images: newReview.images.map(file =>
+          URL.createObjectURL(file)
+        ),
+      }),
+    }
+  );
+
+  const data = await res.json();
+
+  if (res.ok) {
+    setReviews([data, ...reviews]);
+    setNewReview({ rating: 0, text: "", images: [] });
+    setShowReviewForm(false);
+  }
+};
+
+  // Handle image selection
+  const handleImageChange = (e) => {
+    const files = Array.from(e.target.files);
+    setNewReview({ ...newReview, images: files });
   };
 
 
@@ -264,6 +326,158 @@ export default function ProductDetails() {
         </div>
       </div>
 
+      {/* ================= REVIEWS SECTION ================= */}
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 mb-12">
+        <h2 className="text-2xl font-bold text-[#4D192B] mb-6">Customer Reviews</h2>
+
+        {/* OVERALL RATING */}
+        <div className="bg-gray-50 p-6 rounded-2xl mb-8">
+          <div className="flex items-center gap-4">
+            <div className="text-4xl font-bold text-[#4D192B]">{overallRating}</div>
+            <div>
+              <div className="flex gap-1 mb-1">
+                {[...Array(5)].map((_, i) => (
+                  <FaStar
+                    key={i}
+                    className={i < Math.floor(overallRating) ? "text-yellow-500" : "text-gray-300"}
+                  />
+                ))}
+              </div>
+              <p className="text-gray-600">Based on {reviews.length} reviews</p>
+            </div>
+          </div>
+        </div>
+
+        {/* WRITE REVIEW BUTTON */}
+        <div className="mb-8">
+          <button
+            onClick={() => {
+              if (!user) {
+                setLoginPrompt('review');
+                return;
+              }
+              setShowReviewForm(!showReviewForm);
+            }}
+            className="px-6 py-3 bg-[#4D192B] text-white rounded-full font-semibold hover:bg-[#3b0b11] transition-colors"
+          >
+            {showReviewForm ? "Cancel Review" : "Write a Review"}
+          </button>
+        </div>
+
+        {/* REVIEW FORM */}
+        {showReviewForm && user && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="bg-white border border-gray-200 p-6 rounded-2xl mb-8 shadow-lg"
+          >
+            <h3 className="text-lg font-semibold mb-4">Write Your Review</h3>
+
+            {/* RATING */}
+            <div className="mb-4">
+              <label className="block text-sm font-medium mb-2">Rating</label>
+              <div className="flex gap-1">
+                {[...Array(5)].map((_, i) => (
+                  <FaStar
+                    key={i}
+                    className={`cursor-pointer text-2xl ${i < newReview.rating ? "text-yellow-500" : "text-gray-300"}`}
+                    onClick={() => setNewReview({ ...newReview, rating: i + 1 })}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* TEXT */}
+            <div className="mb-4">
+              <label className="block text-sm font-medium mb-2">Review</label>
+              <textarea
+                value={newReview.text}
+                onChange={(e) => setNewReview({ ...newReview, text: e.target.value })}
+                className="w-full p-3 border border-gray-300 rounded-lg resize-none"
+                rows={4}
+                placeholder="Share your thoughts about this product..."
+              />
+            </div>
+
+            {/* IMAGES */}
+            <div className="mb-4">
+              <label className="block text-sm font-medium mb-2">Images (optional)</label>
+              <input
+                type="file"
+                multiple
+                accept="image/*"
+                onChange={handleImageChange}
+                className="w-full p-2 border border-gray-300 rounded-lg"
+              />
+              {newReview.images.length > 0 && (
+                <div className="flex gap-2 mt-2">
+                  {newReview.images.map((file, i) => (
+                    <img
+                      key={i}
+                      src={URL.createObjectURL(file)}
+                      alt="Preview"
+                      className="w-16 h-16 object-cover rounded-lg"
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* SUBMIT */}
+            <button
+              onClick={handleSubmitReview}
+              disabled={newReview.rating === 0 || newReview.text.trim() === ""}
+              className="px-6 py-2 bg-[#4D192B] text-white rounded-full font-semibold disabled:bg-gray-300 disabled:cursor-not-allowed"
+            >
+              Submit Review
+            </button>
+          </motion.div>
+        )}
+
+        {/* REVIEWS LIST */}
+        <div className="space-y-6">
+          {reviews.map((review) => (
+            <div key={review.id} className="bg-white border border-gray-200 p-6 rounded-2xl shadow-sm">
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 bg-[#4D192B] text-white rounded-full flex items-center justify-center font-semibold">
+                  {review.user.charAt(0).toUpperCase()}
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-2">
+                    <h4 className="font-semibold">{review.user}</h4>
+                    <div className="flex gap-1">
+                      {[...Array(5)].map((_, i) => (
+                        <FaStar
+                          key={i}
+                          className={i < review.rating ? "text-yellow-500" : "text-gray-300"}
+                        />
+                      ))}
+                    </div>
+                    <span className="text-sm text-gray-500">
+                      {new Date(review.date).toLocaleDateString()}
+                    </span>
+                  </div>
+                  <p className="text-gray-700 mb-4">{review.text}</p>
+                  {review.images.length > 0 && (
+                    <div className="flex gap-2">
+                      {review.images.map((img, i) => (
+                        <img
+                          key={i}
+                          src={img}
+                          alt="Review"
+                          className="w-20 h-20 object-cover rounded-lg"
+                        />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
       <Footer />
 
       {/* LIGHTBOX */}
@@ -347,7 +561,7 @@ export default function ProductDetails() {
                 Login Required
               </h3>
               <p className="text-gray-600 text-sm mb-4">
-                Please log in to access your {loginPrompt}.
+                Please log in to {loginPrompt === 'review' ? 'write a review' : `access your ${loginPrompt}`}.
               </p>
               <div className="flex gap-3">
                 <Link

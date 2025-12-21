@@ -11,6 +11,7 @@ import authRoutes from "./routes/authRoutes.js";
 import heroSliderRoutes from "./routes/heroSliderRoutes.js";
 import uploadRoutes from "./routes/uploadRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
+import reviewRoutes from "./routes/reviewRoutes.js";
 
 dotenv.config();
 
@@ -55,6 +56,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/upload", uploadRoutes);
 app.use("/api/hero-slides", heroSliderRoutes);
 app.use("/api/products", productRoutes);
+app.use("/api/reviews", reviewRoutes);
 
 // ✅ ROOT
 app.get("/", (req, res) => {

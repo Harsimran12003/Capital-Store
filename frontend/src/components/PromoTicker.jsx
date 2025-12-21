@@ -1,5 +1,5 @@
 import React from "react";
-import { FiTruck, FiCreditCard, FiZap } from "react-icons/fi";
+import { FiTruck, FiZap } from "react-icons/fi";
 
 const WINE = "#4D192B";
 
@@ -9,10 +9,7 @@ export default function PromoTicker() {
       icon: <FiTruck className="text-lg sm:text-xl animate-pulse-slow" />,
       text: "Free Shipping All Over India",
     },
-    {
-      icon: <FiCreditCard className="text-lg sm:text-xl animate-pulse-slow" />,
-      text: "Cash on Delivery Available",
-    },
+        
     {
       icon: <FiZap className="text-lg sm:text-xl animate-pulse-slow" />,
       text: "New Arrivals Live Now — Shop Trending Styles!",
