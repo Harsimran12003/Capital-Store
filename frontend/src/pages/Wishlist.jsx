@@ -13,7 +13,7 @@ export default function Wishlist() {
   const { wishlist, toggleWishlist } = useWishlist();
   const { addToCart } = useCart();
 
-  // 🔒 Not logged in
+  // Not logged in
   if (!user) {
     return (
       <>
@@ -41,7 +41,7 @@ export default function Wishlist() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 mt-5 mb-24">
 
         {/* HEADER */}
-        <header className="flex items-center gap-4 mb-8">
+        <header className="flex items-center gap-4 mb-0">
           <div className="w-12 h-12 rounded-full bg-[#4D192B] flex items-center justify-center text-white">
             <FiHeart size={22} />
           </div>
@@ -57,19 +57,19 @@ export default function Wishlist() {
         {wishlist.length === 0 ? (
           <div className="text-center py-24">
             <FiHeart className="text-6xl mx-auto text-gray-300 mb-4" />
-            <h2 className="text-xl font-semibold mb-2">
+            <h2 className="text-xl font-semibold mb-7">
               Your wishlist is empty
             </h2>
             <Link
               to="/"
-              className="px-6 py-3 rounded-full bg-[#4D192B] text-white"
+              className="px-6 py-3 rounded-full bg-[#4D192B] text-white mt-10"
             >
               Continue Shopping
             </Link>
           </div>
         ) : (
           /* PRODUCT GRID */
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-2">
             {wishlist.map((item) => (
               <motion.div
                 key={item.productId}
