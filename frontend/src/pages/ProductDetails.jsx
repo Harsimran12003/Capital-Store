@@ -150,9 +150,6 @@ export default function ProductDetails() {
     `https://capital-store-backend.vercel.app/api/reviews/${product._id}`,
     {
       method: "POST",
-      headers: {
-        "Authorization": `Bearer ${localStorage.getItem('token')}`,
-      },
       credentials: "include",
       body: formData, // 🚀 multipart
     }
@@ -165,7 +162,14 @@ export default function ProductDetails() {
     setNewReview({ rating: 0, text: "", images: [] });
     setShowReviewForm(false);
   } else {
-    console.error(data);
+    if (res.status === 401) {
+      alert('Your session has expired. Please log in again.');
+      // Optionally redirect to login
+      // window.location.href = '/login';
+    } else {
+      console.error('Review submission failed:', data.message);
+      alert('Failed to submit review: ' + (data.message || 'Unknown error'));
+    }
   }
 };
 
