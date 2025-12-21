@@ -38,6 +38,11 @@ export default function ProductDetails() {
   const [newReview, setNewReview] = useState({ rating: 0, text: "", images: [] });
   const [showReviewForm, setShowReviewForm] = useState(false);
 
+  // Review lightbox state
+  const [reviewLightboxOpen, setReviewLightboxOpen] = useState(false);
+  const [reviewLightboxIndex, setReviewLightboxIndex] = useState(0);
+  const [currentReviewImages, setCurrentReviewImages] = useState([]);
+
   useEffect(() => {
   const fetchReviews = async () => {
     const res = await fetch(
@@ -104,6 +109,12 @@ export default function ProductDetails() {
   const openLightbox = (i) => {
     setLightboxIndex(i);
     setLightboxOpen(true);
+  };
+
+  const openReviewLightbox = (images, index) => {
+    setCurrentReviewImages(images);
+    setReviewLightboxIndex(index);
+    setReviewLightboxOpen(true);
   };
 
   const handleAddToCart = () => {
@@ -445,7 +456,7 @@ export default function ProductDetails() {
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
-                    <h4 className="font-semibold">{review.user}</h4>
+                    <h4 className="font-semibold">{review.userName}</h4>
                     <div className="flex gap-1">
                       {[...Array(5)].map((_, i) => (
                         <FaStar
@@ -455,7 +466,7 @@ export default function ProductDetails() {
                       ))}
                     </div>
                     <span className="text-sm text-gray-500">
-                      {new Date(review.date).toLocaleDateString()}
+                      {new Date(review.createdAt).toLocaleDateString()}
                     </span>
                   </div>
                   <p className="text-gray-700 mb-4">{review.text}</p>
@@ -466,7 +477,8 @@ export default function ProductDetails() {
                           key={i}
                           src={img}
                           alt="Review"
-                          className="w-20 h-20 object-cover rounded-lg"
+                          className="w-20 h-20 object-cover rounded-lg cursor-pointer hover:opacity-80 transition-opacity"
+                          onClick={() => openReviewLightbox(review.images, i)}
                         />
                       ))}
                     </div>
@@ -541,6 +553,61 @@ export default function ProductDetails() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* REVIEW LIGHTBOX */}
+      <AnimatePresence>
+        {reviewLightboxOpen && (
+          <motion.div
+            className="fixed inset-0 bg-black/90 z-[2000] flex items-center justify-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setReviewLightboxOpen(false)}
+          >
+            <motion.div
+              className="relative max-w-4xl max-h-full p-4"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* CLOSE BUTTON */}
+              <button
+                onClick={() => setReviewLightboxOpen(false)}
+                className="absolute top-2 right-2 text-white text-2xl bg-black/50 rounded-full w-10 h-10 flex items-center justify-center"
+              >
+                ×
+              </button>
+
+              {/* REVIEW IMAGE */}
+              <img
+                src={currentReviewImages[reviewLightboxIndex]}
+                alt="Review Zoomed"
+                className="max-w-full max-h-full object-contain"
+              />
+
+              {/* NAVIGATION */}
+              {currentReviewImages.length > 1 && (
+                <>
+                  <button
+                    onClick={() => setReviewLightboxIndex((reviewLightboxIndex - 1 + currentReviewImages.length) % currentReviewImages.length)}
+                    className="absolute left-2 top-1/2 transform -translate-y-1/2 text-white text-2xl bg-black/50 rounded-full w-10 h-10 flex items-center justify-center"
+                  >
+                    ‹
+                  </button>
+                  <button
+                    onClick={() => setReviewLightboxIndex((reviewLightboxIndex + 1) % currentReviewImages.length)}
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-white text-2xl bg-black/50 rounded-full w-10 h-10 flex items-center justify-center"
+                  >
+                    ›
+                  </button>
+                </>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <AnimatePresence>
         {loginPrompt && (
           <motion.div
