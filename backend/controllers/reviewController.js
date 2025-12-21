@@ -19,7 +19,10 @@ export const getProductReviews = async (req, res) => {
 // ADD review
 export const addReview = async (req, res) => {
   try {
-    const { rating, text, images = [] } = req.body;
+    const { rating, text } = req.body;
+    const imageUrls = req.files
+      ? req.files.map(file => file.path)
+      : [];
 
     if (!rating || !text) {
       return res.status(400).json({ message: "Rating & review required" });
@@ -46,7 +49,7 @@ export const addReview = async (req, res) => {
       userName: req.user.name,
       rating,
       text,
-      images,
+      images: imageUrls,
     });
 
     // ⭐ update product rating

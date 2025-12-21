@@ -136,21 +136,20 @@ export default function ProductDetails() {
     return;
   }
 
+  const formData = new FormData();
+  formData.append("rating", newReview.rating);
+  formData.append("text", newReview.text);
+
+  newReview.images.forEach(img => {
+    formData.append("images", img);
+  });
+
   const res = await fetch(
     `https://capital-store-backend.vercel.app/api/reviews/${product._id}`,
     {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
       credentials: "include",
-      body: JSON.stringify({
-        rating: newReview.rating,
-        text: newReview.text,
-        images: newReview.images.map(file =>
-          URL.createObjectURL(file)
-        ),
-      }),
+      body: formData, // ✅ multipart
     }
   );
 
