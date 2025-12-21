@@ -150,6 +150,9 @@ export default function ProductDetails() {
     `https://capital-store-backend.vercel.app/api/reviews/${product._id}`,
     {
       method: "POST",
+      headers: {
+        "Authorization": `Bearer ${localStorage.getItem('token')}`,
+      },
       credentials: "include",
       body: formData, // 🚀 multipart
     }
