@@ -63,3 +63,42 @@ export const addReview = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+
+export const deleteReview = async (req, res) => {
+  try {
+    const review = await Review.findById(req.params.reviewId);
+
+    if (!review) {
+      return res.status(404).json({ message: "Review not found" });
+    }
+
+    // 🔐 Ownership check
+    if (review.user.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: "Not authorized" });
+    }
+
+    // 🗑️ Delete images from Cloudinary
+    for (const img of review.images) {
+      const publicId = img.split("/").slice(-2).join("/").split(".")[0];
+      await cloudinary.uploader.destroy(publicId);
+    }
+
+    // Remove review
+    await review.deleteOne();
+
+    // ⭐ Update product rating
+    const product = await Product.findById(review.product);
+    const reviews = await Review.find({ product: product._id });
+
+    product.rating = reviews.length
+      ? Math.round(reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length)
+      : 0;
+
+    await product.save();
+
+    res.json({ message: "Review deleted" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
