@@ -479,28 +479,88 @@ export default function ProductDetails() {
         )}
 
         {/* REVIEWS LIST */}
-        <div className="space-y-6">
-          {reviews.map((review) => {
-  const isOwner =
-    user && (review.user === user._id || review.user?._id === user._id);
+       {/* REVIEWS LIST */}
+<div className="space-y-6">
+  {reviews.map((review) => {
+    const isOwner =
+      user && (review.user === user._id || review.user?._id === user._id);
 
-  return (
-    <div key={review._id} className="bg-white border p-6 rounded-2xl">
-      {/* review content */}
+    return (
+      
 
-      {isOwner && (
-        <button
-          onClick={() => handleDeleteReview(review._id)}
-          className="text-sm text-red-600 hover:underline mt-2"
-        >
-          Delete Review
-        </button>
-      )}
-    </div>
-  );
-})}
+      <div
+        key={review._id}
+        className="bg-white border border-gray-200 p-6 rounded-2xl shadow-sm"
+      >
+        {isOwner && (
+  <span className="text-md bg-green-100 text-green-700 px-2 py-1 rounded-full mb-5 inline-block">
+    Your Review
+  </span>
+)}
+        <div className="flex items-start gap-4">
+          {/* USER AVATAR */}
+          <div className="w-10 h-10 bg-[#4D192B] text-white rounded-full flex items-center justify-center font-semibold">
+            {(review.userName || "U").charAt(0).toUpperCase()}
+          </div>
 
+          <div className="flex-1">
+            {/* HEADER */}
+            <div className="flex items-center gap-2 mb-2">
+              <h4 className="font-semibold">
+                {review.userName || "Anonymous"}
+              </h4>
+
+              {/* RATING */}
+              <div className="flex gap-1">
+                {[...Array(5)].map((_, i) => (
+                  <FaStar
+                    key={i}
+                    className={
+                      i < review.rating ? "text-yellow-500" : "text-gray-300"
+                    }
+                  />
+                ))}
+              </div>
+
+              <span className="text-sm text-gray-500">
+                {new Date(review.createdAt).toLocaleDateString()}
+              </span>
+            </div>
+
+            {/* REVIEW TEXT */}
+            <p className="text-gray-700 mb-4">{review.text}</p>
+
+            {/* REVIEW IMAGES */}
+            {review.images?.length > 0 && (
+              <div className="flex gap-2 mb-3">
+                {review.images.map((img, i) => (
+                  <img
+                    key={i}
+                    src={img}
+                    alt="Review"
+                    className="w-20 h-20 object-cover rounded-lg cursor-pointer hover:opacity-80 transition-opacity"
+                    onClick={() => openReviewLightbox(review.images, i)}
+                  />
+                ))}
+              </div>
+            )}
+
+            {/* DELETE BUTTON (OWNER ONLY) */}
+            {isOwner && (
+              <button
+                onClick={() => handleDeleteReview(review._id)}
+                className="text-sm rounded-xl  text-red-700 hover:underline cursor-pointer "
+              >
+                Delete Review
+              </button>
+            )}
+          </div>
         </div>
+      </div>
+    );
+  })}
+</div>
+
       </div>
 
       <Footer />
