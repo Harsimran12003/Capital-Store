@@ -1,6 +1,5 @@
 import express from "express";
 import protect from "../middleware/authMiddleware.js";
-import upload from "../middleware/uploadReviewImages.js";
 import {
   getProductReviews,
   addReview,
@@ -12,6 +11,6 @@ const router = express.Router();
 router.get("/:productId", getProductReviews);
 
 // ADD review (login required)
-router.post("/:productId", protect, upload.array("images", 5), addReview);
+router.post("/:productId", protect,  addReview);
 
 export default router;

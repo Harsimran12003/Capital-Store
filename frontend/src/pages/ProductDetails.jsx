@@ -43,6 +43,14 @@ export default function ProductDetails() {
   const [reviewLightboxIndex, setReviewLightboxIndex] = useState(0);
   const [currentReviewImages, setCurrentReviewImages] = useState([]);
 
+  const toBase64 = (file) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+  });
+
   useEffect(() => {
   const fetchReviews = async () => {
     const res = await fetch(
@@ -136,22 +144,23 @@ export default function ProductDetails() {
     return;
   }
 
-  if (!newReview.rating || !newReview.text.trim()) return;
-
-  const formData = new FormData();
-  formData.append("rating", newReview.rating);
-  formData.append("text", newReview.text);
-
-  newReview.images.forEach((file) => {
-    formData.append("images", file); // MUST match multer
-  });
+  const base64Images = await Promise.all(
+    newReview.images.map(file => toBase64(file))
+  );
 
   const res = await fetch(
     `https://capital-store-backend.vercel.app/api/reviews/${product._id}`,
     {
       method: "POST",
       credentials: "include",
-      body: formData, // 🚀 multipart
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        rating: newReview.rating,
+        text: newReview.text,
+        images: base64Images,
+      }),
     }
   );
 
@@ -165,6 +174,7 @@ export default function ProductDetails() {
     console.error(data);
   }
 };
+
 
 
   // Handle image selection
