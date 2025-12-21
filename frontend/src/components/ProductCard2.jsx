@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiHeart, FiShoppingCart } from "react-icons/fi";
 import { FaStar } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useAuth  from "../hooks/useAuth.js";
 import { useCart } from "../context/CartContext";
 import { useWishlist } from "../context/WishlistContext";
@@ -10,31 +10,41 @@ import { useWishlist } from "../context/WishlistContext";
 export default function ProductCard({ product }) {
   const { user } = useAuth();
   const { addToCart } = useCart();
-  const { toggleWishlist } = useWishlist();
+  const { toggleWishlist, wishlist } = useWishlist();
+  const navigate = useNavigate();
   const [liked, setLiked] = useState(false);
   const [burst, setBurst] = useState(false);
   const [qty, setQty] = useState(0);
+  const [added, setAdded] = useState(false);
+  const [loginPrompt, setLoginPrompt] = useState(null);
+
+  useEffect(() => {
+    setLiked(wishlist.some(item => item.productId === product._id));
+  }, [wishlist, product._id]);
 
   const handleAddToCart = (e) => {
   e.preventDefault();
   if (!user) {
-    alert("Please login first");
+    setLoginPrompt('cart');
     return;
   }
   addToCart(product);
+  setAdded(true);
 };
 
 const handleLike = (e) => {
   e.preventDefault();
   if (!user) {
-    alert("Please login first");
+    setLoginPrompt('wishlist');
     return;
   }
   toggleWishlist(product);
+  setLiked(!liked);
 };
 
   return (
-    <motion.div
+    <div className="relative">
+      <motion.div
       className="
         rounded-2xl sm:rounded-3xl bg-white shadow-md 
         overflow-hidden group cursor-pointer
@@ -175,7 +185,25 @@ const handleLike = (e) => {
       {/* ================= ADD TO CART ================= */}
       <div className="px-3 pb-3 sm:px-4 sm:pb-4">
 
-        {qty === 0 ? (
+        {added ? (
+          <Link to="/cart">
+            <motion.button
+              whileTap={{ scale: 0.95 }}
+              className="
+                w-full py-2 sm:py-2.5 rounded-full 
+                text-xs sm:text-sm font-medium
+                flex items-center justify-center gap-1.5 sm:gap-2
+                bg-gradient-to-r from-green-600 to-green-700
+                text-white shadow-md hover:shadow-lg
+                transition-all cursor-pointer
+              "
+            >
+              <FiShoppingCart size={14} className="sm:hidden" />
+              <FiShoppingCart size={16} className="hidden sm:block" />
+              Go to Cart
+            </motion.button>
+          </Link>
+        ) : qty === 0 ? (
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={handleAddToCart}
@@ -220,5 +248,49 @@ const handleLike = (e) => {
 
       </div>
     </motion.div>
+
+    {/* LOGIN PROMPT MODAL */}
+    <AnimatePresence>
+      {loginPrompt && (
+        <motion.div
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[1000] flex items-center justify-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={() => setLoginPrompt(null)}
+        >
+          <motion.div
+            className="bg-white rounded-2xl p-6 m-4 max-w-sm w-full shadow-2xl"
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.9, opacity: 0 }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="text-lg font-semibold text-[#3b0b11] mb-2">
+              Login Required
+            </h3>
+            <p className="text-gray-600 text-sm mb-4">
+              Please log in to access your {loginPrompt}.
+            </p>
+            <div className="flex gap-3">
+              <Link
+                to="/login"
+                className="flex-1 bg-[#4D192B] text-white py-2 rounded-full text-center font-semibold"
+                onClick={() => setLoginPrompt(null)}
+              >
+                Login
+              </Link>
+              <button
+                onClick={() => setLoginPrompt(null)}
+                className="flex-1 border border-gray-300 py-2 rounded-full text-gray-700"
+              >
+                Cancel
+              </button>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+    </div>
   );
 }

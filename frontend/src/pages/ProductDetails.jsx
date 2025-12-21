@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { motion, AnimatePresence } from "framer-motion";
@@ -7,6 +7,7 @@ import { FiHeart, FiShoppingCart, FiCheckCircle } from "react-icons/fi";
 import { FaStar } from "react-icons/fa";
 import useAuth from "../hooks/useAuth";
 import { useCart } from "../context/CartContext";
+import { useWishlist } from "../context/WishlistContext";
 
 // Swiper
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -14,6 +15,8 @@ import { Navigation, Pagination, Thumbs, FreeMode } from "swiper/modules";
 
 export default function ProductDetails() {
   const { user } = useAuth();
+  const { addToCart } = useCart();
+  const { toggleWishlist, wishlist } = useWishlist();
 
   const { id } = useParams();
 
@@ -26,6 +29,8 @@ export default function ProductDetails() {
   const [liked, setLiked] = useState(false);
   const [qty, setQty] = useState(0);
   const [showToast, setShowToast] = useState(false);
+  const [added, setAdded] = useState(false);
+  const [loginPrompt, setLoginPrompt] = useState(null);
 
   /* ================= FETCH PRODUCT ================= */
   useEffect(() => {
@@ -43,7 +48,11 @@ export default function ProductDetails() {
 
     fetchProduct();
   }, [id]);
-
+  useEffect(() => {
+    if (product) {
+      setLiked(wishlist.some(item => item.productId === product._id));
+    }
+  }, [wishlist, product]);
   /* ================= LOADING / ERROR ================= */
   if (loading) {
     return (
@@ -79,15 +88,13 @@ export default function ProductDetails() {
   };
 
   const handleAddToCart = () => {
-  if (!user) {
-    alert("Please login first to add items to cart");
-    return;
-  }
-
-  setQty(1);
-  setShowToast(true);
-  setTimeout(() => setShowToast(false), 2000);
-};
+    if (!user) {
+      setLoginPrompt('cart');
+      return;
+    }
+    addToCart(product);
+    setAdded(true);
+  };
 
 
   return (
@@ -112,10 +119,13 @@ export default function ProductDetails() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 mt-5 mb-24">
 
         {/* BREADCRUMB */}
-        <p className="text-gray-500 text-sm mb-6">
-          Home / {product.category} /{" "}
+        <div className="text-gray-500 text-sm mb-6">
+          <Link to="/" className="hover:text-[#4D192B]">Home</Link> /{" "}
+          <Link to={`/${product.category.toLowerCase()}`} className="hover:text-[#4D192B]">
+            {product.category}
+          </Link> /{" "}
           <span className="font-semibold">{product.name}</span>
-        </p>
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
 
@@ -208,12 +218,20 @@ export default function ProductDetails() {
   )}
 </div>
 
-            <p className="mt-4 text-gray-700">{product.description}</p>
+            <p className="mt-4 text-gray-700" style={{ whiteSpace: 'pre-line' }}>
+              {product.description}
+            </p>
 
             {/* WISHLIST */}
             <button
               className="flex gap-2 mt-5 text-[#4D192B]"
-              onClick={() => setLiked(!liked)}
+              onClick={() => {
+                if (!user) {
+                  setLoginPrompt('wishlist');
+                  return;
+                }
+                toggleWishlist(product);
+              }}
             >
               <FiHeart className={liked ? "text-red-500" : ""} />
               {liked ? "Wishlisted" : "Add to Wishlist"}
@@ -221,7 +239,13 @@ export default function ProductDetails() {
 
             {/* CART */}
             <div className="mt-6">
-              {qty === 0 ? (
+              {added ? (
+                <Link to="/cart">
+                  <button className="px-8 py-3 bg-green-600 text-white rounded-full">
+                    Go to Cart
+                  </button>
+                </Link>
+              ) : qty === 0 ? (
                 <button
                   onClick={handleAddToCart}
                   className="px-8 py-3 bg-[#4D192B] text-white rounded-full"
@@ -241,6 +265,109 @@ export default function ProductDetails() {
       </div>
 
       <Footer />
+
+      {/* LIGHTBOX */}
+      <AnimatePresence>
+        {lightboxOpen && (
+          <motion.div
+            className="fixed inset-0 bg-black/90 z-[2000] flex items-center justify-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setLightboxOpen(false)}
+          >
+            <motion.div
+              className="relative max-w-4xl max-h-full p-4"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* CLOSE BUTTON */}
+              <button
+                onClick={() => setLightboxOpen(false)}
+                className="absolute top-2 right-2 text-white text-2xl bg-black/50 rounded-full w-10 h-10 flex items-center justify-center"
+              >
+                ×
+              </button>
+
+              {/* MEDIA */}
+              {media[lightboxIndex]?.type === "image" ? (
+                <img
+                  src={media[lightboxIndex].src}
+                  alt="Zoomed"
+                  className="max-w-full max-h-full object-contain"
+                />
+              ) : (
+                <video
+                  src={media[lightboxIndex].src}
+                  controls
+                  className="max-w-full max-h-full object-contain"
+                />
+              )}
+
+              {/* NAVIGATION */}
+              {media.length > 1 && (
+                <>
+                  <button
+                    onClick={() => setLightboxIndex((lightboxIndex - 1 + media.length) % media.length)}
+                    className="absolute left-2 top-1/2 transform -translate-y-1/2 text-white text-2xl bg-black/50 rounded-full w-10 h-10 flex items-center justify-center"
+                  >
+                    ‹
+                  </button>
+                  <button
+                    onClick={() => setLightboxIndex((lightboxIndex + 1) % media.length)}
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-white text-2xl bg-black/50 rounded-full w-10 h-10 flex items-center justify-center"
+                  >
+                    ›
+                  </button>
+                </>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {loginPrompt && (
+          <motion.div
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[1000] flex items-center justify-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setLoginPrompt(null)}
+          >
+            <motion.div
+              className="bg-white rounded-2xl p-6 m-4 max-w-sm w-full shadow-2xl"
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h3 className="text-lg font-semibold text-[#3b0b11] mb-2">
+                Login Required
+              </h3>
+              <p className="text-gray-600 text-sm mb-4">
+                Please log in to access your {loginPrompt}.
+              </p>
+              <div className="flex gap-3">
+                <Link
+                  to="/login"
+                  className="flex-1 bg-[#4D192B] text-white py-2 rounded-full text-center font-semibold"
+                  onClick={() => setLoginPrompt(null)}
+                >
+                  Login
+                </Link>
+                <button
+                  onClick={() => setLoginPrompt(null)}
+                  className="flex-1 border border-gray-300 py-2 rounded-full text-gray-700"
+                >
+                  Cancel
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 }

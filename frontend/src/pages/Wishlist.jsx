@@ -76,20 +76,22 @@ export default function Wishlist() {
                 whileHover={{ y: -6 }}
                 className="bg-white rounded-2xl shadow-md p-4 relative"
               >
-                {/* REMOVE */}
-                <button
-                  onClick={() => toggleWishlist({ _id: item.productId })}
-                  className="absolute top-3 right-3 text-gray-500 hover:text-red-600"
-                >
-                  <FiTrash2 />
-                </button>
-
                 {/* IMAGE */}
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  className="h-48 w-full object-cover rounded-xl"
-                />
+                <div className="relative">
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="h-65 w-full  rounded-xl"
+                  />
+
+                  {/* REMOVE */}
+                  <button
+                    onClick={() => toggleWishlist({ _id: item.productId })}
+                    className="absolute top-3 right-3 text-gray-500 hover:text-red-600 bg-white rounded-full p-1 shadow-md"
+                  >
+                    <FiTrash2 />
+                  </button>
+                </div>
 
                 {/* INFO */}
                 <div className="mt-4">

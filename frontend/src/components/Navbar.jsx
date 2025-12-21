@@ -10,7 +10,7 @@ import {
   FiLogOut,
 } from "react-icons/fi";
 import PromoTicker from "./PromoTicker";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../context/AuthContext.jsx";
 import InitialsBadge from "./InitialsBadge.jsx";
@@ -30,6 +30,11 @@ const { wishlistCount } = useWishlist();
 
   const location = useLocation();
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  const [loginPrompt, setLoginPrompt] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [products, setProducts] = useState([]);
+  const [showDropdown, setShowDropdown] = useState(false);
 
 
   useEffect(() => {
@@ -37,6 +42,27 @@ const { wishlistCount } = useWishlist();
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const res = await fetch("https://capital-store-backend.vercel.app/api/products");
+        const data = await res.json();
+        setProducts(data);
+      } catch (err) {
+        console.error("Failed to fetch products", err);
+      }
+    };
+    fetchProducts();
+  }, []);
+
+  const filteredProducts = products.filter((p) =>
+    searchQuery &&
+    (p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+     p.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+     p.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+     (p.subCategory && p.subCategory.toLowerCase().includes(searchQuery.toLowerCase())))
+  ).slice(0, 5); // limit to 5 results
 
   const navItems = [
     { name: "Readymade", to: "/readymade", icon: <FiTag /> },
@@ -85,12 +111,47 @@ const { wishlistCount } = useWishlist();
               <FiSearch className="text-gray-500 text-lg ml-2" />
               <input
                 placeholder="Search..."
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setShowDropdown(e.target.value.length > 0);
+                }}
                 onFocus={() => setFocus(true)}
-                onBlur={() => setFocus(false)}
+                onBlur={() => {
+                  setFocus(false);
+                  setTimeout(() => setShowDropdown(false), 200); // delay to allow click
+                }}
                 className="bg-transparent w-full outline-none text-sm"
               />
             </div>
           </div>
+
+          {/* SEARCH DROPDOWN */}
+          {showDropdown && filteredProducts.length > 0 && (
+            <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 w-[300px] lg:w-[360px] bg-white border border-gray-200 rounded-lg shadow-lg z-[300] max-h-80 overflow-y-auto">
+              {filteredProducts.map((product) => (
+                <Link
+                  key={product._id}
+                  to={`/product/${product._id}`}
+                  className="flex items-center gap-3 p-3 hover:bg-gray-50 border-b border-gray-100 last:border-b-0"
+                  onClick={() => {
+                    setSearchQuery("");
+                    setShowDropdown(false);
+                  }}
+                >
+                  <img
+                    src={product.images[0] || "/placeholder.png"}
+                    alt={product.name}
+                    className="w-10 h-10 rounded object-cover"
+                  />
+                  <div>
+                    <p className="text-sm font-medium text-gray-900">{product.name}</p>
+                    <p className="text-xs text-gray-500">₹{product.discountedPrice || product.originalPrice}</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
 
           {/* MOBILE ICONS */}
           <div className="flex items-center gap-4">
@@ -103,33 +164,39 @@ const { wishlistCount } = useWishlist();
             </button>
 
             <Tooltip text="Wishlist">
-  <Link
-  to={user ? "/wishlist" : "#"}
-  onClick={() => {
-    if (!user) alert("Please login to view wishlist");
-  }}
->
-
+  <button
+    onClick={() => {
+      if (!user) {
+        setLoginPrompt('wishlist');
+      } else {
+        navigate('/wishlist');
+      }
+    }}
+    className="relative"
+  >
     <FiHeart className="text-xl text-gray-800" />
     <span className="absolute -top-1 -right-2 bg-[#AF1238] text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">
       {wishlistCount}
     </span>
-  </Link>
+  </button>
 </Tooltip>
 
             <Tooltip text="Cart">
-  <Link
-  to={user ? "/cart" : "#"}
-  onClick={() => {
-    if (!user) alert("Please login to view cart");
-  }}
->
-
+  <button
+    onClick={() => {
+      if (!user) {
+        setLoginPrompt('cart');
+      } else {
+        navigate('/cart');
+      }
+    }}
+    className="relative"
+  >
     <FiShoppingCart className="text-xl text-gray-800" />
     <span className="absolute -top-1 -right-2 bg-green-600 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">
       {cartCount}
     </span>
-  </Link>
+  </button>
 </Tooltip>
 
             {/* ACCOUNT ICON – MOBILE */}
@@ -191,14 +258,51 @@ const { wishlistCount } = useWishlist();
             <input
               autoFocus
               placeholder="Search products..."
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setShowDropdown(e.target.value.length > 0);
+              }}
               className="w-full bg-transparent outline-none text-[15px]"
             />
             <button
-              onClick={() => setMobileSearch(false)}
+              onClick={() => {
+                setMobileSearch(false);
+                setSearchQuery("");
+                setShowDropdown(false);
+              }}
               className="text-2xl text-gray-600"
             >
               <FiX />
             </button>
+          </div>
+        )}
+
+        {/* MOBILE SEARCH RESULTS */}
+        {mobileSearch && showDropdown && filteredProducts.length > 0 && (
+          <div className="md:hidden bg-white border-t shadow-md max-h-60 overflow-y-auto">
+            {filteredProducts.map((product) => (
+              <Link
+                key={product._id}
+                to={`/product/${product._id}`}
+                className="flex items-center gap-3 p-3 hover:bg-gray-50 border-b border-gray-100 last:border-b-0"
+                onClick={() => {
+                  setMobileSearch(false);
+                  setSearchQuery("");
+                  setShowDropdown(false);
+                }}
+              >
+                <img
+                  src={product.images[0] || "/placeholder.png"}
+                  alt={product.name}
+                  className="w-10 h-10 rounded object-cover"
+                />
+                <div>
+                  <p className="text-sm font-medium text-gray-900">{product.name}</p>
+                  <p className="text-xs text-gray-500">₹{product.discountedPrice || product.originalPrice}</p>
+                </div>
+              </Link>
+            ))}
           </div>
         )}
       </header>
@@ -288,6 +392,49 @@ const { wishlistCount } = useWishlist();
               </div>
             </motion.aside>
           </>
+        )}
+      </AnimatePresence>
+
+      {/* LOGIN PROMPT MODAL */}
+      <AnimatePresence>
+        {loginPrompt && (
+          <motion.div
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[1000] flex items-center justify-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setLoginPrompt(null)}
+          >
+            <motion.div
+              className="bg-white rounded-2xl p-6 m-4 max-w-sm w-full shadow-2xl"
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h3 className="text-lg font-semibold text-[#3b0b11] mb-2">
+                Login Required
+              </h3>
+              <p className="text-gray-600 text-sm mb-4">
+                Please log in to access your {loginPrompt}.
+              </p>
+              <div className="flex gap-3">
+                <Link
+                  to="/login"
+                  className="flex-1 bg-[#4D192B] text-white py-2 rounded-full text-center font-semibold"
+                  onClick={() => setLoginPrompt(null)}
+                >
+                  Login
+                </Link>
+                <button
+                  onClick={() => setLoginPrompt(null)}
+                  className="flex-1 border border-gray-300 py-2 rounded-full text-gray-700"
+                >
+                  Cancel
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
         )}
       </AnimatePresence>
     </>
