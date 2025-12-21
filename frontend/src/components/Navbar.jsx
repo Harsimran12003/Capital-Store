@@ -121,7 +121,7 @@ const { wishlistCount } = useWishlist();
   <Link
   to={user ? "/cart" : "#"}
   onClick={() => {
-    if (!user) alert("Please login to view wishlist");
+    if (!user) alert("Please login to view cart");
   }}
 >
 
