@@ -452,11 +452,11 @@ export default function ProductDetails() {
             <div key={review.id} className="bg-white border border-gray-200 p-6 rounded-2xl shadow-sm">
               <div className="flex items-start gap-4">
                 <div className="w-10 h-10 bg-[#4D192B] text-white rounded-full flex items-center justify-center font-semibold">
-                  {review.user.charAt(0).toUpperCase()}
+                  {(review.userName || review.user || "U").charAt(0).toUpperCase()}
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
-                    <h4 className="font-semibold">{review.userName}</h4>
+                    <h4 className="font-semibold">{review.userName || review.user || "Anonymous"}</h4>
                     <div className="flex gap-1">
                       {[...Array(5)].map((_, i) => (
                         <FaStar
