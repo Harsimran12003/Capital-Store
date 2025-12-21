@@ -162,14 +162,7 @@ export default function ProductDetails() {
     setNewReview({ rating: 0, text: "", images: [] });
     setShowReviewForm(false);
   } else {
-    if (res.status === 401) {
-      alert('Your session has expired. Please log in again.');
-      // Optionally redirect to login
-      // window.location.href = '/login';
-    } else {
-      console.error('Review submission failed:', data.message);
-      alert('Failed to submit review: ' + (data.message || 'Unknown error'));
-    }
+    console.error(data);
   }
 };
 
