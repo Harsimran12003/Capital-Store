@@ -136,12 +136,14 @@ export default function ProductDetails() {
     return;
   }
 
+  if (!newReview.rating || !newReview.text.trim()) return;
+
   const formData = new FormData();
   formData.append("rating", newReview.rating);
   formData.append("text", newReview.text);
 
-  newReview.images.forEach(img => {
-    formData.append("images", img);
+  newReview.images.forEach((file) => {
+    formData.append("images", file); // MUST match multer
   });
 
   const res = await fetch(
@@ -149,7 +151,7 @@ export default function ProductDetails() {
     {
       method: "POST",
       credentials: "include",
-      body: formData, // ✅ multipart
+      body: formData, // 🚀 multipart
     }
   );
 
@@ -159,8 +161,11 @@ export default function ProductDetails() {
     setReviews([data, ...reviews]);
     setNewReview({ rating: 0, text: "", images: [] });
     setShowReviewForm(false);
+  } else {
+    console.error(data);
   }
 };
+
 
   // Handle image selection
   const handleImageChange = (e) => {
