@@ -2,6 +2,11 @@ import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 
 const protect = async (req, res, next) => {
+  // ✅ ALLOW PREFLIGHT REQUESTS
+  if (req.method === "OPTIONS") {
+    return next();
+  }
+
   const token = req.cookies.token;
 
   if (!token) {
@@ -18,4 +23,3 @@ const protect = async (req, res, next) => {
 };
 
 export default protect;
-
