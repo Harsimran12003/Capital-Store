@@ -91,4 +91,21 @@ export const deleteAddress = async (req, res) => {
   res.json({ addresses: user.addresses });
 };
 
+export const getAddresses = async (req, res) => {
+  const user = await User.findById(req.user._id);
+  res.json({ addresses: user.addresses });
+};
+
+
+export const selectAddress = async (req, res) => {
+  const { index } = req.body;
+
+  const user = await User.findById(req.user._id);
+  user.selectedAddress = index;
+  await user.save();
+
+  res.json({ success: true });
+};
+
+
 
