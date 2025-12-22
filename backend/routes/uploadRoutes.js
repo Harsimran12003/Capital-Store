@@ -18,4 +18,24 @@ router.post("/hero", protect, async (req, res) => {
   }
 });
 
+router.post("/product-image", protect, async (req, res) => {
+  try {
+    const { image } = req.body;
+
+    if (!image) {
+      return res.status(400).json({ message: "Image is required" });
+    }
+
+    const result = await cloudinary.uploader.upload(image, {
+      folder: "capitalstore/products",
+    });
+
+    res.json({ imageUrl: result.secure_url });
+  } catch (err) {
+    console.error("Cloudinary upload error:", err);
+    res.status(500).json({ message: "Image upload failed" });
+  }
+});
+
+
 export default router;
