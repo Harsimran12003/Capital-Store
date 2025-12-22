@@ -45,7 +45,7 @@ export default function ShippingPolicy() {
           </h2>
           <p>
             Orders are usually delivered within{" "}
-            <strong>3 to 7 business days</strong> from the date of dispatch.
+            <strong>5 business days</strong> from the date of dispatch.
           </p>
           <p className="mt-2 text-sm text-gray-600">
             Delivery timelines may vary depending on location, courier partner,
@@ -130,6 +130,8 @@ export default function ShippingPolicy() {
 
           <p className="mt-3">
             <strong>Capital Store</strong>
+            <br />
+            Proprietor Name: Harish Chander
             <br />
             Email: capitalstorecs@yahoo.com
             <br />

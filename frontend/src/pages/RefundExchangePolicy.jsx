@@ -32,7 +32,7 @@ export default function RefundExchangePolicy() {
           </h2>
           <ul className="list-disc pl-5 space-y-2">
             <li>
-              Returns are applicable <strong>within 7 days</strong> of product
+              Returns are applicable <strong>within 2 days</strong> of product
               delivery.
             </li>
             <li>
@@ -44,7 +44,7 @@ export default function RefundExchangePolicy() {
               condition with tags intact.
             </li>
             <li>
-              Returns requested after 7 days from delivery will not be
+              Returns requested after 2 days from delivery will not be
               accepted.
             </li>
           </ul>
@@ -66,7 +66,7 @@ export default function RefundExchangePolicy() {
             </li>
             <li>
               Once approved, the exchanged product will be delivered within
-              approximately <strong>7 days</strong>.
+              approximately <strong>5 days</strong>.
             </li>
             <li>
               Exchange availability is subject to stock availability.
@@ -143,6 +143,8 @@ export default function RefundExchangePolicy() {
 
          <p className="mt-3">
             <strong>Capital Store</strong>
+            <br />
+            Proprietor Name: Harish Chander
             <br />
             Email: capitalstorecs@yahoo.com
             <br />

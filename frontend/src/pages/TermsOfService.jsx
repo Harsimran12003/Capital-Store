@@ -177,6 +177,8 @@ export default function TermsOfService() {
           <p className="mt-3">
             <strong>Capital Store</strong>
             <br />
+            Proprietor Name: Harish Chander
+            <br />
             Email: capitalstorecs@yahoo.com
             <br />
             Phone: +91 9888320496
