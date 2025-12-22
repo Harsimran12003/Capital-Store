@@ -27,14 +27,13 @@ export default function SortDropdown({ setSort, mobile }) {
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
-  const options = [
-    { value: "", label: "Sort By", icon: <FiStar className="text-[#4D192B]" /> },
-    { value: "low-high", label: "Price: Low to High", icon: <FiArrowDown className="text-[#4D192B]" /> },
-    { value: "high-low", label: "Price: High to Low", icon: <FiArrowUp className="text-[#4D192B]" /> },
-    { value: "new", label: "New Arrivals", icon: <FiClock className="text-[#4D192B]" /> },
-    { value: "above1000", label: "Above ₹1000", icon: <FiTrendingUp className="text-[#4D192B]" /> },
-    { value: "below1000", label: "Below ₹1000", icon: <FiTrendingDown className="text-[#4D192B]" /> },
-  ];
+const options = [
+  { value: "", label: "Sort By", icon: <FiStar /> },
+  { value: "low-high", label: "Price: Low to High", icon: <FiArrowDown /> },
+  { value: "high-low", label: "Price: High to Low", icon: <FiArrowUp /> },
+  { value: "newest", label: "Newest First", icon: <FiClock /> },
+];
+
 
   const handleSelect = (opt) => {
     setSelected(opt.label);

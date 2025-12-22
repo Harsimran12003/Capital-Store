@@ -39,32 +39,49 @@ export default function NewArrivalPage() {
     fetchProducts();
   }, []);
 
-  /* ================= FILTER LOGIC ================= */
-  let filtered = products.filter((p) => {
-    // Filter for new arrivals: created within last 20 days
-    const createdDate = new Date(p.createdAt);
-    const now = new Date();
-    const daysDiff = (now - createdDate) / (1000 * 60 * 60 * 24);
-    if (daysDiff > 20) return false;
+const getEffectivePrice = (p) => {
+  return p.discountedPrice && p.discountedPrice > 0
+    ? p.discountedPrice
+    : p.originalPrice;
+};
 
-    if (filters.above1000 && p.discountedPrice <= 1000) return false;
-    if (filters.below1000 && p.discountedPrice >= 1000) return false;
-    if (filters.newArrival && !p.isNew) return false;
-    if (filters.discount && p.discountPercent < filters.discount) return false;
-    if (filters.rating && p.rating < filters.rating) return false;
-    if (filters.maxPrice && p.discountedPrice > filters.maxPrice) return false;
-    return true;
-  });
 
-  /* ================= SORT LOGIC ================= */
-  if (sort === "low-high")
-    filtered.sort((a, b) => a.discountedPrice - b.discountedPrice);
+  // FILTER LOGIC
+ let filtered = products.filter((p) => {
+  const price = getEffectivePrice(p);
 
-  if (sort === "high-low")
-    filtered.sort((a, b) => b.discountedPrice - a.discountedPrice);
+  if (filters.maxPrice && price > filters.maxPrice) return false;
+  if (filters.above1000 && price <= 1000) return false;
+  if (filters.below1000 && price >= 1000) return false;
+  if (filters.newArrival && !isNew(p.createdAt)) return false;
+  if (filters.discount && p.discountPercent < Number(filters.discount)) return false;
+  if (filters.rating && p.rating < Number(filters.rating)) return false;
 
-  if (sort === "new")
-    filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  return true;
+});
+
+
+
+  // SORTING LOGIC
+let sorted = [...filtered];
+
+if (sort === "low-high") {
+  sorted.sort(
+    (a, b) => getEffectivePrice(a) - getEffectivePrice(b)
+  );
+}
+
+if (sort === "high-low") {
+  sorted.sort(
+    (a, b) => getEffectivePrice(b) - getEffectivePrice(a)
+  );
+}
+
+if (sort === "new") {
+  sorted.sort(
+    (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+  );
+}
 
   return (
     <>
@@ -112,10 +129,10 @@ export default function NewArrivalPage() {
               </p>
             ) : (
               <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-10">
-                {filtered.map((p) => (
-                  <ProductCard key={p._id} product={p} />
-                ))}
-              </div>
+                              {sorted.map((p) => (
+                                <ProductCard key={p._id} product={p} />
+                              ))}
+                            </div>
             )}
           </div>
         </div>
