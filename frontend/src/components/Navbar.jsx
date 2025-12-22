@@ -22,7 +22,7 @@ const BRAND = "#4D192B";
 
 export default function Navbar() {
   const { cartCount } = useCart();
-const { wishlistCount } = useWishlist();
+  const { wishlistCount } = useWishlist();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scroll, setScroll] = useState(false);
   const [focus, setFocus] = useState(false);
@@ -62,7 +62,7 @@ const { wishlistCount } = useWishlist();
      p.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
      p.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
      (p.subCategory && p.subCategory.toLowerCase().includes(searchQuery.toLowerCase())))
-  ).slice(0, 5); // limit to 5 results
+  ).slice(0, 5); 
 
   const navItems = [
     { name: "Readymade", to: "/readymade", icon: <FiTag /> },
@@ -117,10 +117,6 @@ const { wishlistCount } = useWishlist();
                   setShowDropdown(e.target.value.length > 0);
                 }}
                 onFocus={() => setFocus(true)}
-                onBlur={() => {
-                  setFocus(false);
-                  setTimeout(() => setShowDropdown(false), 200); // delay to allow click
-                }}
                 className="bg-transparent w-full outline-none text-sm"
               />
             </div>
