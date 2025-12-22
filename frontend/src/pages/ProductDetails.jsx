@@ -365,6 +365,31 @@ export default function ProductDetails() {
                 </div>
               )}
             </div>
+            {/* ================= POLICY NOTICE ================= */}
+<div className="mt-6 bg-[#fff4f6] border border-[#4D192B]/20 rounded-xl p-4 text-sm text-gray-700">
+  <p className="font-medium text-[#4D192B] mb-1">
+    Please Note
+  </p>
+
+  <p className="leading-relaxed">
+    Before placing your order, we recommend reviewing our{" "}
+    <Link
+      to="/shipping-policy"
+      className="text-[#4D192B] font-semibold hover:underline"
+    >
+      Shipping Policy
+    </Link>{" "}
+    and{" "}
+    <Link
+      to="/return-refund-policy"
+      className="text-[#4D192B] font-semibold hover:underline"
+    >
+      Return, Exchange & Refund Policy
+    </Link>{" "}
+    for delivery timelines, eligibility, and terms.
+  </p>
+</div>
+
           </div>
         </div>
       </div>
