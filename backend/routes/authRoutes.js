@@ -1,7 +1,7 @@
 import express from "express";
 import passport from "passport";
 import jwt from "jsonwebtoken";
-import { registerUser, loginUser } from "../controllers/authController.js";
+import { registerUser, loginUser, updateProfile, addAddress, deleteAddress } from "../controllers/authController.js";
 import protect from "../middleware/authMiddleware.js";
 
 const router = express.Router();
@@ -52,5 +52,10 @@ router.get(
     res.redirect("https://www.capitalstorecs.com/");
   }
 );
+
+router.put("/update-profile", protect, updateProfile);
+router.post("/address", protect, addAddress);
+router.delete("/address/:index", protect, deleteAddress);
+
 
 export default router;

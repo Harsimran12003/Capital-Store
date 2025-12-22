@@ -12,6 +12,16 @@ const userSchema = new mongoose.Schema(
       enum: ["local", "google"],
       default: "local",
     },
+    addresses: [
+  {
+    label: String,
+    addressLine: String,
+    city: String,
+    state: String,
+    pincode: String,
+  },
+],
+
   },
   { timestamps: true }
 );

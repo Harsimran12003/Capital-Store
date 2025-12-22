@@ -51,3 +51,44 @@ export const loginUser = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+export const updateProfile = async (req, res) => {
+  try {
+    const { name } = req.body;
+
+    if (!name || name.trim() === "") {
+      return res.status(400).json({ message: "Name is required" });
+    }
+
+    const user = await User.findById(req.user._id);
+    user.name = name;
+    await user.save();
+
+    res.json({
+      message: "Profile updated",
+      user,
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+export const addAddress = async (req, res) => {
+  const user = await User.findById(req.user._id);
+
+  user.addresses.push(req.body);
+  await user.save();
+
+  res.json({ addresses: user.addresses });
+};
+
+export const deleteAddress = async (req, res) => {
+  const user = await User.findById(req.user._id);
+
+  user.addresses.splice(req.params.index, 1);
+  await user.save();
+
+  res.json({ addresses: user.addresses });
+};
+
+
