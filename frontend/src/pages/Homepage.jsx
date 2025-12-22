@@ -7,24 +7,31 @@ import VideoSection from "../components/VideoSection";
 import WhatsAppToggle from "../components/WhatsAppToggle";
 import Footer from "../components/Footer";
 import IntroScreen from "../components/IntroScreen";
-import { bestsellerItems } from "../data/products";
-
-// Sample product data
-const sampleBestsellers = new Array(8).fill(0).map((_, i) => ({
-  id: i + 1,
-  name: `Elegant Kurta Set ${i + 1}`,
-  desc: "Comfortable fabric — perfect for festive & daily wear",
-  price: 2499 + i * 200,
-  mrp: 3499 + i * 250,
-  rating: (4 + (i % 2) * 0.5).toFixed(1),
-  off: 30,
-}));
 
 export default function Homepage() {
-  const [cartOpen, setCartOpen] = useState(false);
-  const [bestsellers, setBestsellers] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => setBestsellers(sampleBestsellers), []);
+  /* ================= FETCH PRODUCTS ================= */
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const res = await fetch(
+          "https://capital-store-backend.vercel.app/api/products"
+        );
+        const data = await res.json();
+
+        setProducts(data.slice(0, 6));
+      } catch (err) {
+        console.error("Failed to fetch products", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
 
   return (
     <div className="bg-white text-gray-800">
@@ -33,7 +40,7 @@ export default function Homepage() {
 
       <HeroSlider />
       <CategoryCards />
-      <BestsellerGrid items={bestsellerItems} />
+      <BestsellerGrid items={products} />
       <VideoSection />
       <Footer />
       <WhatsAppToggle />
