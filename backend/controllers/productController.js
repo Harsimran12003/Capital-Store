@@ -62,35 +62,40 @@ export const getProductById = async (req, res) => {
 /* ================= UPDATE PRODUCT ================= */
 export const updateProduct = async (req, res) => {
   try {
-    const { originalPrice, discountedPrice } = req.body;
+    const product = await Product.findById(req.params.id);
+    if (!product)
+      return res.status(404).json({ message: "Product not found" });
 
-    let discountPercent = 0;
+    const newImages = req.files?.map((file) => file.path) || [];
 
+    const updatedImages = req.body.images
+      ? JSON.parse(req.body.images) // existing images from frontend
+      : product.images;
+
+    product.images = [...updatedImages, ...newImages];
+
+    Object.assign(product, req.body);
+
+    // discount recalculation
     if (
-      originalPrice &&
-      discountedPrice &&
-      originalPrice > discountedPrice
+      product.originalPrice &&
+      product.discountedPrice &&
+      product.originalPrice > product.discountedPrice
     ) {
-      discountPercent = Math.round(
-        ((originalPrice - discountedPrice) / originalPrice) * 100
+      product.discountPercent = Math.round(
+        ((product.originalPrice - product.discountedPrice) /
+          product.originalPrice) *
+          100
       );
     }
 
-    const updatedProduct = await Product.findByIdAndUpdate(
-      req.params.id,
-      {
-        ...req.body,
-        discountPercent,
-      },
-      { new: true }
-    );
-
-    res.json(updatedProduct);
+    await product.save();
+    res.json(product);
   } catch (err) {
-    console.error("Update product error:", err);
     res.status(500).json({ message: err.message });
   }
 };
+
 
 /* ================= DELETE PRODUCT ================= */
 export const deleteProduct = async (req, res) => {
