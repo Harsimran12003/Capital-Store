@@ -5,10 +5,21 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FaMoneyBillWave, FaGooglePay, FaCreditCard, FaRupeeSign } from "react-icons/fa";
 import { FiMapPin, FiCreditCard, FiShoppingBag, FiCheckCircle, FiLock } from "react-icons/fi";
+import { useCart } from "../context/CartContext";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export default function Payment() {
   const [method, setMethod] = useState("");
   const [cardDetails, setCardDetails] = useState({ number: "", expiry: "", cvv: "" });
+  const { cart } = useCart();
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const mrp = cart.reduce((s, i) => s + i.originalPrice * i.qty, 0);
+  const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  const discount = mrp - total;
+
 
   const steps = [
     { id: 0, icon: <FiMapPin size={20} />, label: "Address", link: "/address" },
@@ -253,18 +264,43 @@ export default function Payment() {
 
                 <Link to={method ? "/order-summary" : "#"} className="block">
                   <motion.button
-                    whileTap={{ scale: 0.98 }}
-                    disabled={!method}
-                    className={`
-                      w-full py-4 rounded-full text-lg font-semibold
-                      bg-gradient-to-r from-[#d4b98c] to-[#b88a4a] text-[#2b160e]
-                      shadow-[0_10px_30px_rgba(212,185,140,0.18)]
-                      transition-all duration-300
-                      ${!method ? "opacity-50 cursor-not-allowed" : "hover:shadow-[0_15px_40px_rgba(212,185,140,0.25)] cursor-pointer"}
-                    `}
-                  >
-                    Continue to Review
-                  </motion.button>
+  whileTap={{ scale: 0.98 }}
+  disabled={!method}
+  onClick={async () => {
+    if (!method) return;
+
+    const res = await fetch(
+      "https://capital-store-backend.vercel.app/api/orders",
+      {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          paymentMethod: method,
+          items: cart,
+          pricing: {
+            mrp,
+            discount,
+            total,
+          },
+        }),
+      }
+    );
+
+    if (res.ok) {
+      navigate("/order-summary");
+    } else {
+      alert("Failed to place order");
+    }
+  }}
+  className={`w-full py-4 rounded-full text-lg font-semibold
+    bg-gradient-to-r from-[#d4b98c] to-[#b88a4a]
+    ${!method ? "opacity-50 cursor-not-allowed" : ""}
+  `}
+>
+  Continue to Review
+</motion.button>
+
                 </Link>
 
                 <div className="mt-4 text-xs text-gray-500 text-center">

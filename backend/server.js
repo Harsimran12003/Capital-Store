@@ -12,6 +12,7 @@ import heroSliderRoutes from "./routes/heroSliderRoutes.js";
 import uploadRoutes from "./routes/uploadRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
+import orderRoutes from "./routes/orderRoutes.js";
 
 dotenv.config();
 
@@ -62,6 +63,7 @@ app.use("/api/upload", uploadRoutes);
 app.use("/api/hero-slides", heroSliderRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/reviews", reviewRoutes);
+app.use("/api/orders", orderRoutes);
 
 // ✅ ROOT
 app.get("/", (req, res) => {
