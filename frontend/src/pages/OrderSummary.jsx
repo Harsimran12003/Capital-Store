@@ -9,7 +9,6 @@ import {
   FiShoppingBag,
   FiCreditCard,
   FiCheckCircle,
-  
 } from "react-icons/fi";
 
 export default function OrderSummary() {
