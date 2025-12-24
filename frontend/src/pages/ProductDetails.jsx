@@ -14,6 +14,9 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Thumbs, FreeMode } from "swiper/modules";
 
 export default function ProductDetails() {
+  const sizes = ["S", "M", "L", "XL", "XXL"];
+const [selectedSize, setSelectedSize] = useState(null);
+
   const { user } = useAuth();
   const { addToCart } = useCart();
   const { toggleWishlist, wishlist } = useWishlist();
@@ -126,13 +129,20 @@ export default function ProductDetails() {
   };
 
   const handleAddToCart = () => {
-    if (!user) {
-      setLoginPrompt('cart');
-      return;
-    }
-    addToCart(product);
-    setAdded(true);
-  };
+  if (!user) {
+    setLoginPrompt("cart");
+    return;
+  }
+
+  if (!selectedSize) {
+    alert("Please select a size");
+    return;
+  }
+
+  addToCart(product, selectedSize);
+  setAdded(true);
+};
+
 
   // Calculate overall rating
   const overallRating = reviews.length > 0 ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1) : 0;
@@ -321,7 +331,38 @@ export default function ProductDetails() {
       ₹{product.originalPrice}
     </span>
   )}
+
 </div>
+            {/* SIZE SELECTION */}
+<div className="mt-6">
+  <p className="font-semibold text-[#4D192B] mb-2">Select Size</p>
+
+  <div className="flex gap-3 flex-wrap">
+    {sizes.map((size) => (
+      <button
+        key={size}
+        onClick={() => setSelectedSize(size)}
+        className={`
+          px-4 py-2 rounded-full border font-semibold text-sm
+          ${
+            selectedSize === size
+              ? "bg-[#4D192B] text-white border-[#4D192B]"
+              : "bg-white text-[#4D192B] border-gray-300 hover:border-[#4D192B]"
+          }
+        `}
+      >
+        {size}
+      </button>
+    ))}
+  </div>
+
+  {!selectedSize && (
+    <p className="text-xs text-red-500 mt-2">
+      Please select a size
+    </p>
+  )}
+</div>
+
 
             <p className="mt-4 text-gray-700" style={{ whiteSpace: 'pre-line' }}>
               {product.description}
@@ -352,11 +393,15 @@ export default function ProductDetails() {
                 </Link>
               ) : qty === 0 ? (
                 <button
-                  onClick={handleAddToCart}
-                  className="px-8 py-3 bg-[#4D192B] text-white rounded-full"
-                >
-                  Add to Cart
-                </button>
+  onClick={handleAddToCart}
+  disabled={!selectedSize}
+  className={`px-8 py-3 rounded-full text-white
+    ${selectedSize ? "bg-[#4D192B]" : "bg-gray-400 cursor-not-allowed"}
+  `}
+>
+  Add to Cart
+</button>
+
               ) : (
                 <div className="flex gap-6 bg-[#4D192B] text-white px-6 py-3 rounded-full w-fit">
                   <button onClick={() => setQty(qty - 1)}>-</button>

@@ -16,6 +16,12 @@ const orderSchema = new mongoose.Schema(
         },
         name: String,
         image: String,
+
+        size: {
+          type: String,
+          required: true, // ✅ SIZE IS MANDATORY
+        },
+
         price: Number,
         originalPrice: Number,
         qty: Number,
@@ -58,5 +64,3 @@ const orderSchema = new mongoose.Schema(
 );
 
 export default mongoose.model("Order", orderSchema);
-
-
