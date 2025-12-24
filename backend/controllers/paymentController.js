@@ -8,9 +8,12 @@ const PHONEPE_URL = "https://api.phonepe.com/apis/hermes/pg/v1/pay";
 export const createPhonePePayment = async (req, res) => {
   const { orderId, amount } = req.body;
 
-  const merchantId = process.env.PHONEPE_MERCHANT_ID;
-  const saltKey = process.env.PHONEPE_SALT_KEY;
-  const saltIndex = process.env.PHONEPE_SALT_INDEX;
+  const merchantId = process.env.PHONEPE_MERCHANT_ID || "";
+  const saltKey = process.env.PHONEPE_SALT_KEY || "";
+  const saltIndex = process.env.PHONEPE_SALT_INDEX || "";
+  if (!process.env.PHONEPE_MERCHANT_ID || !process.env.PHONEPE_SALT_KEY || !process.env.PHONEPE_SALT_INDEX) {
+  return res.status(500).json({ message: "Payment temporarily unavailable" });
+}  
 
   const payload = {
     merchantId,
@@ -58,8 +61,11 @@ export const createPhonePePayment = async (req, res) => {
 };
 
 export const verifyPhonePePayment = async (req, res) => {
-  const saltKey = process.env.PHONEPE_SALT_KEY;
-  const saltIndex = process.env.PHONEPE_SALT_INDEX;
+  const saltKey = process.env.PHONEPE_SALT_KEY || "";
+  const saltIndex = process.env.PHONEPE_SALT_INDEX || "";
+  if (!process.env.PHONEPE_MERCHANT_ID || !process.env.PHONEPE_SALT_KEY || !process.env.PHONEPE_SALT_INDEX) {
+  return res.status(500).json({ message: "Payment temporarily unavailable" });
+}
 
   const responseBase64 = req.body.response;
   const decoded = JSON.parse(

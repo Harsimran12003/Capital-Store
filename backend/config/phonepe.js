@@ -1,8 +1,8 @@
 import crypto from "crypto";
 
 export const PHONEPE_CONFIG = {
-  MERCHANT_ID: process.env.PHONEPE_MERCHANT_ID,
-  SALT_KEY: process.env.PHONEPE_SALT_KEY,
+  MERCHANT_ID: process.env.PHONEPE_MERCHANT_ID || "",
+  SALT_KEY: process.env.PHONEPE_SALT_KEY || "",
   SALT_INDEX: 1,
   BASE_URL: "https://api.phonepe.com/apis/hermes",
 };
