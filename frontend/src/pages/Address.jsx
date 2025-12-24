@@ -89,14 +89,15 @@ const addNewAddress = async () => {
       body: JSON.stringify({ index: selected }),
     });
 
-    navigate("/payment");
+    navigate("/summary");
   };
 
-  const steps = [
-    { id: 0, icon: <FiMapPin size={20} />, label: "Address" },
-    { id: 1, icon: <FiCreditCard size={20} />, label: "Payment" },
-    { id: 2, icon: <FiShoppingBag size={20} />, label: "Summary" },
-  ];
+const steps = [
+  { id: 0, icon: <FiMapPin size={20} />, label: "Address" },
+  { id: 1, icon: <FiShoppingBag size={20} />, label: "Summary" },
+  { id: 2, icon: <FiCreditCard size={20} />, label: "Payment" },
+];
+
 
   const getTypeIcon = (type) =>
     type === "Home" ? (

@@ -78,7 +78,7 @@ function App() {
 
           <Route path="/address" element={<Address />} />
           <Route path="/payment" element={<Payment />} />
-          <Route path="/order-summary" element={<OrderSummary />} />
+          <Route path="/summary" element={<OrderSummary />} />
 
 
           {/* Admin */}
