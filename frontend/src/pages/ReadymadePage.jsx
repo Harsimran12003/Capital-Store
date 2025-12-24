@@ -7,9 +7,9 @@ import { Link } from "react-router-dom";
 const WINE = "#4D192B";
 
 const readymadeCategories = [
-  { id: 1, name: "Cotton Wear", img: "cotton.webp", link: "/readymade/cotton" },
-  { id: 2, name: "Winter Wear", img: "winter.webp", link: "/readymade/winter" },
-  { id: 3, name: "Party Wear", img: "partywear.webp", link: "/readymade/partywear" },
+  { id: 1, name: "Cotton Wear", img: "./rcotton.jpg", link: "/readymade/cotton" },
+  { id: 2, name: "Winter Wear", img: "rwinter.png", link: "/readymade/winter" },
+  { id: 3, name: "Party Wear", img: "rparty.jpg", link: "/readymade/partywear" },
 ];
 
 export default function ReadymadePage() {

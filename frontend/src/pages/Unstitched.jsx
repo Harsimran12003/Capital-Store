@@ -7,9 +7,9 @@ import { Link } from "react-router-dom";
 const WINE = "#4D192B";
 
 const unstitchedCategories = [
-  { id: 1, name: "Cotton Wear", img: "cotton.webp", link: "/unstitched/cotton" },
-  { id: 2, name: "Winter Wear", img: "winter.webp", link: "/unstitched/winter" },
-  { id: 3, name: "Party Wear", img: "partywear.webp", link: "/unstitched/partywear" },
+  { id: 1, name: "Cotton Wear", img: "ucotton.png", link: "/unstitched/cotton" },
+  { id: 2, name: "Winter Wear", img: "uwinter.jpg", link: "/unstitched/winter" },
+  { id: 3, name: "Party Wear", img: "uparty.png", link: "/unstitched/partywear" },
 ];
 
 export default function Unstitched() {
