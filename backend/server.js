@@ -13,7 +13,7 @@ import uploadRoutes from "./routes/uploadRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
-import paymentRoutes from "./routes/paymentRoutes.js";
+// import paymentRoutes from "./routes/paymentRoutes.js";
 
 dotenv.config();
 
