@@ -1,23 +1,21 @@
 import express from "express";
-import Order from "../models/orderModel.js";
+import { trackShipmentByAWB } from "../services/shiprocketService.js";
+import Order from "../models/Order.js";
 
 const router = express.Router();
 
-router.post("/webhook", async(req,res)=>{
+router.get("/track/:orderId", async (req, res) => {
   try {
-    const { awb, current_status } = req.body;
+    const order = await Order.findById(req.params.orderId);
 
-    const order = await Order.findOne({ "shipment.awb": awb });
+    if (!order || !order.shipment?.awb)
+      return res.status(404).json({ message: "Shipment not found" });
 
-    if(order){
-      order.shipment.status = current_status;
-      await order.save();
-    }
+    const data = await trackShipmentByAWB(order.shipment.awb);
 
-    res.sendStatus(200);
-  } catch(err){
-    console.log(err);
-    res.sendStatus(500);
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 });
 

@@ -1,5 +1,6 @@
 import Order from "../models/Order.js";
 import User from "../models/User.js";
+import { createShiprocketOrder } from "../services/shiprocketService.js";
 
 export const createOrder = async (req, res) => {
   try {
@@ -10,9 +11,9 @@ export const createOrder = async (req, res) => {
     }
 
     const { items, paymentMethod, pricing } = req.body;
-
     const address = user.addresses[user.selectedAddress];
 
+    // Create DB Order
     const order = await Order.create({
       user: user._id,
       items,
@@ -20,7 +21,25 @@ export const createOrder = async (req, res) => {
       paymentMethod,
       pricing,
       paymentStatus: paymentMethod === "cod" ? "pending" : "paid",
+      orderStatus: "placed"
     });
+
+    // Push to Shiprocket
+    try {
+      const ship = await createShiprocketOrder({ order, user, address });
+
+      order.shipment = {
+        shiprocket_order_id: ship.order_id,
+        shipment_id: ship.shipment_id,
+        awb: ship.awb,
+        courier: ship.courier_name || "",
+        status: "created"
+      };
+
+      await order.save();
+    } catch (err) {
+      console.log("Shiprocket Failed:", err.response?.data || err.message);
+    }
 
     res.status(201).json(order);
   } catch (err) {

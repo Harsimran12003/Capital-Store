@@ -60,14 +60,12 @@ const orderSchema = new mongoose.Schema(
       default: "placed",
     },
     shipment: {
-  pushed: { type: Boolean, default: false },
-  shiprocketOrderId: String,
-  awb: String,
-  courier: String,
-  trackingUrl: String,
-  status: { type: String, default: "Pending" }
-}
-
+      shiprocket_order_id: String,
+      shipment_id: String,
+      awb: String,
+      courier: String,
+      status: String,
+    }
   },
   { timestamps: true }
 );

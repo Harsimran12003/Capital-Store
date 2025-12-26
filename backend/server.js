@@ -15,6 +15,7 @@ import reviewRoutes from "./routes/reviewRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 // import paymentRoutes from "./routes/paymentRoutes.js";
 import shiprocketRoutes from "./routes/shiprocketRoutes.js";
+import shiprocketWebhook from "./routes/shiprocketWebhook.js";
 
 dotenv.config();
 
@@ -68,6 +69,7 @@ app.use("/api/reviews", reviewRoutes);
 app.use("/api/orders", orderRoutes);
 // app.use("/api/payments", paymentRoutes);
 app.use("/api/shiprocket", shiprocketRoutes);
+app.use("/api", shiprocketWebhook);
 
 // ✅ ROOT
 app.get("/", (req, res) => {
