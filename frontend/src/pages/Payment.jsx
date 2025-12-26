@@ -138,19 +138,18 @@ export default function Payment() {
                 <Link key={s.id} to={s.link || "#"} className="flex-1">
                   <div className="text-center">
                     <div
-  className={`mx-auto w-14 h-14 rounded-full flex items-center justify-center shadow-lg
-    ${
-      s.id < 2
-        ? "bg-gradient-to-br from-[#d4b98c] to-[#b88a4a] text-white"
-        : s.id === 2
-        ? "bg-gradient-to-br from-[#d4b98c] to-[#b88a4a] text-white ring-2 ring-[#d4b98c] ring-offset-2"
-        : "bg-gray-200 text-gray-400"
-    }
-  `}
->
-  {s.id < 2 ? <FiCheckCircle /> : s.icon}
-</div>
-
+                      className={`mx-auto w-14 h-14 rounded-full flex items-center justify-center shadow-lg
+                        ${
+                          s.id < 2
+                            ? "bg-gradient-to-br from-[#d4b98c] to-[#b88a4a] text-white"
+                            : s.id === 2
+                            ? "bg-gradient-to-br from-[#d4b98c] to-[#b88a4a] text-white ring-2 ring-[#d4b98c] ring-offset-2"
+                            : "bg-gray-200 text-gray-400"
+                        }
+                      `}
+                    >
+                      {s.id < 2 ? <FiCheckCircle /> : s.icon}
+                    </div>
                     <p className="mt-3 text-sm font-semibold">{s.label}</p>
                   </div>
                 </Link>

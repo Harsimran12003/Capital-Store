@@ -59,6 +59,15 @@ const orderSchema = new mongoose.Schema(
       enum: ["placed", "confirmed", "shipped", "delivered"],
       default: "placed",
     },
+    shipment: {
+  pushed: { type: Boolean, default: false },
+  shiprocketOrderId: String,
+  awb: String,
+  courier: String,
+  trackingUrl: String,
+  status: { type: String, default: "Pending" }
+}
+
   },
   { timestamps: true }
 );
