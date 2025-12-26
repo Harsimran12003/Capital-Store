@@ -35,6 +35,8 @@ import PrivacyPolicy from "./pages/PrivacyPolicy.jsx";
 import TermsOfService from "./pages/TermsOfService.jsx";
 import ShippingPolicy from "./pages/ShippingPolicy.jsx";
 import RefundExchangePolicy from "./pages/RefundExchangePolicy.jsx";
+import OrderSuccess from "./pages/OrderSuccess.jsx";
+import TrackOrder from "./pages/TrackOrder.jsx";
 
 function App() {
   const { user, loading } = useAuth();
@@ -91,6 +93,9 @@ function App() {
           <Route path="/terms-of-service" element={<TermsOfService />} />
           <Route path="/shipping-policy" element={<ShippingPolicy />} />
           <Route path="/return-refund-policy" element={<RefundExchangePolicy />} />
+
+          <Route path="/order-summary/:id" element={<OrderSuccess />} />
+          <Route path="/track/:id" element={<TrackOrder />} />
 
         </Routes>
       </Router>

@@ -197,29 +197,110 @@ function ProfileInfo({ user }) {
 
 /* ---------- ORDERS (Mock UI) ---------- */
 function Orders() {
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useState(() => {
+    fetch("https://capital-store-backend.vercel.app/api/orders/my", {
+      credentials: "include"
+    })
+      .then(res => res.json())
+      .then(data => {
+        setOrders(data);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, []);
+
+  if (loading)
+    return <p className="text-gray-500">Loading orders…</p>;
+
+  if (orders.length === 0)
+    return (
+      <div>
+        <h3 className="text-lg font-bold text-[#4D192B] mb-4">
+          My Orders
+        </h3>
+        <p className="text-sm text-gray-400">
+          You haven’t placed any orders yet.
+        </p>
+      </div>
+    );
+
   return (
     <div>
-      <h3 className="text-lg font-bold text-[#4D192B] mb-4">My Orders</h3>
+      <h3 className="text-lg font-bold text-[#4D192B] mb-4">
+        My Orders
+      </h3>
 
-      <div className="space-y-4">
-        {[1, 2].map((id) => (
+      <div className="space-y-5">
+        {orders.map((o) => (
           <div
-            key={id}
-            className="border rounded-xl p-4 flex justify-between items-center"
+            key={o._id}
+            className="border rounded-xl p-4 shadow-sm"
           >
-            <div>
-              <p className="font-medium">Order #{id}234</p>
-              <p className="text-sm text-gray-500">
-                Status: <span className="text-green-600">Delivered</span>
-              </p>
+            {/* HEADER */}
+            <div className="flex justify-between">
+              <div>
+                <p className="font-semibold">
+                  Order #{o._id.slice(-6)}
+                </p>
+
+                <p className="text-xs text-gray-500">
+                  {new Date(o.createdAt).toLocaleDateString()}
+                </p>
+              </div>
+
+              <span
+                className={`text-sm font-semibold px-3 py-1 rounded-full
+                  ${
+                    o.orderStatus === "delivered"
+                      ? "bg-green-100 text-green-700"
+                      : o.orderStatus === "shipped"
+                      ? "bg-blue-100 text-blue-700"
+                      : "bg-orange-100 text-orange-700"
+                  }
+                `}
+              >
+                {o.orderStatus.toUpperCase()}
+              </span>
             </div>
-            <span className="text-sm font-semibold">₹2,499</span>
+
+            {/* ITEMS */}
+            <div className="mt-3 text-sm text-gray-700">
+              {o.items.map((i) => (
+                <p key={i._id}>
+                  • {i.name} ({i.size}) × {i.qty}
+                </p>
+              ))}
+            </div>
+
+            {/* TOTAL */}
+            <p className="mt-2 font-bold">
+              Total: ₹{o.pricing.total}
+            </p>
+
+            {/* TRACKING */}
+            {o.shipment?.awb ? (
+              <div className="mt-3 flex items-center justify-between">
+                <p className="text-sm">
+                  📦 AWB: <b>{o.shipment.awb}</b>
+                </p>
+
+                <Link
+                  to={`/track/${o._id}`}
+                  className="text-sm bg-[#4D192B] text-white px-4 py-2 rounded-xl"
+                >
+                  Track Shipment
+                </Link>
+              </div>
+            ) : (
+              <p className="text-sm text-orange-500 mt-2">
+                ⏳ Shipment being created…
+              </p>
+            )}
           </div>
         ))}
-
-        <p className="text-sm text-gray-400">
-          (Replace with real orders API later)
-        </p>
       </div>
     </div>
   );
