@@ -74,6 +74,18 @@ export default function Navbar() {
     { name: "New Arrival", to: "/new-arrival", icon: <FiTag /> },
   ];
 
+  const mobileNavItems = [
+    { name: "Readymade", to: "/readymade", icon: <FiTag /> },
+    { name: "Unstitched", to: "/unstitched", icon: <FiTag /> },
+    { name: "Cotton", to: "/cotton", icon: <FiTag /> },
+    { name: "Winter", to: "/winter", icon: <FiTag /> },
+    { name: "Partywear", to: "/partywear", icon: <FiTag /> },
+    { name: "Bestseller", to: "/bestseller", icon: <FiTag /> },
+    { name: "New Arrival", to: "/new-arrival", icon: <FiTag /> },
+    { name: "Shipping Policy", to: "/shipping-policy", icon: <FiTag /> },
+    { name: "Return & Exchange Policy", to: "/return-refund-policy", icon: <FiTag /> },
+  ];
+
   return (
     <>
       {/* NAVBAR */}
@@ -352,7 +364,7 @@ export default function Navbar() {
               </div>
 
               <nav className="mb-6">
-                {navItems.map((item) => (
+                {mobileNavItems.map((item) => (
                   <Link
                     key={item.name}
                     to={item.to}
