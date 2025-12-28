@@ -8,7 +8,7 @@ export default function Dashboard() {
         
         {/* LOGO */}
         <img 
-          src="./logo.png" 
+          src="../logo.png" 
           alt="Capital Store Logo"
           className="w-32 h-32 object-contain mb-6"
         />
