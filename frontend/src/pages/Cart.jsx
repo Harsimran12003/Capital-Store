@@ -9,13 +9,21 @@ import { useCart } from "../context/CartContext";
 export default function Cart() {
   const { cart, updateQty, removeFromCart, updateSize } = useCart();
   const SIZES = ["S", "M", "L", "XL", "XXL"];
-  const hasMissingSize = cart.some(item => !item.size);
+
+  const isUnstitched = (item) =>
+    item?.category?.toLowerCase() === "unstitched";
+
+  // Only require size for stitched items
+  const hasMissingSize = cart.some(
+    (item) => !isUnstitched(item) && !item.size
+  );
 
   // totals
   const totalMRP = cart.reduce(
     (sum, i) => sum + i.originalPrice * i.qty,
     0
   );
+
   const totalPrice = cart.reduce(
     (sum, i) =>
       sum +
@@ -25,6 +33,7 @@ export default function Cart() {
         i.qty,
     0
   );
+
   const discount = totalMRP - totalPrice;
   const delivery = totalPrice > 999 ? 0 : 79;
 
@@ -34,8 +43,8 @@ export default function Cart() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 mt-5 mb-24 grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-        {/* LEFT: ITEMS */}
-        <div className={`lg:col-span-2 ${cart.length === 0 ? 'lg:col-span-3' : ''} space-y-6`}>
+        {/* LEFT SIDE */}
+        <div className={`lg:col-span-2 ${cart.length === 0 ? "lg:col-span-3" : ""} space-y-6`}>
           {cart.length > 0 && (
             <h1 className="text-2xl sm:text-3xl font-bold mb-4">
               Shopping Bag
@@ -63,11 +72,7 @@ export default function Cart() {
               </p>
 
               <Link to="/">
-                <motion.button
-                  whileHover={{ scale: 1.03 }}
-                  className="px-6 py-3 rounded-full bg-[#4D192B] text-white 
-                  text-[#2b160e] font-semibold shadow-md"
-                >
+                <motion.button whileHover={{ scale: 1.03 }} className="px-6 py-3 rounded-full bg-[#4D192B] text-white font-semibold shadow-md">
                   Continue Shopping
                 </motion.button>
               </Link>
@@ -75,7 +80,7 @@ export default function Cart() {
           ) : (
             cart.map((item) => (
               <motion.div
-                key={item.productId}
+                key={`${item.productId}-${item.size}`}
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="flex flex-col sm:flex-row gap-5 bg-white p-5 rounded-3xl shadow-xl mt-3"
@@ -83,43 +88,48 @@ export default function Cart() {
                 {/* IMAGE */}
                 <img
                   src={item.image || "/placeholder.png"}
-
                   alt={item.name}
-                  className="w-full sm:w-32 h-36 rounded-xl "
+                  className="w-full sm:w-32 h-36 rounded-xl"
                 />
 
                 {/* DETAILS */}
                 <div className="flex-1">
                   <h2 className="font-semibold text-lg text-[#4D192B]">
-  {item.name}
-</h2>
+                    {item.name}
+                  </h2>
 
-<div className="mt-1">
-  <label className="text-xs text-gray-500 block mb-1">
-    Size
-  </label>
+                  <div className="mt-1">
+                    <label className="text-xs text-gray-500 block mb-1">
+                      Size
+                    </label>
 
-  <select
-    value={item.size || ""}
-    onChange={(e) =>
-      updateSize(item.productId, item.size, e.target.value)
-    }
-    className="border border-gray-300 rounded-lg px-3 py-1 text-sm
-               focus:outline-none focus:ring-2 focus:ring-[#4D192B]/30"
-  >
-    <option value="" disabled>
-      Select Size
-    </option>
+                    {/* UNSTITCHED → SHOW BADGE */}
+                    {isUnstitched(item) ? (
+                      <div className="px-4 py-1 rounded-lg bg-[#4D192B] text-white w-fit text-sm">
+                        Free Size
+                      </div>
+                    ) : (
+                      <select
+                        value={item.size || ""}
+                        onChange={(e) =>
+                          updateSize(item.productId, item.size, e.target.value)
+                        }
+                        className="border border-gray-300 rounded-lg px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-[#4D192B]/30"
+                      >
+                        <option value="" disabled>
+                          Select Size
+                        </option>
 
-    {SIZES.map((size) => (
-      <option key={size} value={size}>
-        {size}
-      </option>
-    ))}
-  </select>
-</div>
+                        {SIZES.map((size) => (
+                          <option key={size} value={size}>
+                            {size}
+                          </option>
+                        ))}
+                      </select>
+                    )}
+                  </div>
 
-
+                  {/* PRICING */}
                   <div className="flex items-center gap-3 mt-2">
                     <span className="text-xl font-bold">
                       ₹
@@ -135,7 +145,7 @@ export default function Cart() {
                     )}
                   </div>
 
-                  {/* QTY CONTROLS */}
+                  {/* QTY */}
                   <div className="flex items-center gap-4 mt-4">
                     <button
                       onClick={() => {
@@ -154,7 +164,7 @@ export default function Cart() {
 
                     <button
                       onClick={() =>
-                        updateQty(item.productId, item.qty + 1)
+                        updateQty(item.productId, item.size, item.qty + 1)
                       }
                       className="w-9 h-9 bg-gray-200 rounded-full text-xl"
                     >
@@ -165,7 +175,9 @@ export default function Cart() {
 
                 {/* DELETE */}
                 <button
-                  onClick={() => removeFromCart(item.productId)}
+                  onClick={() =>
+                    removeFromCart(item.productId, item.size)
+                  }
                   className="self-start sm:self-center"
                 >
                   <FiTrash2 className="text-gray-500 hover:text-red-600" />
@@ -175,7 +187,7 @@ export default function Cart() {
           )}
         </div>
 
-        {/* RIGHT: SUMMARY */}
+        {/* RIGHT SUMMARY */}
         {cart.length > 0 && (
           <div>
             <div className="bg-white p-6 rounded-3xl shadow-xl sticky top-28">
@@ -203,18 +215,17 @@ export default function Cart() {
               </div>
 
               <button
-  onClick={() => {
-    if (hasMissingSize) {
-      alert("Please select size for all items before proceeding");
-      return;
-    }
-    window.location.href = "/address";
-  }}
-  className="block w-full mt-6 text-center bg-[#4D192B] text-white py-3 rounded-full font-semibold"
->
-  Proceed to Address
-</button>
-
+                onClick={() => {
+                  if (hasMissingSize) {
+                    alert("Please select size for all stitched items");
+                    return;
+                  }
+                  window.location.href = "/address";
+                }}
+                className="block w-full mt-6 text-center bg-[#4D192B] text-white py-3 rounded-full font-semibold"
+              >
+                Proceed to Address
+              </button>
             </div>
           </div>
         )}

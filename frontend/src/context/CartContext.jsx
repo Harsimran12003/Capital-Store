@@ -24,90 +24,92 @@ export function CartProvider({ children }) {
     }
   }, [cart, user]);
 
- const addToCart = (product, size) => {
-  setCart((prev) => {
-    const exists = prev.find(
-      p => p.productId === product._id && p.size === size
-    );
+  /* ================= ADD TO CART ================= */
+  const addToCart = (product, size) => {
+    const finalSize =
+      product?.category?.toLowerCase() === "unstitched"
+        ? "FREE"
+        : size;
 
-    if (exists) {
-      return prev.map(p =>
-        p.productId === product._id && p.size === size
-          ? { ...p, qty: p.qty + 1 }
-          : p
+    setCart((prev) => {
+      const exists = prev.find(
+        (p) =>
+          p.productId === product._id && p.size === finalSize
       );
-    }
 
-    return [
-      ...prev,
-      {
-        productId: product._id,
-        name: product.name,
-        image: product.images[0],
-        price:
-          product.discountedPrice > 0
-            ? product.discountedPrice
-            : product.originalPrice,
-        originalPrice: product.originalPrice,
-        size, // ✅ STORE SIZE
-        qty: 1,
-      },
-    ];
-  });
-};
+      if (exists) {
+        return prev.map((p) =>
+          p.productId === product._id && p.size === finalSize
+            ? { ...p, qty: p.qty + 1 }
+            : p
+        );
+      }
+
+      return [
+        ...prev,
+        {
+          productId: product._id,
+          name: product.name,
+          image: product.images?.[0],
+          category: product.category, // ⭐ important
+          discountedPrice: product.discountedPrice,
+          originalPrice: product.originalPrice,
+          size: finalSize,
+          qty: 1,
+        },
+      ];
+    });
+  };
+
+  /* ================= UPDATE SIZE ================= */
   const updateSize = (productId, oldSize, newSize) => {
-  setCart((prev) => {
-    // item being changed
-    const currentItem = prev.find(
-      (p) => p.productId === productId && p.size === oldSize
-    );
-
-    if (!currentItem) return prev;
-
-    // check if same product + new size already exists
-    const existing = prev.find(
-      (p) => p.productId === productId && p.size === newSize
-    );
-
-    // remove old item
-    let updated = prev.filter(
-      (p) => !(p.productId === productId && p.size === oldSize)
-    );
-
-    if (existing) {
-      // merge quantities
-      updated = updated.map((p) =>
-        p.productId === productId && p.size === newSize
-          ? { ...p, qty: p.qty + currentItem.qty }
-          : p
+    setCart((prev) => {
+      const currentItem = prev.find(
+        (p) => p.productId === productId && p.size === oldSize
       );
-    } else {
-      // change size
-      updated.push({ ...currentItem, size: newSize });
-    }
+      if (!currentItem) return prev;
 
-    return updated;
-  });
-};
+      const existing = prev.find(
+        (p) => p.productId === productId && p.size === newSize
+      );
 
+      let updated = prev.filter(
+        (p) => !(p.productId === productId && p.size === oldSize)
+      );
 
+      if (existing) {
+        updated = updated.map((p) =>
+          p.productId === productId && p.size === newSize
+            ? { ...p, qty: p.qty + currentItem.qty }
+            : p
+        );
+      } else {
+        updated.push({ ...currentItem, size: newSize });
+      }
+
+      return updated;
+    });
+  };
+
+  /* ================= UPDATE QTY ================= */
   const updateQty = (productId, size, qty) => {
-  setCart((prev) =>
-    prev.map((p) =>
-      p.productId === productId && p.size === size
-        ? { ...p, qty }
-        : p
-    )
-  );
-};
+    setCart((prev) =>
+      prev.map((p) =>
+        p.productId === productId && p.size === size
+          ? { ...p, qty }
+          : p
+      )
+    );
+  };
 
-const removeFromCart = (productId, size) => {
-  setCart((prev) =>
-    prev.filter(
-      (p) => !(p.productId === productId && p.size === size)
-    )
-  );
-};
+  /* ================= REMOVE ================= */
+  const removeFromCart = (productId, size) => {
+    setCart((prev) =>
+      prev.filter(
+        (p) => !(p.productId === productId && p.size === size)
+      )
+    );
+  };
 
   return (
     <CartContext.Provider

@@ -3,7 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiHeart, FiShoppingCart, FiCheckCircle } from "react-icons/fi";
+import { FiHeart, FiShoppingCart } from "react-icons/fi";
 import { FaStar } from "react-icons/fa";
 import useAuth from "../hooks/useAuth";
 import { useCart } from "../context/CartContext";
@@ -15,7 +15,7 @@ import { Navigation, Pagination, Thumbs, FreeMode } from "swiper/modules";
 
 export default function ProductDetails() {
   const sizes = ["S", "M", "L", "XL", "XXL"];
-const [selectedSize, setSelectedSize] = useState(null);
+  const [selectedSize, setSelectedSize] = useState(null);
 
   const { user } = useAuth();
   const { addToCart } = useCart();
@@ -35,43 +35,41 @@ const [selectedSize, setSelectedSize] = useState(null);
   const [added, setAdded] = useState(false);
   const [loginPrompt, setLoginPrompt] = useState(null);
 
-  // Reviews state
   const [reviews, setReviews] = useState([]);
-
   const [newReview, setNewReview] = useState({ rating: 0, text: "", images: [] });
   const [showReviewForm, setShowReviewForm] = useState(false);
 
-  // Review lightbox state
   const [reviewLightboxOpen, setReviewLightboxOpen] = useState(false);
   const [reviewLightboxIndex, setReviewLightboxIndex] = useState(0);
   const [currentReviewImages, setCurrentReviewImages] = useState([]);
 
   const toBase64 = (file) =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = reject;
-  });
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+    });
 
   useEffect(() => {
-  const fetchReviews = async () => {
-    const res = await fetch(
-      `https://capital-store-backend.vercel.app/api/reviews/${product._id}`
-    );
-    const data = await res.json();
-    setReviews(data);
-  };
+    const fetchReviews = async () => {
+      const res = await fetch(
+        `https://capital-store-backend.vercel.app/api/reviews/${product._id}`
+      );
+      const data = await res.json();
+      setReviews(data);
+    };
 
-  if (product) fetchReviews();
-}, [product]);
-
+    if (product) fetchReviews();
+  }, [product]);
 
   /* ================= FETCH PRODUCT ================= */
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const res = await fetch(`https://capital-store-backend.vercel.app/api/products/${id}`);
+        const res = await fetch(
+          `https://capital-store-backend.vercel.app/api/products/${id}`
+        );
         const data = await res.json();
         setProduct(data);
       } catch (err) {
@@ -83,11 +81,13 @@ const [selectedSize, setSelectedSize] = useState(null);
 
     fetchProduct();
   }, [id]);
+
   useEffect(() => {
     if (product) {
-      setLiked(wishlist.some(item => item.productId === product._id));
+      setLiked(wishlist.some((item) => item.productId === product._id));
     }
   }, [wishlist, product]);
+
   /* ================= LOADING / ERROR ================= */
   if (loading) {
     return (
@@ -103,13 +103,14 @@ const [selectedSize, setSelectedSize] = useState(null);
     return (
       <>
         <Navbar />
-        <p className="text-center py-20 text-red-500">
-          Product not found
-        </p>
+        <p className="text-center py-20 text-red-500">Product not found</p>
         <Footer />
       </>
     );
   }
+
+  const isUnstitched =
+    product?.category?.toLowerCase() === "unstitched";
 
   /* ================= MEDIA ================= */
   const media = [
@@ -129,88 +130,29 @@ const [selectedSize, setSelectedSize] = useState(null);
   };
 
   const handleAddToCart = () => {
-  if (!user) {
-    setLoginPrompt("cart");
-    return;
-  }
-
-  if (!selectedSize) {
-    alert("Please select a size");
-    return;
-  }
-
-  addToCart(product, selectedSize);
-  setAdded(true);
-};
-
-
-  // Calculate overall rating
-  const overallRating = reviews.length > 0 ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1) : 0;
-
-  // Handle review submission
-  const handleSubmitReview = async () => {
-  if (!user) {
-    setLoginPrompt("review");
-    return;
-  }
-
-  const base64Images = await Promise.all(
-    newReview.images.map(file => toBase64(file))
-  );
-
-  const res = await fetch(
-    `https://capital-store-backend.vercel.app/api/reviews/${product._id}`,
-    {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        rating: newReview.rating,
-        text: newReview.text,
-        images: base64Images,
-      }),
+    if (!user) {
+      setLoginPrompt("cart");
+      return;
     }
-  );
 
-  const data = await res.json();
+    const sizeToAdd = isUnstitched ? "FREE" : selectedSize;
 
-  if (res.ok) {
-    setReviews([data, ...reviews]);
-    setNewReview({ rating: 0, text: "", images: [] });
-    setShowReviewForm(false);
-  } else {
-    console.error(data);
-  }
-};
-
-  const handleDeleteReview = async (reviewId) => {
-  if (!window.confirm("Delete your review?")) return;
-
-  const res = await fetch(
-    `https://capital-store-backend.vercel.app/api/reviews/${reviewId}`,
-    {
-      method: "DELETE",
-      credentials: "include",
+    if (!sizeToAdd) {
+      alert("Please select a size");
+      return;
     }
-  );
 
-  const data = await res.json();
-
-  if (res.ok) {
-    setReviews(reviews.filter(r => r._id !== reviewId));
-  } else {
-    alert(data.message);
-  }
-};
-
-  // Handle image selection
-  const handleImageChange = (e) => {
-    const files = Array.from(e.target.files);
-    setNewReview({ ...newReview, images: files });
+    addToCart(product, sizeToAdd);
+    setAdded(true);
   };
 
+  const overallRating =
+    reviews.length > 0
+      ? (
+          reviews.reduce((sum, r) => sum + r.rating, 0) /
+          reviews.length
+        ).toFixed(1)
+      : 0;
 
   return (
     <>
@@ -232,19 +174,23 @@ const [selectedSize, setSelectedSize] = useState(null);
       </AnimatePresence>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 mt-5 mb-24">
-
         {/* BREADCRUMB */}
         <div className="text-gray-500 text-sm mb-6">
-          <Link to="/" className="hover:text-[#4D192B]">Home</Link> /{" "}
-          <Link to={`/${product.category.toLowerCase()}`} className="hover:text-[#4D192B]">
+          <Link to="/" className="hover:text-[#4D192B]">
+            Home
+          </Link>{" "}
+          /{" "}
+          <Link
+            to={`/${product.category.toLowerCase()}`}
+            className="hover:text-[#4D192B]"
+          >
             {product.category}
-          </Link> /{" "}
-          <span className="font-semibold">{product.name}</span>
+          </Link>{" "}
+          / <span className="font-semibold">{product.name}</span>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-
-          {/* ================= LEFT: IMAGES ================= */}
+          {/* LEFT IMAGES */}
           <div>
             <Swiper
               modules={[Navigation, Pagination, Thumbs]}
@@ -255,7 +201,10 @@ const [selectedSize, setSelectedSize] = useState(null);
             >
               {media.map((item, i) => (
                 <SwiperSlide key={i}>
-                  <div onClick={() => openLightbox(i)} className="cursor-zoom-in">
+                  <div
+                    onClick={() => openLightbox(i)}
+                    className="cursor-zoom-in"
+                  >
                     {item.type === "image" ? (
                       <img
                         src={item.src}
@@ -273,7 +222,6 @@ const [selectedSize, setSelectedSize] = useState(null);
               ))}
             </Swiper>
 
-            {/* THUMBNAILS */}
             <Swiper
               onSwiper={setThumbsSwiper}
               modules={[FreeMode, Thumbs]}
@@ -286,85 +234,105 @@ const [selectedSize, setSelectedSize] = useState(null);
               {media.map((item, i) => (
                 <SwiperSlide key={i}>
                   {item.type === "image" ? (
-                    <img src={item.src} className="h-20 rounded-xl object-cover" />
+                    <img
+                      src={item.src}
+                      className="h-20 rounded-xl object-cover"
+                    />
                   ) : (
-                    <video src={item.src} muted className="h-20 rounded-xl object-cover" />
+                    <video
+                      src={item.src}
+                      muted
+                      className="h-20 rounded-xl object-cover"
+                    />
                   )}
                 </SwiperSlide>
               ))}
             </Swiper>
           </div>
 
-          {/* ================= RIGHT: INFO ================= */}
+          {/* RIGHT DETAILS */}
           <div>
             <h1 className="text-3xl font-bold text-[#4D192B]">
               {product.name}
             </h1>
 
-            {/* RATING */}
             <div className="flex gap-1 mt-2">
               {[...Array(5)].map((_, i) => (
                 <FaStar
                   key={i}
-                  className={i < product.rating ? "text-yellow-500" : "text-gray-300"}
+                  className={
+                    i < product.rating
+                      ? "text-yellow-500"
+                      : "text-gray-300"
+                  }
                 />
               ))}
             </div>
 
             {/* PRICE */}
             <div className="mt-4 flex items-center gap-4">
-  {product.discountedPrice > 0 &&
-  product.discountedPrice < product.originalPrice ? (
-    <>
-      <span className="text-3xl font-bold">
-        ₹{product.discountedPrice}
-      </span>
-      <span className="line-through text-gray-400">
-        ₹{product.originalPrice}
-      </span>
-      <span className="text-red-600 font-semibold">
-        {product.discountPercent}% OFF
-      </span>
-    </>
-  ) : (
-    <span className="text-3xl font-bold">
-      ₹{product.originalPrice}
-    </span>
-  )}
+              {product.discountedPrice > 0 &&
+              product.discountedPrice < product.originalPrice ? (
+                <>
+                  <span className="text-3xl font-bold">
+                    ₹{product.discountedPrice}
+                  </span>
+                  <span className="line-through text-gray-400">
+                    ₹{product.originalPrice}
+                  </span>
+                  <span className="text-red-600 font-semibold">
+                    {product.discountPercent}% OFF
+                  </span>
+                </>
+              ) : (
+                <span className="text-3xl font-bold">
+                  ₹{product.originalPrice}
+                </span>
+              )}
+            </div>
 
-</div>
-            {/* SIZE SELECTION */}
-<div className="mt-6">
-  <p className="font-semibold text-[#4D192B] mb-2">Select Size</p>
+            {/* SIZE SECTION */}
+            <div className="mt-6">
+              {/* UNSTITCHED → ONLY FREE SIZE BADGE */}
+              {isUnstitched ? (
+                <div className="px-5 py-2 inline-block rounded-full border bg-[#4D192B] text-white font-semibold">
+                  Free Size
+                </div>
+              ) : (
+                <>
+                  <p className="font-semibold text-[#4D192B] mb-2">
+                    Select Size
+                  </p>
 
-  <div className="flex gap-3 flex-wrap">
-    {sizes.map((size) => (
-      <button
-        key={size}
-        onClick={() => setSelectedSize(size)}
-        className={`
-          px-4 py-2 rounded-full border font-semibold text-sm
-          ${
-            selectedSize === size
-              ? "bg-[#4D192B] text-white border-[#4D192B]"
-              : "bg-white text-[#4D192B] border-gray-300 hover:border-[#4D192B]"
-          }
-        `}
-      >
-        {size}
-      </button>
-    ))}
-  </div>
+                  <div className="flex gap-3 flex-wrap">
+                    {sizes.map((size) => (
+                      <button
+                        key={size}
+                        onClick={() => setSelectedSize(size)}
+                        className={`px-4 py-2 rounded-full border font-semibold text-sm ${
+                          selectedSize === size
+                            ? "bg-[#4D192B] text-white border-[#4D192B]"
+                            : "bg-white text-[#4D192B] border-gray-300 hover:border-[#4D192B]"
+                        }`}
+                      >
+                        {size}
+                      </button>
+                    ))}
+                  </div>
 
-  {!selectedSize && (
-    <p className="text-xs text-red-500 mt-2">
-      Please select a size
-    </p>
-  )}
-</div>
+                  {!selectedSize && (
+                    <p className="text-xs text-red-500 mt-2">
+                      Please select a size
+                    </p>
+                  )}
+                </>
+              )}
+            </div>
 
-
-            <p className="mt-4 text-gray-700" style={{ whiteSpace: 'pre-line' }}>
+            <p
+              className="mt-4 text-gray-700"
+              style={{ whiteSpace: "pre-line" }}
+            >
               {product.description}
             </p>
 
@@ -373,7 +341,7 @@ const [selectedSize, setSelectedSize] = useState(null);
               className="flex gap-2 mt-5 text-[#4D192B]"
               onClick={() => {
                 if (!user) {
-                  setLoginPrompt('wishlist');
+                  setLoginPrompt("wishlist");
                   return;
                 }
                 toggleWishlist(product);
@@ -383,7 +351,7 @@ const [selectedSize, setSelectedSize] = useState(null);
               {liked ? "Wishlisted" : "Add to Wishlist"}
             </button>
 
-            {/* CART */}
+            {/* CART BUTTON */}
             <div className="mt-6">
               {added ? (
                 <Link to="/cart">
@@ -391,407 +359,25 @@ const [selectedSize, setSelectedSize] = useState(null);
                     Go to Cart
                   </button>
                 </Link>
-              ) : qty === 0 ? (
-                <button
-  onClick={handleAddToCart}
-  disabled={!selectedSize}
-  className={`px-8 py-3 rounded-full text-white
-    ${selectedSize ? "bg-[#4D192B]" : "bg-gray-400 cursor-not-allowed"}
-  `}
->
-  Add to Cart
-</button>
-
               ) : (
-                <div className="flex gap-6 bg-[#4D192B] text-white px-6 py-3 rounded-full w-fit">
-                  <button onClick={() => setQty(qty - 1)}>-</button>
-                  <span>{qty}</span>
-                  <button onClick={() => setQty(qty + 1)}>+</button>
-                </div>
+                <button
+                  onClick={handleAddToCart}
+                  disabled={!isUnstitched && !selectedSize}
+                  className={`px-8 py-3 rounded-full text-white ${
+                    isUnstitched || selectedSize
+                      ? "bg-[#4D192B]"
+                      : "bg-gray-400 cursor-not-allowed"
+                  }`}
+                >
+                  Add to Cart
+                </button>
               )}
             </div>
-            {/* ================= POLICY NOTICE ================= */}
-<div className="mt-6 bg-[#fff4f6] border border-[#4D192B]/20 rounded-xl p-4 text-sm text-gray-700">
-  <p className="font-medium text-[#4D192B] mb-1">
-    Please Note
-  </p>
-
-  <p className="leading-relaxed">
-    Before placing your order, we recommend reviewing our{" "}
-    <Link
-      to="/shipping-policy"
-      className="text-[#4D192B] font-semibold hover:underline"
-    >
-      Shipping Policy
-    </Link>{" "}
-    and{" "}
-    <Link
-      to="/return-refund-policy"
-      className="text-[#4D192B] font-semibold hover:underline"
-    >
-      Return, Exchange & Refund Policy
-    </Link>{" "}
-    for delivery timelines, eligibility, and terms.
-  </p>
-</div>
-
           </div>
         </div>
-      </div>
-
-      {/* ================= REVIEWS SECTION ================= */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 mb-12">
-        <h2 className="text-2xl font-bold text-[#4D192B] mb-6">Customer Reviews</h2>
-
-        {/* OVERALL RATING */}
-        <div className="bg-gray-50 p-6 rounded-2xl mb-8">
-          <div className="flex items-center gap-4">
-            <div className="text-4xl font-bold text-[#4D192B]">{overallRating}</div>
-            <div>
-              <div className="flex gap-1 mb-1">
-                {[...Array(5)].map((_, i) => (
-                  <FaStar
-                    key={i}
-                    className={i < Math.floor(overallRating) ? "text-yellow-500" : "text-gray-300"}
-                  />
-                ))}
-              </div>
-              <p className="text-gray-600">Based on {reviews.length} reviews</p>
-            </div>
-          </div>
-        </div>
-
-        {/* WRITE REVIEW BUTTON */}
-        <div className="mb-8">
-          <button
-            onClick={() => {
-              if (!user) {
-                setLoginPrompt('review');
-                return;
-              }
-              setShowReviewForm(!showReviewForm);
-            }}
-            className="px-6 py-3 bg-[#4D192B] text-white rounded-full font-semibold hover:bg-[#3b0b11] transition-colors"
-          >
-            {showReviewForm ? "Cancel Review" : "Write a Review"}
-          </button>
-        </div>
-
-        {/* REVIEW FORM */}
-        {showReviewForm && user && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="bg-white border border-gray-200 p-6 rounded-2xl mb-8 shadow-lg"
-          >
-            <h3 className="text-lg font-semibold mb-4">Write Your Review</h3>
-
-            {/* RATING */}
-            <div className="mb-4">
-              <label className="block text-sm font-medium mb-2">Rating</label>
-              <div className="flex gap-1">
-                {[...Array(5)].map((_, i) => (
-                  <FaStar
-                    key={i}
-                    className={`cursor-pointer text-2xl ${i < newReview.rating ? "text-yellow-500" : "text-gray-300"}`}
-                    onClick={() => setNewReview({ ...newReview, rating: i + 1 })}
-                  />
-                ))}
-              </div>
-            </div>
-
-            {/* TEXT */}
-            <div className="mb-4">
-              <label className="block text-sm font-medium mb-2">Review</label>
-              <textarea
-                value={newReview.text}
-                onChange={(e) => setNewReview({ ...newReview, text: e.target.value })}
-                className="w-full p-3 border border-gray-300 rounded-lg resize-none"
-                rows={4}
-                placeholder="Share your thoughts about this product..."
-              />
-            </div>
-
-            {/* IMAGES */}
-            <div className="mb-4">
-              <label className="block text-sm font-medium mb-2">Images (optional)</label>
-              <input
-                type="file"
-                multiple
-                accept="image/*"
-                onChange={handleImageChange}
-                className="w-full p-2 border border-gray-300 rounded-lg"
-              />
-              {newReview.images.length > 0 && (
-                <div className="flex gap-2 mt-2">
-                  {newReview.images.map((file, i) => (
-                    <img
-                      key={i}
-                      src={URL.createObjectURL(file)}
-                      alt="Preview"
-                      className="w-16 h-16 object-cover rounded-lg"
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* SUBMIT */}
-            <button
-              onClick={handleSubmitReview}
-              disabled={newReview.rating === 0 || newReview.text.trim() === ""}
-              className="px-6 py-2 bg-[#4D192B] text-white rounded-full font-semibold disabled:bg-gray-300 disabled:cursor-not-allowed"
-            >
-              Submit Review
-            </button>
-          </motion.div>
-        )}
-
-        {/* REVIEWS LIST */}
-       {/* REVIEWS LIST */}
-<div className="space-y-6">
-  {reviews.map((review) => {
-    const isOwner =
-      user && (review.user === user._id || review.user?._id === user._id);
-
-    return (
-      
-
-      <div
-        key={review._id}
-        className="bg-white border border-gray-200 p-6 rounded-2xl shadow-sm"
-      >
-        {isOwner && (
-  <span className="text-md bg-green-100 text-green-700 px-2 py-1 rounded-full mb-5 inline-block">
-    Your Review
-  </span>
-)}
-        <div className="flex items-start gap-4">
-          {/* USER AVATAR */}
-          <div className="w-10 h-10 bg-[#4D192B] text-white rounded-full flex items-center justify-center font-semibold">
-            {(review.userName || "U").charAt(0).toUpperCase()}
-          </div>
-
-          <div className="flex-1">
-            {/* HEADER */}
-            <div className="flex items-center gap-2 mb-2">
-              <h4 className="font-semibold">
-                {review.userName || "Anonymous"}
-              </h4>
-
-              {/* RATING */}
-              <div className="flex gap-1">
-                {[...Array(5)].map((_, i) => (
-                  <FaStar
-                    key={i}
-                    className={
-                      i < review.rating ? "text-yellow-500" : "text-gray-300"
-                    }
-                  />
-                ))}
-              </div>
-
-              <span className="text-sm text-gray-500">
-                {new Date(review.createdAt).toLocaleDateString()}
-              </span>
-            </div>
-
-            {/* REVIEW TEXT */}
-            <p className="text-gray-700 mb-4">{review.text}</p>
-
-            {/* REVIEW IMAGES */}
-            {review.images?.length > 0 && (
-              <div className="flex gap-2 mb-3">
-                {review.images.map((img, i) => (
-                  <img
-                    key={i}
-                    src={img}
-                    alt="Review"
-                    className="w-20 h-20 object-cover rounded-lg cursor-pointer hover:opacity-80 transition-opacity"
-                    onClick={() => openReviewLightbox(review.images, i)}
-                  />
-                ))}
-              </div>
-            )}
-
-            {/* DELETE BUTTON (OWNER ONLY) */}
-            {isOwner && (
-              <button
-                onClick={() => handleDeleteReview(review._id)}
-                className="text-sm rounded-xl  text-red-700 hover:underline cursor-pointer "
-              >
-                Delete Review
-              </button>
-            )}
-          </div>
-        </div>
-      </div>
-    );
-  })}
-</div>
-
       </div>
 
       <Footer />
-
-      {/* LIGHTBOX */}
-      <AnimatePresence>
-        {lightboxOpen && (
-          <motion.div
-            className="fixed inset-0 bg-black/90 z-[2000] flex items-center justify-center"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setLightboxOpen(false)}
-          >
-            <motion.div
-              className="relative max-w-4xl max-h-full p-4"
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* CLOSE BUTTON */}
-              <button
-                onClick={() => setLightboxOpen(false)}
-                className="absolute top-2 right-2 text-white text-2xl bg-black/50 rounded-full w-10 h-10 flex items-center justify-center"
-              >
-                ×
-              </button>
-
-              {/* MEDIA */}
-              {media[lightboxIndex]?.type === "image" ? (
-                <img
-                  src={media[lightboxIndex].src}
-                  alt="Zoomed"
-                  className="max-w-full max-h-full object-contain"
-                />
-              ) : (
-                <video
-                  src={media[lightboxIndex].src}
-                  controls
-                  className="max-w-full max-h-full object-contain"
-                />
-              )}
-
-              {/* NAVIGATION */}
-              {media.length > 1 && (
-                <>
-                  <button
-                    onClick={() => setLightboxIndex((lightboxIndex - 1 + media.length) % media.length)}
-                    className="absolute left-2 top-1/2 transform -translate-y-1/2 text-white text-2xl bg-black/50 rounded-full w-10 h-10 flex items-center justify-center"
-                  >
-                    ‹
-                  </button>
-                  <button
-                    onClick={() => setLightboxIndex((lightboxIndex + 1) % media.length)}
-                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-white text-2xl bg-black/50 rounded-full w-10 h-10 flex items-center justify-center"
-                  >
-                    ›
-                  </button>
-                </>
-              )}
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* REVIEW LIGHTBOX */}
-      <AnimatePresence>
-        {reviewLightboxOpen && (
-          <motion.div
-            className="fixed inset-0 bg-black/90 z-[2000] flex items-center justify-center"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setReviewLightboxOpen(false)}
-          >
-            <motion.div
-              className="relative max-w-4xl max-h-full p-4"
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* CLOSE BUTTON */}
-              <button
-                onClick={() => setReviewLightboxOpen(false)}
-                className="absolute top-2 right-2 text-white text-2xl bg-black/50 rounded-full w-10 h-10 flex items-center justify-center"
-              >
-                ×
-              </button>
-
-              {/* REVIEW IMAGE */}
-              <img
-                src={currentReviewImages[reviewLightboxIndex]}
-                alt="Review Zoomed"
-                className="max-w-full max-h-full object-contain"
-              />
-
-              {/* NAVIGATION */}
-              {currentReviewImages.length > 1 && (
-                <>
-                  <button
-                    onClick={() => setReviewLightboxIndex((reviewLightboxIndex - 1 + currentReviewImages.length) % currentReviewImages.length)}
-                    className="absolute left-2 top-1/2 transform -translate-y-1/2 text-white text-2xl bg-black/50 rounded-full w-10 h-10 flex items-center justify-center"
-                  >
-                    ‹
-                  </button>
-                  <button
-                    onClick={() => setReviewLightboxIndex((reviewLightboxIndex + 1) % currentReviewImages.length)}
-                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-white text-2xl bg-black/50 rounded-full w-10 h-10 flex items-center justify-center"
-                  >
-                    ›
-                  </button>
-                </>
-              )}
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <AnimatePresence>
-        {loginPrompt && (
-          <motion.div
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[1000] flex items-center justify-center"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setLoginPrompt(null)}
-          >
-            <motion.div
-              className="bg-white rounded-2xl p-6 m-4 max-w-sm w-full shadow-2xl"
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <h3 className="text-lg font-semibold text-[#3b0b11] mb-2">
-                Login Required
-              </h3>
-              <p className="text-gray-600 text-sm mb-4">
-                Please log in to {loginPrompt === 'review' ? 'write a review' : `access your ${loginPrompt}`}.
-              </p>
-              <div className="flex gap-3">
-                <Link
-                  to="/login"
-                  className="flex-1 bg-[#4D192B] text-white py-2 rounded-full text-center font-semibold"
-                  onClick={() => setLoginPrompt(null)}
-                >
-                  Login
-                </Link>
-                <button
-                  onClick={() => setLoginPrompt(null)}
-                  className="flex-1 border border-gray-300 py-2 rounded-full text-gray-700"
-                >
-                  Cancel
-                </button>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </>
   );
 }
