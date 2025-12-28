@@ -28,7 +28,7 @@ export default function Login() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ loginId: email, password }),
       });
 
       const data = await res.json();
@@ -106,8 +106,8 @@ export default function Login() {
             <div className="relative">
               <FiMail className="absolute left-4 top-1/2 -translate-y-1/2 text-[#4D192B]" />
               <input
-                type="email"
-                placeholder="Email Address"
+                type="text"
+                placeholder="Email or Phone"
                 className="input-premium"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}

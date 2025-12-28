@@ -23,7 +23,7 @@ export const registerUser = async (req, res) => {
       authProvider: "local",
     });
 
-    sendToken(user, res); // ✅ cookie set
+    sendToken(user, res); 
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -32,25 +32,42 @@ export const registerUser = async (req, res) => {
 /* LOGIN */
 export const loginUser = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { loginId, password } = req.body;
 
-    const user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ message: "Invalid credentials" });
+    if (!loginId || !password) {
+      return res.status(400).json({ message: "Email/Phone and password required" });
+    }
 
+    // Find by email OR phone
+    const user = await User.findOne({
+      $or: [{ email: loginId }, { phone: loginId }]
+    });
+
+    if (!user) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
+
+    // If Google-only account
     if (user.authProvider === "google") {
       return res.status(400).json({
         message: "Please login using Google",
       });
     }
 
+    // Check password
     const match = await bcrypt.compare(password, user.password);
-    if (!match) return res.status(400).json({ message: "Invalid credentials" });
+    if (!match) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
 
-    sendToken(user, res); // ✅ cookie set
+    // Success
+    sendToken(user, res);
+
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
+
 
 export const updateProfile = async (req, res) => {
   try {
