@@ -9,7 +9,7 @@ export const adminLogin = async (req, res) => {
     const admin = await Admin.findOne({ email });
     if (!admin) return res.status(401).json({ message: "Invalid credentials" });
 
-    const isMatch = await compare(password, admin.password);
+    const isMatch = password === admin.password;
     if (!isMatch) return res.status(401).json({ message: "Invalid credentials" });
 
     const token = jwt.sign(
