@@ -21,7 +21,7 @@ export default function Homepage() {
         );
         const data = await res.json();
 
-        setProducts(data.slice(0, 6));
+        setProducts(data.slice(0, 8));
       } catch (err) {
         console.error("Failed to fetch products", err);
       } finally {
