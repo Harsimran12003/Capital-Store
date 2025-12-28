@@ -256,7 +256,7 @@ const handleSave = async () => {
           <button
             type="button"
             className="flex items-center gap-2 px-7 py-3 rounded-xl bg-green-600 text-white font-semibold
-            hover:bg-green-700 transition shadow-lg"
+            hover:bg-green-700 transition shadow-lg cursor-pointer"
             onClick={handleSave}
           >
             <FiSave />

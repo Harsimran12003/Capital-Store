@@ -47,7 +47,7 @@ export default function AddSliderImages() {
     setSliders(updated);
   };
 
-  /* ✅ SAVE SLIDES (NO HOOKS HERE) */
+  /* ✅ SAVE SLIDES */
   const handleSave = async () => {
     const slides = sliders
       .filter(Boolean)
@@ -68,14 +68,26 @@ export default function AddSliderImages() {
 
   return (
     <AdminLayout>
-      {/* PAGE HEADER */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-800">
-          Hero Slider Images
-        </h1>
-        <p className="text-gray-500 mt-1">
-          Upload or replace homepage hero slider images
-        </p>
+      {/* PAGE HEADER + SAVE BUTTON */}
+      <div className="mb-8 flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-800">
+            Hero Slider Images
+          </h1>
+          <p className="text-gray-500 mt-1">
+            Upload or replace homepage hero slider images
+          </p>
+        </div>
+
+        {/* SAVE BUTTON MOVED HERE */}
+        <button
+          className="flex items-center gap-2 px-6 py-3 rounded-xl bg-green-600 text-white font-semibold
+          hover:bg-green-700 transition shadow-md cursor-pointer"
+          onClick={handleSave}
+        >
+          <FiSave />
+          Save Changes
+        </button>
       </div>
 
       {/* SLIDER GRID */}
@@ -106,8 +118,10 @@ export default function AddSliderImages() {
                 Slider Image {index + 1}
               </h3>
 
-              <label className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium rounded-xl cursor-pointer
-                bg-green-600 text-white hover:bg-green-700 transition">
+              <label
+                className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium rounded-xl cursor-pointer
+                bg-green-600 text-white hover:bg-green-700 transition"
+              >
                 <FiUpload />
                 {img ? "Replace Image" : "Upload Image"}
                 <input
@@ -122,18 +136,6 @@ export default function AddSliderImages() {
             </div>
           </div>
         ))}
-      </div>
-
-      {/* SAVE BUTTON */}
-      <div className="mt-10 flex justify-end">
-        <button
-          className="flex items-center gap-2 px-6 py-3 rounded-xl bg-green-600 text-white font-semibold
-          hover:bg-green-700 transition shadow-md"
-          onClick={handleSave}
-        >
-          <FiSave />
-          Save Changes
-        </button>
       </div>
     </AdminLayout>
   );
