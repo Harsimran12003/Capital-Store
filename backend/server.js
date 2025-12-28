@@ -16,6 +16,7 @@ import orderRoutes from "./routes/orderRoutes.js";
 // import paymentRoutes from "./routes/paymentRoutes.js";
 import shiprocketRoutes from "./routes/shiprocketRoutes.js";
 import shiprocketWebhook from "./routes/shiprocketWebhook.js";
+import adminRoutes from "./routes/adminRoutes.js";
 
 dotenv.config();
 
@@ -70,6 +71,8 @@ app.use("/api/orders", orderRoutes);
 // app.use("/api/payments", paymentRoutes);
 app.use("/api/shiprocket", shiprocketRoutes);
 app.use("/api", shiprocketWebhook);
+
+app.use("/api/admin", adminRoutes);
 
 // ✅ ROOT
 app.get("/", (req, res) => {

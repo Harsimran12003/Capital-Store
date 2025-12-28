@@ -37,6 +37,7 @@ import ShippingPolicy from "./pages/ShippingPolicy.jsx";
 import RefundExchangePolicy from "./pages/RefundExchangePolicy.jsx";
 import OrderSuccess from "./pages/OrderSuccess.jsx";
 import TrackOrder from "./pages/TrackOrder.jsx";
+import AdminLogin from "./pages/admin/AdminLogin.jsx";
 
 function App() {
   const { user, loading } = useAuth();
@@ -84,7 +85,8 @@ function App() {
 
 
           {/* Admin */}
-          <Route path="/admin" element={<Dashboard />} />
+          <Route path="/admin" element={<AdminLogin />} />
+          <Route path="/admin/dashboard" element={<Dashboard />} />
           <Route path="/admin/slider" element={<AddSliderImages />} />
           <Route path="/admin/add-product" element={<AddProduct />} />
           <Route path="/admin/products" element={<ViewProducts />} />

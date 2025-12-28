@@ -34,15 +34,22 @@ export default function AdminSidebar() {
 
 
   const navLinkClass = ({ isActive }) =>
-    `group relative flex items-center gap-4 px-5 py-3 rounded-xl transition-all duration-300
-     ${
-       isActive
-         ? "bg-white/15 text-white shadow-lg backdrop-blur-md"
-         : "text-[#F5E9ED] hover:bg-white/10"
-     }`;
+  `group relative flex items-center ${
+    collapse ? "justify-center px-0" : "gap-4 px-5"
+  } py-3 rounded-xl transition-all duration-300
+   ${
+     isActive
+       ? "bg-white/15 text-white shadow-lg backdrop-blur-md"
+       : "text-[#F5E9ED] hover:bg-white/10"
+   }`;
 
-  const iconClass =
-    "p-2 rounded-lg bg-white/10 text-[#F5E9ED] group-hover:bg-white/20 shrink-0";
+
+  const iconClass = `
+  p-2 rounded-lg bg-white/10 text-[#F5E9ED]
+  group-hover:bg-white/20 shrink-0
+  ${collapse ? "mx-auto" : ""}
+`;
+
 
   return (
     <>
@@ -171,7 +178,7 @@ export default function AdminSidebar() {
             <Link
               to="/"
               className="group relative flex items-center gap-4 px-4 py-3 rounded-xl
-              bg-white/10 hover:bg-white/20 text-[#F5E9ED] w-full transition"
+               text-[#F5E9ED] w-full transition"
             >
               <span className="p-2 rounded-lg bg-white/15">
                 <FiLogOut />

@@ -4,34 +4,25 @@ import AdminLayout from "./AdminLayout";
 export default function Dashboard() {
   return (
     <AdminLayout>
-      {/* HEADER */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-800">
-          Admin Dashboard
+      <div className="flex flex-col items-center justify-center py-16 text-center">
+        
+        {/* LOGO */}
+        <img 
+          src="./logo.png" 
+          alt="Capital Store Logo"
+          className="w-32 h-32 object-contain mb-6"
+        />
+
+        {/* TITLE */}
+        <h1 className="text-4xl font-extrabold text-gray-800">
+          Welcome to <span className="text-[#4D192B]">Admin Panel</span>
         </h1>
-        <p className="text-gray-500 mt-1">
-          Welcome back, manage your store efficiently
+
+        {/* SUBTITLE */}
+        <p className="text-gray-600 mt-3 text-lg">
+          Manage your products, orders, and website content with ease.
         </p>
-      </div>
-
-      {/* STATS */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-       
-      </div>
-
-      {/* RECENT ACTIVITY */}
-      <div className="mt-10 bg-white rounded-2xl shadow p-6">
-        <h2 className="text-xl font-semibold mb-4">
-          Recent Activity
-        </h2>
-
-        <ul className="space-y-3 text-gray-600 text-sm">
-          <li>✔ New product added</li>
-          <li>✔ Order #1023 placed</li>
-          <li>✔ Slider image updated</li>
-        </ul>
       </div>
     </AdminLayout>
   );
 }
-
