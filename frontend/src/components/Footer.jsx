@@ -148,15 +148,15 @@ export default function Footer() {
 </motion.li>
 
               <motion.li whileHover={{ x: 4 }}>
-  <a
-    href="https://www.google.com/maps/search/?api=1&query=Capital+Store+Ghass+Mandi+Ludhiana+Punjab"
-    target="_blank"
-    rel="noopener noreferrer"
-    className="hover:text-[#4D192B]"
-  >
-    Address: B-IV, Capital Store, Ghass Mandi, Ludhiana, Punjab, 141008
-  </a>
-</motion.li>
+                <a
+                  href="https://www.google.com/maps/search/?api=1&query=Capital+Store+Ghass+Mandi+Ludhiana+Punjab"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-[#4D192B]"
+                >
+                  Address: B-IV, Capital Store, Ghass Mandi, Chaura Bazar, Ludhiana, Punjab, 141008
+                </a>
+              </motion.li>
 
             </ul>
           </div>
