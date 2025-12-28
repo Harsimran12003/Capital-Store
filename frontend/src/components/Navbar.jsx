@@ -355,11 +355,7 @@ export default function Navbar() {
 
               <div className="mb-4">
                 <div className="relative">
-                  <FiSearch className="absolute left-3 top-3 text-gray-400" />
-                  <input
-                    placeholder="Search in store..."
-                    className="w-full pl-10 pr-3 py-3 rounded-lg border border-[#f0e7df] bg-white text-sm outline-none shadow-sm"
-                  />
+                  
                 </div>
               </div>
 
