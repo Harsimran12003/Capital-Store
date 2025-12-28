@@ -73,10 +73,20 @@ const handleSave = async () => {
     body: JSON.stringify(payload),
   });
 
-  alert("Product added successfully");
-  setForm(initialForm);
-  setImages(initialImages);
+  alert("✅ Product added successfully");
+
+  setForm({
+    name: "",
+    description: "",
+    originalPrice: "",
+    discountedPrice: "",
+    category: "",
+    subCategory: "",
+  });
+
+  setImages(Array(5).fill(null));
   setVideo(null);
+
 };
 
   return (
