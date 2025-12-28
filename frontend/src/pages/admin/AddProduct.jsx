@@ -172,7 +172,7 @@ const handleSave = async () => {
               <select className="mt-2 w-full px-4 py-3 border rounded-xl " name="subCategory" onChange={handleChange}>
                 <option value="">Select sub-category</option>
                 <option>Cotton</option>
-                <option>Winter Wear</option>
+                <option>Winter</option>
                 <option>Partywear</option>
               </select>
             </div>
