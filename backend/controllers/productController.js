@@ -66,32 +66,44 @@ export const updateProduct = async (req, res) => {
     if (!product)
       return res.status(404).json({ message: "Product not found" });
 
-    const newImages = req.files?.map((file) => file.path) || [];
+    const {
+      name,
+      description,
+      originalPrice,
+      discountedPrice,
+      category,
+      subCategory,
+      images,
+      video,
+    } = req.body;
 
-    const updatedImages = req.body.images
-      ? JSON.parse(req.body.images) // existing images from frontend
-      : product.images;
+    product.name = name;
+    product.description = description;
+    product.originalPrice = originalPrice;
+    product.discountedPrice = discountedPrice;
+    product.category = category;
+    product.subCategory = subCategory;
+    product.images = images || product.images;
+    product.video = video || product.video;
 
-    product.images = [...updatedImages, ...newImages];
-
-    Object.assign(product, req.body);
-
-    // discount recalculation
+    // Recalculate discount percent
     if (
-      product.originalPrice &&
-      product.discountedPrice &&
-      product.originalPrice > product.discountedPrice
+      originalPrice &&
+      discountedPrice &&
+      originalPrice > discountedPrice
     ) {
       product.discountPercent = Math.round(
-        ((product.originalPrice - product.discountedPrice) /
-          product.originalPrice) *
-          100
+        ((originalPrice - discountedPrice) / originalPrice) * 100
       );
+    } else {
+      product.discountPercent = 0;
     }
 
     await product.save();
+
     res.json(product);
   } catch (err) {
+    console.error("Update product error:", err);
     res.status(500).json({ message: err.message });
   }
 };
