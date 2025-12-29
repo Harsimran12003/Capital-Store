@@ -135,14 +135,14 @@ export default function HeroSlider() {
         <>
           <button
             onClick={goPrev}
-            className="absolute top-1/2 left-6 -translate-y-1/2 bg-black/30 p-3 rounded-full text-white"
+            className="absolute top-1/2 left-6 -translate-y-1/2 bg-black/30 p-3 rounded-full text-white cursor-pointer"
           >
             <FiChevronLeft size={26} />
           </button>
 
           <button
             onClick={goNext}
-            className="absolute top-1/2 right-6 -translate-y-1/2 bg-black/30 p-3 rounded-full text-white"
+            className="absolute top-1/2 right-6 -translate-y-1/2 bg-black/30 p-3 rounded-full text-white cursor-pointer"
           >
             <FiChevronRight size={26} />
           </button>

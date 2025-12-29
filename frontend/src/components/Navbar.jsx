@@ -182,7 +182,7 @@ export default function Navbar() {
     }}
     className="relative"
   >
-    <FiHeart className="text-xl text-gray-800" />
+    <FiHeart className="text-xl text-gray-800 cursor-pointer" />
     <span className="absolute -top-1 -right-2 bg-[#AF1238] text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">
       {wishlistCount}
     </span>
@@ -200,7 +200,7 @@ export default function Navbar() {
     }}
     className="relative"
   >
-    <FiShoppingCart className="text-xl text-gray-800" />
+    <FiShoppingCart className="text-xl text-gray-800 cursor-pointer" />
     <span className="absolute -top-1 -right-2 bg-green-600 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">
       {cartCount}
     </span>

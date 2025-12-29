@@ -68,7 +68,7 @@ export default function ProductCard({ product }) {
             {/* HEART */}
             <button
               onClick={handleLike}
-              className="absolute top-2 right-2 sm:top-3 sm:right-3 bg-white/90 p-2 rounded-full shadow-md"
+              className="absolute top-2 right-2 sm:top-3 sm:right-3 bg-white/90 p-2 rounded-full shadow-md cursor-pointer"
             >
               <FiHeart
                 size={18}
@@ -135,7 +135,7 @@ export default function ProductCard({ product }) {
                 <Link
                   to="/cart"
                   onClick={(e) => e.stopPropagation()}
-                  className="bg-green-600 text-white px-3 py-1.5 rounded-full text-xs sm:text-sm flex items-center gap-1 shadow"
+                  className="bg-green-600 text-white px-3 py-1.5 rounded-full text-xs sm:text-sm flex items-center gap-1 shadow cursor-pointer"
                 >
                   <FiShoppingCart size={14} />
                   Go to Cart
@@ -143,7 +143,7 @@ export default function ProductCard({ product }) {
               ) : (
                 <button
                   onClick={handleAddToCart}
-                  className="bg-[#4D192B] text-white px-3 py-1.5 rounded-full text-xs sm:text-sm flex items-center gap-1 shadow"
+                  className="bg-[#4D192B] text-white px-3 py-1.5 rounded-full text-xs sm:text-sm flex items-center gap-1 shadow cursor-pointer"
                 >
                   <FiShoppingCart size={14} />
                   Add

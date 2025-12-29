@@ -59,7 +59,7 @@ export default function WhatsAppToggle() {
         onClick={() => setOpen(!open)}
         whileHover={{ scale: 1.15 }}
         whileTap={{ scale: 0.9 }}
-        className="p-3 rounded-full shadow-xl text-white flex items-center justify-center"
+        className="p-3 rounded-full shadow-xl text-white flex items-center justify-center cursor-pointer"
         style={{ background: "#25D366" }}
       >
         <FaWhatsapp size={22} />
@@ -78,7 +78,7 @@ export default function WhatsAppToggle() {
         }}
         transition={{ duration: 2, repeat: Infinity }}
         onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-        className="p-3 rounded-full bg-[#4D192B] text-white shadow-xl"
+        className="p-3 rounded-full bg-[#4D192B] text-white shadow-xl cursor-pointer"
       >
         <FiArrowUp size={22} />
       </motion.button>
