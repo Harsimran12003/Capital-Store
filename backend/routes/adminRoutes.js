@@ -8,7 +8,7 @@ router.post("/login", adminLogin);
 router.get("/check", verifyAdmin, (req, res) => {
   res.json({ message: "Authorized" });
 });
-router.put("/admin/update-credentials", updateAdminCredentials);
+router.put("/update-credentials", updateAdminCredentials);
 
 
 export default router;
