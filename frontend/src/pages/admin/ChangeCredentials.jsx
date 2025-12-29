@@ -7,33 +7,41 @@ export default function ChangeCredentials() {
   const [newPassword, setNewPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleUpdate = async () => {
-    try {
-      setLoading(true);
+const handleUpdate = async () => {
+  try {
+    setLoading(true);
 
-      const res = await fetch(
-        "https://capital-store-backend.vercel.app/api/admin/update-credentials",
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-          body: JSON.stringify({
-            email,
-            oldPassword,
-            newPassword,
-          }),
-        }
-      );
+    const res = await fetch(
+      "https://capital-store-backend.vercel.app/api/admin/update-credentials",
+      {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          email,
+          oldPassword,
+          newPassword,
+        }),
+      }
+    );
 
-      const data = await res.json();
+    const data = await res.json();
+    alert(data.message);
 
-      alert(data.message);
-    } catch (err) {
-      alert("Something went wrong");
-    } finally {
-      setLoading(false);
+    if (res.ok) {
+      
+      setEmail("");
+      setOldPassword("");
+      setNewPassword("");
     }
-  };
+
+  } catch (err) {
+    alert("Something went wrong");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <AdminLayout>
@@ -84,7 +92,7 @@ export default function ChangeCredentials() {
           <button
             onClick={handleUpdate}
             disabled={loading}
-            className="px-6 py-3 rounded-xl bg-[#4D192B] text-white hover:bg-[#3b1020] transition"
+            className="px-6 py-3 rounded-xl bg-[#4D192B] text-white hover:bg-[#3b1020] transition cursor-pointer"
           >
             {loading ? "Updating..." : "Update Credentials"}
           </button>
