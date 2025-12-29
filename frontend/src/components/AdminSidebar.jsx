@@ -8,6 +8,7 @@ import {
   FiLogOut,
   FiMenu,
   FiX,
+  FiSettings,
 } from "react-icons/fi";
 
 export default function AdminSidebar() {
@@ -33,23 +34,23 @@ export default function AdminSidebar() {
 };
 
 
-  const navLinkClass = ({ isActive }) =>
-  `group relative flex items-center ${
-    collapse ? "justify-center px-0" : "gap-4 px-5"
-  } py-3 rounded-xl transition-all duration-300
-   ${
-     isActive
-       ? "bg-white/15 text-white shadow-lg backdrop-blur-md"
-       : "text-[#F5E9ED] hover:bg-white/10"
-   }`;
+    const navLinkClass = ({ isActive }) =>
+      `group relative flex items-center
+      ${collapse ? "md:justify-center md:px-0 gap-3 px-4" : "gap-3 px-4"}
+      py-2.5 rounded-lg transition-all duration-300
+      ${
+        isActive
+          ? "bg-white/15 text-white shadow-lg backdrop-blur-md"
+          : "text-[#F5E9ED] hover:bg-white/10"
+      }`;
 
 
-  const iconClass = `
-  p-2 rounded-lg bg-white/10 text-[#F5E9ED]
-  group-hover:bg-white/20 shrink-0
-  ${collapse ? "mx-auto" : ""}
-`;
 
+      const iconClass = `
+      p-1.5 rounded-lg bg-white/10 text-[#F5E9ED]
+      group-hover:bg-white/20 shrink-0
+      ${collapse ? "md:mx-auto" : ""}
+    `;
 
   return (
     <>
@@ -83,7 +84,7 @@ export default function AdminSidebar() {
       >
         <div className="flex flex-col h-full">
           {/* Header */}
-          <div className="px-6 py-7 border-b border-white/10 flex items-center gap-4">
+          <div className="px-5 py-4 border-b border-white/10 flex items-center gap-4">
             <div className="h-12 w-12 rounded-xl bg-white/15 flex items-center justify-center">
               <img
                 src="/logo.png"
@@ -118,7 +119,8 @@ export default function AdminSidebar() {
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 px-4 py-8 space-y-3">
+          <nav className="flex-1 px-3 py-4 space-y-2">
+
             <NavLink to="/admin/slider" className={navLinkClass}>
               <span className={iconClass}>
                 <FiImage />
@@ -171,26 +173,48 @@ export default function AdminSidebar() {
                 </span>
               )}
             </NavLink>
+
+                        <NavLink to="/admin/change-credentials" className={navLinkClass}>
+              <span className={iconClass}>
+                <FiSettings />
+              </span>
+              {!collapse && "Admin Credentials"}
+
+              {collapse && (
+                <span className="absolute left-full ml-3 px-3 py-1 rounded-md bg-black text-white text-xs opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap">
+                  Admin Credentials
+                </span>
+              )}
+            </NavLink>
           </nav>
 
           {/* Footer */}
           <div className="px-5 py-6 border-t border-white/10">
-            <Link
-              to="/"
-              className="group relative flex items-center gap-4 px-4 py-3 rounded-xl
-               text-[#F5E9ED] w-full transition"
-            >
-              <span className="p-2 rounded-lg bg-white/15">
-                <FiLogOut />
-              </span>
-              {!collapse && "Logout"}
+           <Link
+  to="/"
+  className="group relative flex items-center gap-4 px-4 py-3 rounded-xl
+   text-[#F5E9ED] w-full transition"
+>
+  <span className="p-2 rounded-lg bg-white/15">
+    <FiLogOut />
+  </span>
 
-              {collapse && (
-                <span className="absolute left-full ml-3 px-3 py-1 rounded-md bg-black text-white text-xs opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap">
-                  Logout
-                </span>
-              )}
-            </Link>
+  {/* Text visible:
+      - Always on mobile
+      - On desktop when NOT collapsed
+  */}
+  <span className={`${collapse ? "hidden md:hidden" : "inline md:inline"}`}>
+    Logout
+  </span>
+
+  {/* Tooltip only for collapsed desktop */}
+  {collapse && (
+    <span className="absolute left-full ml-3 px-3 py-1 rounded-md bg-black text-white text-xs opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap">
+      Logout
+    </span>
+  )}
+</Link>
+
 
             {!collapse && (
               <p className="text-[11px] text-[#D8BFC7] mt-4 text-center tracking-wide">

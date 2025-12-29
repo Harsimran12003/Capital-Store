@@ -38,6 +38,7 @@ import RefundExchangePolicy from "./pages/RefundExchangePolicy.jsx";
 import OrderSuccess from "./pages/OrderSuccess.jsx";
 import TrackOrder from "./pages/TrackOrder.jsx";
 import AdminLogin from "./pages/admin/AdminLogin.jsx";
+import ChangeCredentials from "./pages/admin/ChangeCredentials.jsx";
 
 function App() {
   const { user, loading } = useAuth();
@@ -90,6 +91,7 @@ function App() {
           <Route path="/admin/slider" element={<AddSliderImages />} />
           <Route path="/admin/add-product" element={<AddProduct />} />
           <Route path="/admin/products" element={<ViewProducts />} />
+          <Route path="/admin/change-credentials" element={<ChangeCredentials />} />
 
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms-of-service" element={<TermsOfService />} />
