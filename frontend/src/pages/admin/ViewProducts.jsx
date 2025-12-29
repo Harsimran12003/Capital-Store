@@ -260,7 +260,7 @@ export default function ViewProducts() {
                                 expandedId === p._id ? null : p._id
                               )
                             }
-                            className="text-xs text-[#4D192B] hover:underline"
+                            className="text-[13px] text-[#4D192B] hover:underline cursor-pointer mt-1 "
                           >
                             {expandedId === p._id
                               ? "Hide Details"
