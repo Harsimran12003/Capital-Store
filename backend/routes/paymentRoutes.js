@@ -8,7 +8,7 @@ import {
 const router = express.Router();
 
 router.post("/phonepe/create", protect, createPhonePePayment);
-router.post("/phonepe/callback/:orderId", phonePeCallback);
+router.get("/phonepe/callback/:orderId", phonePeCallback);
 router.post("/phonepe/callback/:orderId", phonePeCallback);
 
 
