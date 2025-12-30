@@ -57,7 +57,7 @@ const orderSchema = new mongoose.Schema(
     orderStatus: {
       type: String,
       enum: ["placed", "confirmed", "shipped", "delivered"],
-      default: "placed",
+      
     },
     shipment: {
       shiprocket_order_id: String,
