@@ -96,6 +96,8 @@ export const phonePeCallback = async (req, res) => {
         },
       }
     );
+    console.log("PHONEPE STATUS RAW ---->");
+console.log(JSON.stringify(status.data, null, 2));
 
     const state = status?.data?.payload?.state;
 
