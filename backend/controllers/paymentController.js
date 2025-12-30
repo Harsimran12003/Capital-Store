@@ -1,139 +1,103 @@
-import crypto from "crypto";
 import axios from "axios";
 import Order from "../models/Order.js";
 
-const BASE_URL = process.env.PHONEPE_ENV === "PROD"
-  ? "https://api.phonepe.com/apis/hermes"
-  : "https://api-preprod.phonepe.com/apis/hermes";   // UAT
+const BASE_URL =
+  process.env.PHONEPE_ENV === "PROD"
+    ? "https://api.phonepe.com/apis/pg"
+    : "https://api-preprod.phonepe.com/apis/pg-sandbox";
 
-const merchantId = process.env.PHONEPE_MERCHANT_ID;
-const saltKey = process.env.PHONEPE_SALT_KEY;
-const saltIndex = process.env.PHONEPE_SALT_INDEX || 1;
-const backend = process.env.BACKEND_URL;
-const frontend = process.env.FRONTEND_URL;
+/* ========== GET ACCESS TOKEN ========== */
+const getPhonePeToken = async () => {
+  const res = await axios.post(
+    `${BASE_URL}/oauth/token`,
+    "grant_type=client_credentials&scope=payments",
+    {
+      auth: {
+        username: process.env.PHONEPE_CLIENT_ID,
+        password: process.env.PHONEPE_CLIENT_SECRET,
+      },
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    }
+  );
+
+  return res.data.access_token;
+};
 
 
-// ================= CREATE PAYMENT =================
+/* ========== CREATE PAYMENT SESSION ========== */
 export const createPhonePePayment = async (req, res) => {
   try {
     const { orderId, amount } = req.body;
 
-    if (!merchantId || !saltKey) {
-      return res
-        .status(500)
-        .json({ message: "PhonePe not configured" });
-    }
+    const token = await getPhonePeToken();
 
     const payload = {
-      merchantId,
       merchantTransactionId: orderId,
-      merchantUserId: req.user._id.toString(),
+      merchantUserId: "user_" + req.user._id,
       amount: amount * 100,
-      redirectUrl: `${backend}/api/payment/phonepe/callback/${orderId}`,
-      redirectMode: "POST",
-      callbackUrl: `${backend}/api/payment/phonepe/callback/${orderId}`,
+      redirectUrl: `${process.env.BACKEND_URL}/api/payment/phonepe/callback/${orderId}`,
+      callbackUrl: `${process.env.BACKEND_URL}/api/payment/phonepe/callback/${orderId}`,
       paymentInstrument: { type: "PAY_PAGE" },
     };
 
-    const base64Payload = Buffer.from(JSON.stringify(payload)).toString("base64");
-
-    const checksum =
-      crypto
-        .createHash("sha256")
-        .update(base64Payload + "/pg/v1/pay" + saltKey)
-        .digest("hex") +
-      "###" +
-      saltIndex;
-
-    const phonePeRes = await axios.post(
-      `${BASE_URL}/pg/v1/pay`,
-      { request: base64Payload },
+    const response = await axios.post(
+      `${BASE_URL}/v5/payments/initiate`,
+      payload,
       {
         headers: {
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
-          "X-VERIFY": checksum,
-          "X-MERCHANT-ID": merchantId,
         },
       }
     );
 
     return res.json({
       success: true,
-      redirectUrl: phonePeRes.data.data.instrumentResponse.redirectInfo.url,
+      redirectUrl: response.data.data.redirectUrl,
     });
 
   } catch (err) {
-    console.error("PhonePe Create Error:", err?.response?.data || err.message);
-    return res.status(500).json({
-  message: "PhonePe payment failed",
-  phonepeError: err?.response?.data || err.message
-});
+    console.log("PGV5 Create Error", err?.response?.data || err.message);
 
+    res.status(500).json({
+      message: "PhonePe payment failed",
+      phonepeError: err?.response?.data || err.message,
+    });
   }
 };
 
 
-
-// ================= VERIFY VIA STATUS API =================
+/* ========== CALLBACK + VERIFY PAYMENT ========== */
 export const phonePeCallback = async (req, res) => {
   try {
     const { orderId } = req.params;
 
-    const checksum =
-      crypto
-        .createHash("sha256")
-        .update(`/pg/v1/status/${merchantId}/${orderId}` + saltKey)
-        .digest("hex") +
-      "###" +
-      saltIndex;
+    const token = await getPhonePeToken();
 
-    const statusRes = await axios.get(
-      `${BASE_URL}/pg/v1/status/${merchantId}/${orderId}`,
+    const status = await axios.get(
+      `${BASE_URL}/v5/payments/${orderId}`,
       {
         headers: {
-          "X-VERIFY": checksum,
-          "X-MERCHANT-ID": merchantId,
-          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
       }
     );
 
-    const status = statusRes.data.data;
+    if (status.data.data.state === "COMPLETED") {
+      await Order.findByIdAndUpdate(orderId, {
+        paymentStatus: "paid",
+        orderStatus: "placed",
+      });
 
-    if (status.state === "COMPLETED") {
-  const order = await Order.findById(orderId).populate("user");
+      return res.redirect(
+        `${process.env.FRONTEND_URL}/order-summary/${orderId}`
+      );
+    }
 
-  if (!order) return res.redirect(`${frontend}/payment-failed`);
-
-  order.paymentStatus = "paid";
-  order.orderStatus = "placed";
-
-  try {
-    const ship = await createShiprocketOrder({
-      order,
-      user: order.user,
-      address: order.address
-    });
-
-    order.shipment = {
-      shiprocket_order_id: ship.order_id,
-      shipment_id: ship.shipment_id,
-      awb: ship.awb,
-      courier: ship.courier_name || "",
-      status: "created",
-    };
-  } catch (err) {
-    console.log("Shiprocket Online Failed:", err.response?.data || err.message);
-  }
-
-  await order.save();
-
-  return res.redirect(`${frontend}/order-summary/${orderId}`);
-}
-
+    return res.redirect(`${process.env.FRONTEND_URL}/payment-failed`);
 
   } catch (err) {
-    console.error("PhonePe Verify Error:", err?.response?.data || err.message);
-    res.redirect(`${frontend}/payment-failed`);
+    console.log("Callback Error", err?.response?.data || err.message);
+    res.redirect(`${process.env.FRONTEND_URL}/payment-failed`);
   }
 };

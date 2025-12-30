@@ -9,14 +9,5 @@ const router = express.Router();
 
 router.post("/phonepe/create", protect, createPhonePePayment);
 router.post("/phonepe/callback/:orderId", phonePeCallback);
-router.get("/debug", (req,res)=>{
-  res.json({
-    merchantId: process.env.PHONEPE_MERCHANT_ID,
-    saltKey: process.env.PHONEPE_SALT_KEY ? "Exists" : "Missing",
-    saltIndex: process.env.PHONEPE_SALT_INDEX,
-    env: process.env.PHONEPE_ENV
-  });
-});
-
 
 export default router;
