@@ -30,7 +30,7 @@ export const createPhonePePayment = async (req, res) => {
       merchantUserId: req.user._id.toString(),
       amount: amount * 100,
       redirectUrl: `${backend}/api/payment/phonepe/callback/${orderId}`,
-      redirectMode: "REDIRECT",
+      redirectMode: "POST",
       callbackUrl: `${backend}/api/payment/phonepe/callback/${orderId}`,
       paymentInstrument: { type: "PAY_PAGE" },
     };
