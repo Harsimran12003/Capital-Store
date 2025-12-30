@@ -13,6 +13,26 @@ router.get("/my", authMiddleware, async (req, res) => {
 
   res.json(orders);
 });
+router.get("/:id", authMiddleware, async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id);
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    // Security: user can only view their own order
+    if (order.user.toString() !== req.user._id.toString()) {
+      return res.status(401).json({ message: "Not authorized" });
+    }
+
+    res.json(order);
+  } catch (err) {
+    console.error("Get Order Error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 
 
 export default router;
