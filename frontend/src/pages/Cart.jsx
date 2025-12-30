@@ -210,7 +210,7 @@ export default function Cart() {
 
                 <div className="border-t pt-3 flex justify-between text-lg font-bold">
                   <span>Total</span>
-                  <span>₹{totalPrice + delivery}</span>
+                  <span>₹{totalPrice}</span>
                 </div>
               </div>
 
