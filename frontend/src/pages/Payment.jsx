@@ -27,9 +27,13 @@ export default function Payment() {
   const navigate = useNavigate();
 
   /* ================= PRICING ================= */
-  const mrp = cart.reduce((s, i) => s + i.originalPrice * i.qty, 0);
-  const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
-  const discount = mrp - total;
+const getPrice = (i) =>
+  i.discountedPrice > 0 ? i.discountedPrice : i.originalPrice;
+
+const mrp = cart.reduce((s, i) => s + Number(i.originalPrice || 0) * i.qty, 0);
+const total = cart.reduce((s, i) => s + Number(getPrice(i) || 0) * i.qty, 0);
+const discount = mrp - total;
+
 
   /* ================= STEPS ================= */
   const steps = [
