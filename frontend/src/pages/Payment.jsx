@@ -46,7 +46,7 @@ const discount = mrp - total;
   /* ================= PAYMENT METHODS ================= */
   const paymentMethods = [
     {
-      id: "online",
+      id: "upi",
       icon: <FaGooglePay />,
       title: "UPI / Card / NetBanking",
       desc: "PhonePe • Cards • NetBanking",
