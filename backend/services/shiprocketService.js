@@ -5,7 +5,7 @@ const SHIPROCKET_API = "https://apiv2.shiprocket.in/v1/external";
 let TOKEN_CACHE = null;
 let TOKEN_EXPIRE_TIME = null;
 
-/* ================= LOGIN (EMAIL + PASSWORD) ================= */
+/* ================= LOGIN ================= */
 export const loginShiprocket = async () => {
   if (TOKEN_CACHE && TOKEN_EXPIRE_TIME > Date.now()) {
     return TOKEN_CACHE;
@@ -13,19 +13,24 @@ export const loginShiprocket = async () => {
 
   const res = await axios.post(`${SHIPROCKET_API}/auth/login`, {
     email: process.env.SHIPROCKET_EMAIL,
-    password: process.env.SHIPROCKET_PASSWORD
+    password: process.env.SHIPROCKET_PASSWORD,
   });
 
   TOKEN_CACHE = res.data.token;
-  TOKEN_EXPIRE_TIME = Date.now() + 8 * 60 * 60 * 1000; // 8 Hours
+  TOKEN_EXPIRE_TIME = Date.now() + 8 * 60 * 60 * 1000;
 
   return TOKEN_CACHE;
 };
 
-
 /* ================= CREATE ORDER ================= */
-export const createShiprocketOrder = async ({ order, user, address }) => {
+export const createShiprocketOrder = async ({ order, user }) => {
   const token = await loginShiprocket();
+
+  if (!order?.address) {
+    throw new Error("Order has no address. Cannot create Shiprocket order.");
+  }
+
+  const addr = order.address;
 
   const payload = {
     order_id: order._id.toString(),
@@ -34,28 +39,29 @@ export const createShiprocketOrder = async ({ order, user, address }) => {
 
     channel_id: process.env.SHIPROCKET_CHANNEL_ID || "",
 
-    billing_customer_name: user.name,
+    billing_customer_name: user.name || "Customer",
     billing_last_name: "",
-    billing_address: address.addressLine,
-    billing_city: address.city,
-    billing_state: address.state,
+    billing_address: addr.addressLine,
+    billing_city: addr.city,
+    billing_state: addr.state,
     billing_country: "India",
-    billing_pincode: address.pincode,
-    billing_phone: user.phone,
+    billing_pincode: addr.pincode,
+    billing_phone: user.phone || "9999999999",
+    billing_email: user.email || "test@mail.com",
 
     shipping_is_billing: true,
 
-    order_items: order.items.map(i => ({
+    order_items: order.items.map((i) => ({
       name: i.name,
       sku: i.productId,
       units: i.qty,
-      selling_price: i.price
+      selling_price: i.price || i.originalPrice,
     })),
 
     payment_method: order.paymentMethod === "cod" ? "COD" : "Prepaid",
 
     sub_total: order.pricing.total,
-    total_discount: order.pricing.discount
+    total_discount: order.pricing.discount,
   };
 
   const res = await axios.post(
@@ -66,7 +72,6 @@ export const createShiprocketOrder = async ({ order, user, address }) => {
 
   return res.data;
 };
-
 
 /* ================= TRACK BY AWB ================= */
 export const trackShipmentByAWB = async (awb) => {
@@ -80,8 +85,7 @@ export const trackShipmentByAWB = async (awb) => {
   return res.data;
 };
 
-
-/* ================= TRACK BY SHIPROCKET ORDER ================= */
+/* ================= TRACK BY ORDER ================= */
 export const trackShipmentByOrder = async (shiprocketOrderId) => {
   const token = await loginShiprocket();
 
