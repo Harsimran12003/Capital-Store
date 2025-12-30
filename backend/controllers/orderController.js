@@ -13,6 +13,10 @@ export const createOrder = async (req, res) => {
     const { items, paymentMethod, pricing } = req.body;
     
     const address = user.addresses[user.selectedAddress];
+    console.log("Selected index:", user.selectedAddress);
+console.log("Addresses:", user.addresses);
+console.log("Picked address:", address);
+
 
     // 1️⃣ Create Order as PENDING (NOT placed yet)
     const order = await Order.create({
@@ -46,8 +50,9 @@ export const createOrder = async (req, res) => {
 
       await order.save();
     }
-
+    
     return res.status(201).json(order);
+
   } catch (err) {
     console.error("Create Order Error:", err);
     return res.status(500).json({ message: err.message });
