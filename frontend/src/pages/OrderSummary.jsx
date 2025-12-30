@@ -15,8 +15,11 @@ export default function OrderSummary() {
   const { cart } = useCart();
   const navigate = useNavigate();
 
-  const mrp = cart.reduce((s, i) => s + i.originalPrice * i.qty, 0);
-  const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  const getPrice = (i) =>
+    i.discountedPrice > 0 ? i.discountedPrice : i.originalPrice;
+
+  const mrp = cart.reduce((s, i) => s + Number(i.originalPrice || 0) * i.qty, 0);
+  const total = cart.reduce((s, i) => s + Number(getPrice(i) || 0) * i.qty, 0);
   const discount = mrp - total;
 
   const steps = [
@@ -106,9 +109,8 @@ export default function OrderSummary() {
                     Size: <b>{item.size}</b> • Qty: {item.qty}
                   </p>
 
-                  <p className="mt-2 font-bold text-lg">
-                    ₹{item.price}
-                  </p>
+                  ₹{item.discountedPrice > 0 ? item.discountedPrice : item.originalPrice}
+
                 </div>
               </motion.div>
             ))}
