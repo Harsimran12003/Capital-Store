@@ -9,7 +9,7 @@ const router = express.Router();
 
 router.post("/phonepe/create", protect, createPhonePePayment);
 router.post("/phonepe/callback/:orderId", phonePeCallback);
-router.get("/payment/debug", (req,res)=>{
+router.get("/debug", (req,res)=>{
   res.json({
     merchantId: process.env.PHONEPE_MERCHANT_ID,
     saltKey: process.env.PHONEPE_SALT_KEY ? "Exists" : "Missing",
