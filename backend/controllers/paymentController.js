@@ -103,15 +103,36 @@ console.log(JSON.stringify(status.data, null, 2));
 
 
     if (state === "COMPLETED") {
-      await Order.findByIdAndUpdate(orderId, {
-        paymentStatus: "paid",
-        orderStatus: "placed",
-      });
+  let order = await Order.findById(orderId).populate("user");
 
-      return res.redirect(
-        `${process.env.FRONTEND_URL}/order-summary/${orderId}`
-      );
-    }
+  order.paymentStatus = "paid";
+  order.orderStatus = "placed";
+
+  try {
+    const ship = await createShiprocketOrder({
+      order,
+      user: order.user,
+      address: order.address
+    });
+
+    order.shipment = {
+      shiprocket_order_id: ship.order_id,
+      shipment_id: ship.shipment_id,
+      awb: ship.awb,
+      courier: ship.courier_name || "",
+      status: "created"
+    };
+
+  } catch (err) {
+    console.log("Shiprocket Online Failed:", err.response?.data || err.message);
+  }
+
+  await order.save();
+
+  return res.redirect(
+    `${process.env.FRONTEND_URL}/order-summary/${orderId}`
+  );
+}
 
     return res.redirect(`${process.env.FRONTEND_URL}/payment-failed`);
 
