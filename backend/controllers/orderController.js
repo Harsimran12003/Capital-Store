@@ -11,38 +11,45 @@ export const createOrder = async (req, res) => {
     }
 
     const { items, paymentMethod, pricing } = req.body;
+    
     const address = user.addresses[user.selectedAddress];
 
-    // Create DB Order
+    // 1️⃣ Create Order as PENDING (NOT placed yet)
     const order = await Order.create({
       user: user._id,
       items,
       address,
       paymentMethod,
       pricing,
-      paymentStatus: "pending",
-      orderStatus,
+      paymentStatus: "pending",   // payment not completed
+      orderStatus: "pending",      // not placed yet
     });
 
-    // Push to Shiprocket
-    try {
-      const ship = await createShiprocketOrder({ order, user, address });
+    // 2️⃣ If COD -> instantly confirm & ship
+    if (paymentMethod === "cod") {
+      order.paymentStatus = "paid";          // COD assumed paid in backend logic
+      order.orderStatus = "placed";
 
-      order.shipment = {
-        shiprocket_order_id: ship.order_id,
-        shipment_id: ship.shipment_id,
-        awb: ship.awb,
-        courier: ship.courier_name || "",
-        status: "created"
-      };
+      try {
+        const ship = await createShiprocketOrder({ order, user, address });
+
+        order.shipment = {
+          shiprocket_order_id: ship.order_id,
+          shipment_id: ship.shipment_id,
+          awb: ship.awb,
+          courier: ship.courier_name || "",
+          status: "created"
+        };
+      } catch (err) {
+        console.log("Shiprocket COD Failed:", err.response?.data || err.message);
+      }
 
       await order.save();
-    } catch (err) {
-      console.log("Shiprocket Failed:", err.response?.data || err.message);
     }
 
-    res.status(201).json(order);
+    return res.status(201).json(order);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error("Create Order Error:", err);
+    return res.status(500).json({ message: err.message });
   }
 };

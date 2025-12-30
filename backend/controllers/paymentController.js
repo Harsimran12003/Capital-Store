@@ -97,15 +97,36 @@ export const phonePeCallback = async (req, res) => {
     const status = statusRes.data.data;
 
     if (status.state === "COMPLETED") {
-      await Order.findByIdAndUpdate(orderId, {
-        paymentStatus: "paid",
-        orderStatus: "confirmed",
-      });
+  const order = await Order.findById(orderId).populate("user");
 
-      return res.redirect(`${frontend}/order-summary/${orderId}`);
-    }
+  if (!order) return res.redirect(`${frontend}/payment-failed`);
 
-    return res.redirect(`${frontend}/payment-failed`);
+  order.paymentStatus = "paid";
+  order.orderStatus = "placed";
+
+  try {
+    const ship = await createShiprocketOrder({
+      order,
+      user: order.user,
+      address: order.address
+    });
+
+    order.shipment = {
+      shiprocket_order_id: ship.order_id,
+      shipment_id: ship.shipment_id,
+      awb: ship.awb,
+      courier: ship.courier_name || "",
+      status: "created",
+    };
+  } catch (err) {
+    console.log("Shiprocket Online Failed:", err.response?.data || err.message);
+  }
+
+  await order.save();
+
+  return res.redirect(`${frontend}/order-summary/${orderId}`);
+}
+
 
   } catch (err) {
     console.error("PhonePe Verify Error:", err?.response?.data || err.message);

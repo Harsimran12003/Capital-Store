@@ -55,10 +55,11 @@ const orderSchema = new mongoose.Schema(
     },
 
     orderStatus: {
-      type: String,
-      enum: ["placed", "confirmed", "shipped", "delivered"],
-      
-    },
+  type: String,
+  enum: ["pending", "placed", "confirmed", "shipped", "delivered"],
+  default: "pending",
+},
+
     shipment: {
       shiprocket_order_id: String,
       shipment_id: String,
