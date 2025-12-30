@@ -19,7 +19,7 @@ const orderSchema = new mongoose.Schema(
 
         size: {
           type: String,
-          required: true, // ✅ SIZE IS MANDATORY
+          required: true,
         },
 
         price: Number,

@@ -20,8 +20,8 @@ export const createOrder = async (req, res) => {
       address,
       paymentMethod,
       pricing,
-      paymentStatus: paymentMethod === "cod" ? "pending" : "paid",
-      orderStatus: "placed"
+      paymentStatus: "pending",
+      orderStatus,
     });
 
     // Push to Shiprocket
