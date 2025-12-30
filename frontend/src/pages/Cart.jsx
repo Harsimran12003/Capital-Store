@@ -35,7 +35,7 @@ export default function Cart() {
   );
 
   const discount = totalMRP - totalPrice;
-  const delivery = totalPrice > 999 ? 0 : 79;
+  const delivery = 0;
 
   return (
     <>
