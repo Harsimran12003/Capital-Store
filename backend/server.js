@@ -68,7 +68,7 @@ app.use("/api/hero-slides", heroSliderRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/orders", orderRoutes);
-app.use("/api/payments", paymentRoutes);
+app.use("/api/payment", paymentRoutes);
 app.use("/api/shiprocket", shiprocketRoutes);
 app.use("/api", shiprocketWebhook);
 
