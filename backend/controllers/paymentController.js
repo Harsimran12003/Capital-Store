@@ -64,7 +64,11 @@ export const createPhonePePayment = async (req, res) => {
 
   } catch (err) {
     console.error("PhonePe Create Error:", err?.response?.data || err.message);
-    res.status(500).json({ message: "PhonePe payment failed" });
+    res.status(500).json({ message: "PhonePe payment failed",
+      error: err?.response?.data || err.message 
+     },
+      
+    );
   }
 };
 
