@@ -19,9 +19,11 @@ const userSchema = new mongoose.Schema(
     city: String,
     state: String,
     pincode: String,
-  },
-],
-
+  },],
+  selectedAddress: {
+      type: Number,
+      default: null,
+    },
   },
   { timestamps: true }
 );
