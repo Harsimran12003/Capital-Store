@@ -33,36 +33,43 @@ export const createShiprocketOrder = async ({ order, user }) => {
   const addr = order.address;
 
   const payload = {
-    order_id: order._id.toString(),
-    order_date: new Date(),
-    pickup_location: process.env.SHIPROCKET_PICKUP || "Default",
+  order_id: order._id.toString(),
+  order_date: new Date().toISOString().slice(0, 19).replace("T", " "),
+  
+  pickup_location: process.env.SHIPROCKET_PICKUP || "Default",
+  channel_id: process.env.SHIPROCKET_CHANNEL_ID || "",
 
-    channel_id: process.env.SHIPROCKET_CHANNEL_ID || "",
+  billing_customer_name: user.name || "Customer",
+  billing_last_name: "",
+  billing_address: addr.addressLine || "Address",
+  billing_city: addr.city || "City",
+  billing_state: addr.state || "State",
+  billing_country: "India",
+  billing_pincode: addr.pincode?.toString(),
+  billing_phone: user.phone || "9999999999",
+  billing_email: user.email || "test@mail.com",
 
-    billing_customer_name: user.name || "Customer",
-    billing_last_name: "",
-    billing_address: addr.addressLine,
-    billing_city: addr.city,
-    billing_state: addr.state,
-    billing_country: "India",
-    billing_pincode: addr.pincode,
-    billing_phone: user.phone || "9999999999",
-    billing_email: user.email || "test@mail.com",
+  shipping_is_billing: true,
 
-    shipping_is_billing: true,
+  order_items: order.items.map(i => ({
+    name: i.name,
+    sku: String(i.productId),
+    units: i.qty,
+    selling_price: i.price || i.originalPrice,
+  })),
 
-    order_items: order.items.map((i) => ({
-      name: i.name,
-      sku: i.productId,
-      units: i.qty,
-      selling_price: i.price || i.originalPrice,
-    })),
+  payment_method: order.paymentMethod === "cod" ? "COD" : "Prepaid",
 
-    payment_method: order.paymentMethod === "cod" ? "COD" : "Prepaid",
+  sub_total: order.pricing.total,
+  total_discount: order.pricing.discount,
 
-    sub_total: order.pricing.total,
-    total_discount: order.pricing.discount,
-  };
+  // ⭐ REQUIRED ⭐
+  length: 10,
+  breadth: 10,
+  height: 10,
+  weight: 0.5
+};
+
 
   const res = await axios.post(
     `${SHIPROCKET_API}/orders/create/adhoc`,
