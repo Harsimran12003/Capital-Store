@@ -93,11 +93,16 @@ export const updateProfile = async (req, res) => {
 export const addAddress = async (req, res) => {
   const user = await User.findById(req.user._id);
 
+  if (!req.body.phone || req.body.phone.length !== 10) {
+    return res.status(400).json({ message: "Valid phone required" });
+  }
+
   user.addresses.push(req.body);
   await user.save();
 
   res.json({ addresses: user.addresses });
 };
+
 
 export const deleteAddress = async (req, res) => {
   const user = await User.findById(req.user._id);

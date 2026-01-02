@@ -29,14 +29,22 @@ export default function Address() {
   city: "",
   state: "",
   pincode: "",
+  phone: ""
 });
 
 const [saving, setSaving] = useState(false);
 const addNewAddress = async () => {
-  if (!form.label || !form.addressLine) {
-    alert("Please fill required fields");
-    return;
-  }
+  if (!form.label || !form.addressLine || !form.phone) {
+  alert("Please fill all required fields including phone");
+  return;
+}
+
+// must be 10 digits
+if (!/^\d{10}$/.test(form.phone)) {
+  alert("Enter valid 10 digit phone number");
+  return;
+}
+
 
   setSaving(true);
 
@@ -234,6 +242,19 @@ const steps = [
           className="w-full px-4 py-3 rounded-lg border border-[#d4b98c33]"
         />
       </div>
+      {/* PHONE */}
+<div>
+  <label className="block text-sm font-semibold text-gray-700 mb-2">
+    Phone Number
+  </label>
+  <input
+    value={form.phone}
+    onChange={(e) => setForm({ ...form, phone: e.target.value })}
+    placeholder="9876543210"
+    className="w-full px-4 py-3 rounded-lg border border-[#d4b98c33]"
+  />
+</div>
+
 
       {/* ADDRESS LINE */}
       <div className="md:col-span-2">
