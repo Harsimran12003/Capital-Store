@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import { phonePeCallback } from "../controllers/paymentController";
 
 const orderSchema = new mongoose.Schema(
   {
