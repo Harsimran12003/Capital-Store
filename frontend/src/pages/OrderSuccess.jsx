@@ -6,14 +6,21 @@ import { useParams, Link } from "react-router-dom";
 export default function OrderSuccess() {
   const { id } = useParams();
   const [order, setOrder] = useState(null);
+  const { clearCart } = useCart(); 
 
   useEffect(() => {
     fetch(`https://capital-store-backend.vercel.app/api/orders/${id}`, {
       credentials: "include"
     })
       .then(res => res.json())
-      .then(data => setOrder(data));
-  }, [id]);
+      .then(data => { 
+        setOrder(data);
+        clearCart();
+  });
+      
+  }, [id, clearCart]);
+
+  
 
   if (!order)
     return (

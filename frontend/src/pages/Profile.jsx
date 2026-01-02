@@ -195,7 +195,7 @@ function ProfileInfo({ user }) {
 }
 
 
-/* ---------- ORDERS (Mock UI) ---------- */
+/* ---------- ORDERS ---------- */
 function Orders() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -317,7 +317,13 @@ function Addresses() {
     city: "",
     state: "",
     pincode: "",
+    phone: ""
   });
+  if (!/^\d{10}$/.test(form.phone)) {
+  alert("Enter a valid 10 digit phone number");
+  return;
+}
+
 
   const addAddress = async () => {
     if (!form.label || !form.addressLine) return;
@@ -341,6 +347,7 @@ function Addresses() {
         city: "",
         state: "",
         pincode: "",
+        phone: ""
       });
       setShowForm(false);
     } else {
@@ -449,6 +456,21 @@ function Addresses() {
           }
         />
       </div>
+
+      {/* PHONE */}
+<div>
+  <label className="text-xs text-gray-600 mb-1 block">
+    Phone Number
+  </label>
+  <input
+    placeholder="10 digit phone"
+    className="w-full border rounded-lg px-3 py-2 text-sm
+               focus:outline-none focus:ring-2 focus:ring-[#4D192B]/30"
+    value={form.phone}
+    onChange={(e) => setForm({ ...form, phone: e.target.value })}
+  />
+</div>
+
 
       {/* ADDRESS LINE */}
       <div className="sm:col-span-2">
