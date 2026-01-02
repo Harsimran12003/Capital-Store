@@ -75,10 +75,13 @@ export const createShiprocketOrder = async ({ order, user }) => {
   const raw =
     (order.address?.phone ||
      user.phone ||
-     "9999999999").toString().replace(/\D/g, "");
+     "9876543210").toString().replace(/\D/g, "");
 
-  return raw.length >= 10 ? raw.slice(-10) : "9999999999";
+  return raw.length >= 10 ? raw.slice(-10) : "9876543210";
 })();
+console.log("📞 RAW PHONE:", order?.address?.phone, user?.phone);
+console.log("📞 FINAL SHIPROCKET PHONE:", safePhone);
+
 
 
   const payload = {
