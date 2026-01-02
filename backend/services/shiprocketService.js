@@ -87,7 +87,10 @@ export const createShiprocketOrder = async ({ order, user }) => {
     billing_state: addr.state || "State",
     billing_country: "India",
     billing_pincode: addr.pincode?.toString(),
-    billing_phone: user.phone || "9999999999",
+billing_phone: (() => {
+  const p = (user.phone || "").toString().replace(/\D/g, "");
+  return p.length >= 10 ? p.slice(-10) : "9999999999";
+})(),
     billing_email: user.email || "test@mail.com",
 
     shipping_is_billing: true,
