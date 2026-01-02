@@ -102,6 +102,12 @@ export function CartProvider({ children }) {
     );
   };
 
+  const clearCart = () => {
+  setCart([]);
+  localStorage.removeItem("cart");
+};
+
+
   /* ================= REMOVE ================= */
   const removeFromCart = (productId, size) => {
     setCart((prev) =>
@@ -120,6 +126,7 @@ export function CartProvider({ children }) {
         updateQty,
         removeFromCart,
         updateSize,
+        clearCart,
       }}
     >
       {children}
