@@ -24,9 +24,9 @@ export function WishlistProvider({ children }) {
 
   const toggleWishlist = (product) => {
     setWishlist((prev) => {
-      const exists = prev.find(p => p.productId === product._id);
+      const exists = prev.find((p) => p.productId === product._id);
       if (exists) {
-        return prev.filter(p => p.productId !== product._id);
+        return prev.filter((p) => p.productId !== product._id);
       }
       return [
         ...prev,
@@ -35,6 +35,8 @@ export function WishlistProvider({ children }) {
           name: product.name,
           image: product.images[0],
           price: product.originalPrice,
+          category: product.category,
+          discountedPrice: product.discountedPrice,
         },
       ];
     });

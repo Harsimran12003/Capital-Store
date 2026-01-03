@@ -10,9 +10,7 @@ import {
   FiMapPin,
   FiCreditCard,
   FiShoppingBag,
-  FiCheckCircle,
-  FiEdit2,
-  FiTrash2,
+  FiCheckCircle
 } from "react-icons/fi";
 
 const API_URL = "https://capital-store-backend.vercel.app/api";
@@ -23,56 +21,16 @@ export default function Address() {
   const [addresses, setAddresses] = useState([]);
   const [selected, setSelected] = useState(null);
   const [showNewAddress, setShowNewAddress] = useState(false);
+  const [saving, setSaving] = useState(false);
+
   const [form, setForm] = useState({
-  label: "",
-  addressLine: "",
-  city: "",
-  state: "",
-  pincode: "",
-  phone: ""
-});
-
-const [saving, setSaving] = useState(false);
-const addNewAddress = async () => {
-  if (!form.label || !form.addressLine || !form.phone) {
-  alert("Please fill all required fields including phone");
-  return;
-}
-
-// must be 10 digits
-if (!/^\d{10}$/.test(form.phone)) {
-  alert("Enter valid 10 digit phone number");
-  return;
-}
-
-
-  setSaving(true);
-
-  const res = await fetch(`${API_URL}/auth/address`, {
-    method: "POST",
-    credentials: "include",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(form),
+    label: "",
+    addressLine: "",
+    city: "",
+    state: "",
+    pincode: "",
+    phone: ""
   });
-
-  const data = await res.json();
-  setSaving(false);
-
-  if (res.ok) {
-    setAddresses(data.addresses); // refresh list
-    setForm({
-      label: "",
-      addressLine: "",
-      city: "",
-      state: "",
-      pincode: "",
-    });
-    setShowNewAddress(false);
-  } else {
-    alert(data.message || "Failed to add address");
-  }
-};
-
 
   /* ================= FETCH ADDRESSES ================= */
   useEffect(() => {
@@ -84,7 +42,47 @@ if (!/^\d{10}$/.test(form.phone)) {
       .catch(() => setAddresses([]));
   }, []);
 
-  /* ================= CONTINUE HANDLER ================= */
+  /* ================= ADD NEW ADDRESS ================= */
+  const addNewAddress = async () => {
+    if (!form.label || !form.addressLine || !form.phone) {
+      alert("Please fill all required fields including phone");
+      return;
+    }
+
+    if (!/^\d{10}$/.test(form.phone)) {
+      alert("Enter valid 10 digit phone number");
+      return;
+    }
+
+    setSaving(true);
+
+    const res = await fetch(`${API_URL}/auth/address`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(form),
+    });
+
+    const data = await res.json();
+    setSaving(false);
+
+    if (res.ok) {
+      setAddresses(data.addresses);
+      setForm({
+        label: "",
+        addressLine: "",
+        city: "",
+        state: "",
+        pincode: "",
+        phone: ""
+      });
+      setShowNewAddress(false);
+    } else {
+      alert(data.message || "Failed to add address");
+    }
+  };
+
+  /* ================= CONTINUE ================= */
   const continueToPayment = async () => {
     if (selected === null) return;
 
@@ -96,16 +94,16 @@ if (!/^\d{10}$/.test(form.phone)) {
       },
       body: JSON.stringify({ index: selected }),
     });
+    localStorage.setItem("selectedAddressIndex", selected);
 
     navigate("/summary");
   };
 
-const steps = [
-  { id: 0, icon: <FiMapPin size={20} />, label: "Address" },
-  { id: 1, icon: <FiShoppingBag size={20} />, label: "Summary" },
-  { id: 2, icon: <FiCreditCard size={20} />, label: "Payment" },
-];
-
+  const steps = [
+    { id: 0, icon: <FiMapPin size={20} />, label: "Address" },
+    { id: 1, icon: <FiShoppingBag size={20} />, label: "Summary" },
+    { id: 2, icon: <FiCreditCard size={20} />, label: "Payment" },
+  ];
 
   const getTypeIcon = (type) =>
     type === "Home" ? (
@@ -118,7 +116,8 @@ const steps = [
     <>
       <Navbar />
 
-      <div className="min-h-screen py-15 mt-5 pb-32"
+      <div
+        className="min-h-screen py-15 mt-5 pb-48"
         style={{
           background:
             "radial-gradient(1200px 600px at 10% 10%, rgba(77,25,43,0.12), transparent 10%), radial-gradient(900px 500px at 90% 90%, rgba(60,20,30,0.08), transparent 10%), linear-gradient(180deg, #fffaf8 0%, #f9f6f4 100%)",
@@ -126,7 +125,7 @@ const steps = [
       >
         <div className="max-w-5xl mx-auto px-6">
 
-          {/* ================= STEP INDICATOR ================= */}
+          {/* STEP INDICATOR */}
           <div className="relative mb-16">
             <div className="absolute inset-x-0 top-6 h-1">
               <div className="w-full h-0.5 bg-gradient-to-r from-transparent via-[#d4b98c50] to-transparent" />
@@ -156,7 +155,6 @@ const steps = [
             </div>
           </div>
 
-          {/* ================= HEADER ================= */}
           <h1 className="text-4xl font-extrabold text-[#3b0b11] mb-3">
             Choose Delivery Address
           </h1>
@@ -164,7 +162,7 @@ const steps = [
             Select where you'd like your order delivered
           </p>
 
-          {/* ================= ADDRESS GRID ================= */}
+          {/* ADDRESS GRID */}
           <div className="grid md:grid-cols-2 gap-8 mb-8">
 
             {addresses.map((a, idx) => (
@@ -196,136 +194,132 @@ const steps = [
               </motion.div>
             ))}
 
-            {/* ADD NEW ADDRESS CARD (UI ONLY) */}
-            <motion.div
-              whileHover={{ scale: 1.02 }}
-              onClick={() => setShowNewAddress(!showNewAddress)}
-              className="flex flex-col items-center justify-center p-7 rounded-2xl border-2 border-dashed border-[#d4b98c]/40 bg-white/70 cursor-pointer"
-            >
-              <FiPlus size={36} className="text-[#d4b98c]" />
-              <p className="mt-3 font-semibold">Add New Address</p>
-            </motion.div>
-            {showNewAddress && (
-  <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    className="p-8 rounded-2xl shadow-xl bg-white/80 border border-[#d4b98c1a] mb-8"
-    style={{ backdropFilter: "blur(8px)" }}
-  >
-    <h3 className="text-2xl font-bold text-[#3b0b11] mb-6">
-      Add New Address
-    </h3>
+            {/* ADD NEW ADDRESS OR FORM */}
+            {!showNewAddress ? (
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                onClick={() => setShowNewAddress(true)}
+                className="flex flex-col items-center justify-center p-7 rounded-2xl border-2 border-dashed border-[#d4b98c]/40 bg-white/70 cursor-pointer"
+              >
+                <FiPlus size={36} className="text-[#d4b98c]" />
+                <p className="mt-3 font-semibold">Add New Address</p>
+              </motion.div>
+            ) : (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="p-8 rounded-2xl shadow-xl bg-white/80 border border-[#d4b98c1a] mb-8"
+                style={{ backdropFilter: "blur(8px)" }}
+              >
+                <h3 className="text-2xl font-bold text-[#3b0b11] mb-6">
+                  Add New Address
+                </h3>
 
-    <div className="grid md:grid-cols-2 gap-6">
-      {/* LABEL */}
-      <div>
-        <label className="block text-sm font-semibold text-gray-700 mb-2">
-          Address Label
-        </label>
-        <input
-          value={form.label}
-          onChange={(e) => setForm({ ...form, label: e.target.value })}
-          placeholder="Home / Office"
-          className="w-full px-4 py-3 rounded-lg border border-[#d4b98c33]"
-        />
-      </div>
+                <div className="grid md:grid-cols-2 gap-6">
 
-      {/* PINCODE */}
-      <div>
-        <label className="block text-sm font-semibold text-gray-700 mb-2">
-          Pincode
-        </label>
-        <input
-          value={form.pincode}
-          onChange={(e) => setForm({ ...form, pincode: e.target.value })}
-          placeholder="160040"
-          className="w-full px-4 py-3 rounded-lg border border-[#d4b98c33]"
-        />
-      </div>
-      {/* PHONE */}
-<div>
-  <label className="block text-sm font-semibold text-gray-700 mb-2">
-    Phone Number
-  </label>
-  <input
-    value={form.phone}
-    onChange={(e) => setForm({ ...form, phone: e.target.value })}
-    placeholder="9876543210"
-    className="w-full px-4 py-3 rounded-lg border border-[#d4b98c33]"
-  />
-</div>
+                                   
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Phone Number
+                    </label>
+                    <input
+                      value={form.phone}
+                      onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                      placeholder="9876543210"
+                      className="w-full px-4 py-3 rounded-lg border border-[#d4b98c33]"
+                    />
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Address
+                    </label>
+                    <textarea
+                      rows={3}
+                      value={form.addressLine}
+                      onChange={(e) =>
+                        setForm({ ...form, addressLine: e.target.value })
+                      }
+                      placeholder="House no, street, locality"
+                      className="w-full px-4 py-3 rounded-lg border border-[#d4b98c33]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Pincode
+                    </label>
+                    <input
+                      value={form.pincode}
+                      onChange={(e) => setForm({ ...form, pincode: e.target.value })}
+                      placeholder="160040"
+                      className="w-full px-4 py-3 rounded-lg border border-[#d4b98c33]"
+                    />
+                  </div>
 
 
-      {/* ADDRESS LINE */}
-      <div className="md:col-span-2">
-        <label className="block text-sm font-semibold text-gray-700 mb-2">
-          Address
-        </label>
-        <textarea
-          rows={3}
-          value={form.addressLine}
-          onChange={(e) =>
-            setForm({ ...form, addressLine: e.target.value })
-          }
-          placeholder="House no, street, locality"
-          className="w-full px-4 py-3 rounded-lg border border-[#d4b98c33]"
-        />
-      </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      City
+                    </label>
+                    <input
+                      value={form.city}
+                      onChange={(e) => setForm({ ...form, city: e.target.value })}
+                      placeholder="City"
+                      className="w-full px-4 py-3 rounded-lg border border-[#d4b98c33]"
+                    />
+                  </div>
 
-      {/* CITY */}
-      <div>
-        <label className="block text-sm font-semibold text-gray-700 mb-2">
-          City
-        </label>
-        <input
-          value={form.city}
-          onChange={(e) => setForm({ ...form, city: e.target.value })}
-          placeholder="City"
-          className="w-full px-4 py-3 rounded-lg border border-[#d4b98c33]"
-        />
-      </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      State
+                    </label>
+                    <input
+                      value={form.state}
+                      onChange={(e) => setForm({ ...form, state: e.target.value })}
+                      placeholder="State"
+                      className="w-full px-4 py-3 rounded-lg border border-[#d4b98c33]"
+                    />
+                  </div>
 
-      {/* STATE */}
-      <div>
-        <label className="block text-sm font-semibold text-gray-700 mb-2">
-          State
-        </label>
-        <input
-          value={form.state}
-          onChange={(e) => setForm({ ...form, state: e.target.value })}
-          placeholder="State"
-          className="w-full px-4 py-3 rounded-lg border border-[#d4b98c33]"
-        />
-      </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Address Label
+                    </label>
+                    <input
+                      value={form.label}
+                      onChange={(e) => setForm({ ...form, label: e.target.value })}
+                      placeholder="Home / Office"
+                      className="w-full px-4 py-3 rounded-lg border border-[#d4b98c33]"
+                    />
+                  </div>
 
-      {/* ACTIONS */}
-      <div className="md:col-span-2 flex gap-3">
-        <motion.button
-          whileTap={{ scale: 0.98 }}
-          onClick={() => setShowNewAddress(false)}
-          className="flex-1 py-3 rounded-lg border-2 border-[#d4b98c] cursor-pointer"
-        >
-          Cancel
-        </motion.button>
+                  <div className="md:col-span-2 flex gap-3">
+                    <motion.button
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => setShowNewAddress(false)}
+                      className="flex-1 py-3 rounded-lg border-2 border-[#d4b98c] cursor-pointer"
+                    >
+                      Cancel
+                    </motion.button>
 
-        <motion.button
-          whileTap={{ scale: 0.98 }}
-          disabled={saving}
-          onClick={addNewAddress}
-          className="flex-1 py-3 rounded-lg bg-gradient-to-r from-[#d4b98c] to-[#b88a4a] cursor-pointer"
-        >
-          {saving ? "Saving..." : "Save Address"}
-        </motion.button>
-      </div>
-    </div>
-  </motion.div>
-)}
-
+                    <motion.button
+                      whileTap={{ scale: 0.98 }}
+                      disabled={saving}
+                      onClick={addNewAddress}
+                      className="flex-1 py-3 rounded-lg bg-gradient-to-r from-[#d4b98c] to-[#b88a4a] text-white cursor-pointer"
+                    >
+                      {saving ? "Saving..." : "Save Address"}
+                    </motion.button>
+                  </div>
+                </div>
+              </motion.div>
+            )}
           </div>
         </div>
       </div>
 
-      {/* ================= STICKY CTA ================= */}
+      {/* STICKY CTA */}
       <div className="fixed bottom-0 left-0 w-full bg-white/80 backdrop-blur-xl py-5 border-t">
         <div className="max-w-5xl mx-auto px-6 flex justify-between items-center">
           <span className="text-sm">

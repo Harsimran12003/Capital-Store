@@ -269,13 +269,13 @@ export default function ProductDetails() {
                   {item.type === "image" ? (
                     <img
                       src={item.src}
-                      className="h-20 rounded-xl object-cover"
+                      className="h-20 rounded-xl object-cover cursor-pointer"
                     />
                   ) : (
                     <video
                       src={item.src}
                       muted
-                      className="h-20 rounded-xl object-cover"
+                      className="h-20 rounded-xl object-cover cursor-pointer"
                     />
                   )}
                 </SwiperSlide>

@@ -39,15 +39,16 @@ import OrderSuccess from "./pages/OrderSuccess.jsx";
 import TrackOrder from "./pages/TrackOrder.jsx";
 import AdminLogin from "./pages/admin/AdminLogin.jsx";
 import ChangeCredentials from "./pages/admin/ChangeCredentials.jsx";
+import ScrollToTop from "./components/ScrollToTop.jsx";
 
 function App() {
   const { user, loading } = useAuth();
 
   if (loading) return null; //
   return (
-    
     <>
       <Router>
+        <ScrollToTop />
         <Routes>
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
@@ -72,11 +73,17 @@ function App() {
 
           <Route path="/readymade/cotton" element={<ReadymadeCottonPage />} />
           <Route path="/readymade/winter" element={<ReadymadeWinterPage />} />
-          <Route path="/readymade/partywear" element={<ReadymadePartywearPage />} />
+          <Route
+            path="/readymade/partywear"
+            element={<ReadymadePartywearPage />}
+          />
 
           <Route path="/unstitched/cotton" element={<UnstitchedCottonPage />} />
           <Route path="/unstitched/winter" element={<UnstitchedWinterPage />} />
-          <Route path="/unstitched/partywear" element={<UnstitchedPartywearPage />} />
+          <Route
+            path="/unstitched/partywear"
+            element={<UnstitchedPartywearPage />}
+          />
 
           <Route path="/product/:id" element={<ProductDetails />} />
 
@@ -84,23 +91,27 @@ function App() {
           <Route path="/payment" element={<Payment />} />
           <Route path="/summary" element={<OrderSummary />} />
 
-
           {/* Admin */}
           <Route path="/admin" element={<AdminLogin />} />
           <Route path="/admin/dashboard" element={<Dashboard />} />
           <Route path="/admin/slider" element={<AddSliderImages />} />
           <Route path="/admin/add-product" element={<AddProduct />} />
           <Route path="/admin/products" element={<ViewProducts />} />
-          <Route path="/admin/change-credentials" element={<ChangeCredentials />} />
+          <Route
+            path="/admin/change-credentials"
+            element={<ChangeCredentials />}
+          />
 
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms-of-service" element={<TermsOfService />} />
           <Route path="/shipping-policy" element={<ShippingPolicy />} />
-          <Route path="/return-refund-policy" element={<RefundExchangePolicy />} />
+          <Route
+            path="/return-refund-policy"
+            element={<RefundExchangePolicy />}
+          />
 
           <Route path="/order-summary/:id" element={<OrderSuccess />} />
           <Route path="/track/:id" element={<TrackOrder />} />
-
         </Routes>
       </Router>
     </>

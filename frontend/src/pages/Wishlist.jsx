@@ -39,7 +39,6 @@ export default function Wishlist() {
       <Navbar />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 mt-5 mb-24">
-
         {/* HEADER */}
         <header className="flex items-center gap-4 mb-0">
           <div className="w-12 h-12 rounded-full bg-[#4D192B] flex items-center justify-center text-white">
@@ -95,13 +94,9 @@ export default function Wishlist() {
 
                 {/* INFO */}
                 <div className="mt-4">
-                  <h3 className="font-semibold text-[#3b0b11]">
-                    {item.name}
-                  </h3>
+                  <h3 className="font-semibold text-[#3b0b11]">{item.name}</h3>
 
-                  <div className="text-lg font-bold mt-2">
-                    ₹{item.price}
-                  </div>
+                  <div className="text-lg font-bold mt-2">₹{item.price}</div>
 
                   {/* MOVE TO CART */}
                   <button
@@ -111,7 +106,8 @@ export default function Wishlist() {
                         name: item.name,
                         images: [item.image],
                         originalPrice: item.price,
-                        discountedPrice: 0,
+                        discountedPrice: item.discountedPrice || 0,
+                        category: item.category,
                       });
                       toggleWishlist({ _id: item.productId });
                     }}
