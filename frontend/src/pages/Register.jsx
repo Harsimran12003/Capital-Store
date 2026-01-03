@@ -91,7 +91,7 @@ export default function Register() {
                   "https://capital-store-backend.vercel.app/api/auth/google")
             }
             className="w-full flex items-center justify-center gap-3 py-3 rounded-xl
-            border border-gray-200 bg-white hover:bg-gray-50 transition font-medium mt-6 mb-4"
+            border border-gray-200 bg-white hover:bg-gray-50 transition font-medium mt-6 mb-4 cursor-pointer"
           >
             <FcGoogle className="text-xl" />
             Continue with Google
@@ -128,7 +128,7 @@ export default function Register() {
             <button
               onClick={handleRegister}
               disabled={loading}
-              className="w-full py-3 bg-[#4D192B] text-white rounded-xl hover:bg-[#3A1322]"
+              className="w-full py-3 bg-[#4D192B] text-white rounded-xl hover:bg-[#3A1322] cursor-pointer"
             >
               {loading ? "Creating account..." : "Create Account"}
             </button>
@@ -177,7 +177,7 @@ function PasswordField({ placeholder, show, toggle, value, onChange }) {
       />
       <button
         type="button"
-        className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500"
+        className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 cursor-pointer"
         onClick={toggle}
       >
         {show ? <FiEyeOff /> : <FiEye />}

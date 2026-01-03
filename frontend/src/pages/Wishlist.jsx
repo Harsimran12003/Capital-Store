@@ -24,7 +24,7 @@ export default function Wishlist() {
           </h2>
           <Link
             to="/login"
-            className="px-6 py-3 rounded-full bg-[#4D192B] text-white font-semibold"
+            className="px-6 py-3 rounded-full bg-[#4D192B] text-white font-semibold cursor-pointer"
           >
             Login
           </Link>
@@ -62,7 +62,7 @@ export default function Wishlist() {
             </h2>
             <Link
               to="/"
-              className="px-6 py-3 rounded-full bg-[#4D192B] text-white mt-10"
+              className="px-6 py-3 rounded-full bg-[#4D192B] text-white mt-10 cursor-pointer"
             >
               Continue Shopping
             </Link>
@@ -87,7 +87,7 @@ export default function Wishlist() {
                   {/* REMOVE */}
                   <button
                     onClick={() => toggleWishlist({ _id: item.productId })}
-                    className="absolute top-3 right-3 text-gray-500 hover:text-red-600 bg-white rounded-full p-1 shadow-md"
+                    className="absolute top-3 right-3 text-gray-500 hover:text-red-600 bg-white rounded-full p-1 shadow-md cursor-pointer"
                   >
                     <FiTrash2 />
                   </button>
@@ -116,7 +116,7 @@ export default function Wishlist() {
                       toggleWishlist({ _id: item.productId });
                     }}
                     className="mt-4 w-full flex items-center justify-center gap-2 
-                    py-2 rounded-full bg-[#4D192B] text-white"
+                    py-2 rounded-full bg-[#4D192B] text-white cursor-pointer"
                   >
                     <FiShoppingCart />
                     Move to Cart

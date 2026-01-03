@@ -227,7 +227,7 @@ const discount = mrp - total;
                   onClick={handlePayment}
                   className={`w-full py-4 rounded-full text-lg font-semibold bg-gradient-to-r from-[#d4b98c] to-[#b88a4a] ${
                     !method || loading
-                      ? "opacity-50 cursor-not-allowed"
+                      ? "opacity-50 cursor-not-allowed cursor-pointer"
                       : ""
                   }`}
                 >

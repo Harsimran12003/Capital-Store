@@ -72,7 +72,7 @@ export default function Cart() {
               </p>
 
               <Link to="/">
-                <motion.button whileHover={{ scale: 1.03 }} className="px-6 py-3 rounded-full bg-[#4D192B] text-white font-semibold shadow-md">
+                <motion.button whileHover={{ scale: 1.03 }} className="px-6 py-3 rounded-full bg-[#4D192B] text-white font-semibold shadow-md cursor-pointer">
                   Continue Shopping
                 </motion.button>
               </Link>
@@ -114,7 +114,7 @@ export default function Cart() {
                         onChange={(e) =>
                           updateSize(item.productId, item.size, e.target.value)
                         }
-                        className="border border-gray-300 rounded-lg px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-[#4D192B]/30"
+                        className="border border-gray-300 rounded-lg px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-[#4D192B]/30 cursor-pointer"
                       >
                         <option value="" disabled>
                           Select Size
@@ -155,7 +155,7 @@ export default function Cart() {
                           updateQty(item.productId, item.size, item.qty - 1);
                         }
                       }}
-                      className="w-9 h-9 bg-gray-200 rounded-full text-xl"
+                      className="w-9 h-9 bg-gray-200 rounded-full text-xl cursor-pointer"
                     >
                       –
                     </button>
@@ -166,7 +166,7 @@ export default function Cart() {
                       onClick={() =>
                         updateQty(item.productId, item.size, item.qty + 1)
                       }
-                      className="w-9 h-9 bg-gray-200 rounded-full text-xl"
+                      className="w-9 h-9 bg-gray-200 rounded-full text-xl cursor-pointer"
                     >
                       +
                     </button>
@@ -180,7 +180,7 @@ export default function Cart() {
                   }
                   className="self-start sm:self-center"
                 >
-                  <FiTrash2 className="text-gray-500 hover:text-red-600" />
+                  <FiTrash2 className="text-gray-500 hover:text-red-600 cursor-pointer" />
                 </button>
               </motion.div>
             ))
@@ -222,7 +222,7 @@ export default function Cart() {
                   }
                   window.location.href = "/address";
                 }}
-                className="block w-full mt-6 text-center bg-[#4D192B] text-white py-3 rounded-full font-semibold"
+                className="block w-full mt-6 text-center bg-[#4D192B] text-white py-3 rounded-full font-semibold cursor-pointer"
               >
                 Proceed to Address
               </button>

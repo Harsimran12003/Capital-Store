@@ -48,9 +48,7 @@ export default function Profile() {
               <p className="text-sm text-gray-500">{user.email}</p>
 
               <span className="mt-2 text-xs bg-[#4D192B]/10 text-[#4D192B] px-3 py-1 rounded-full">
-                {user.authProvider === "google"
-                  ? "Google Account"
-                  : ""}
+                {user.authProvider === "google" ? "Google Account" : ""}
               </span>
             </div>
 
@@ -78,7 +76,7 @@ export default function Profile() {
 
             <button
               onClick={handleLogout}
-              className="mt-6 w-full flex items-center justify-center gap-2 py-3 rounded-xl
+              className="mt-6 w-full flex items-center justify-center gap-2 py-3 rounded-xl cursor-pointer
               bg-[#4D192B] text-white hover:bg-[#3A1322] transition"
             >
               <FiLogOut /> Logout
@@ -86,7 +84,7 @@ export default function Profile() {
           </div>
 
           {/* RIGHT CONTENT */}
-          <div className="md:col-span-2 bg-white rounded-3xl shadow-xl p-6">
+          <div className="md:col-span-2 bg-white rounded-3xl shadow-xl p-6 ">
             {tab === "profile" && <ProfileInfo user={user} />}
             {tab === "orders" && <Orders />}
             {tab === "addresses" && <Addresses />}
@@ -185,7 +183,7 @@ function ProfileInfo({ user }) {
         <button
           onClick={editing ? saveProfile : () => setEditing(true)}
           disabled={loading}
-          className="text-sm font-medium text-[#4D192B] hover:underline mt-2"
+          className="text-sm font-medium text-[#4D192B] hover:underline mt-2 cursor-pointer"
         >
           {editing ? "Save Changes" : "Edit Profile"}
         </button>
@@ -194,7 +192,6 @@ function ProfileInfo({ user }) {
   );
 }
 
-
 /* ---------- ORDERS ---------- */
 function Orders() {
   const [orders, setOrders] = useState([]);
@@ -202,25 +199,22 @@ function Orders() {
 
   useState(() => {
     fetch("https://capital-store-backend.vercel.app/api/orders/my", {
-      credentials: "include"
+      credentials: "include",
     })
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         setOrders(data);
         setLoading(false);
       })
       .catch(() => setLoading(false));
   }, []);
 
-  if (loading)
-    return <p className="text-gray-500">Loading orders…</p>;
+  if (loading) return <p className="text-gray-500">Loading orders…</p>;
 
   if (orders.length === 0)
     return (
       <div>
-        <h3 className="text-lg font-bold text-[#4D192B] mb-4">
-          My Orders
-        </h3>
+        <h3 className="text-lg font-bold text-[#4D192B] mb-4">My Orders</h3>
         <p className="text-sm text-gray-400">
           You haven’t placed any orders yet.
         </p>
@@ -229,22 +223,15 @@ function Orders() {
 
   return (
     <div>
-      <h3 className="text-lg font-bold text-[#4D192B] mb-4">
-        My Orders
-      </h3>
+      <h3 className="text-lg font-bold text-[#4D192B] mb-4">My Orders</h3>
 
       <div className="space-y-5">
         {orders.map((o) => (
-          <div
-            key={o._id}
-            className="border rounded-xl p-4 shadow-sm"
-          >
+          <div key={o._id} className="border rounded-xl p-4 shadow-sm">
             {/* HEADER */}
             <div className="flex justify-between">
               <div>
-                <p className="font-semibold">
-                  Order #{o._id.slice(-6)}
-                </p>
+                <p className="font-semibold">Order #{o._id.slice(-6)}</p>
 
                 <p className="text-xs text-gray-500">
                   {new Date(o.createdAt).toLocaleDateString()}
@@ -276,9 +263,7 @@ function Orders() {
             </div>
 
             {/* TOTAL */}
-            <p className="mt-2 font-bold">
-              Total: ₹{o.pricing.total}
-            </p>
+            <p className="mt-2 font-bold">Total: ₹{o.pricing.total}</p>
 
             {/* TRACKING */}
             {o.shipment?.awb ? (
@@ -289,7 +274,7 @@ function Orders() {
 
                 <Link
                   to={`/track/${o._id}`}
-                  className="text-sm bg-[#4D192B] text-white px-4 py-2 rounded-xl"
+                  className="text-sm bg-[#4D192B] text-white px-4 py-2 rounded-xl cursor-pointer"
                 >
                   Track Shipment
                 </Link>
@@ -317,13 +302,12 @@ function Addresses() {
     city: "",
     state: "",
     pincode: "",
-    phone: ""
+    phone: "",
   });
   if (!/^\d{10}$/.test(form.phone)) {
-  alert("Enter a valid 10 digit phone number");
-  return;
-}
-
+    alert("Enter a valid 10 digit phone number");
+    return;
+  }
 
   const addAddress = async () => {
     if (!form.label || !form.addressLine) return;
@@ -347,7 +331,7 @@ function Addresses() {
         city: "",
         state: "",
         pincode: "",
-        phone: ""
+        phone: "",
       });
       setShowForm(false);
     } else {
@@ -372,16 +356,12 @@ function Addresses() {
 
   return (
     <div>
-      <h3 className="text-lg font-bold text-[#4D192B] mb-6">
-        Saved Addresses
-      </h3>
+      <h3 className="text-lg font-bold text-[#4D192B] mb-6">Saved Addresses</h3>
 
       {/* ADDRESS LIST */}
       <div className="space-y-4">
         {addresses.length === 0 && (
-          <p className="text-sm text-gray-400">
-            No saved addresses yet.
-          </p>
+          <p className="text-sm text-gray-400">No saved addresses yet.</p>
         )}
 
         {addresses.map((a, i) => (
@@ -415,137 +395,122 @@ function Addresses() {
       </button>
 
       {showForm && (
-  <motion.div
-    initial={{ opacity: 0, y: 10 }}
-    animate={{ opacity: 1, y: 0 }}
-    className="mt-6 bg-gray-50 border border-gray-200 rounded-2xl p-5"
-  >
-    <h4 className="text-sm font-semibold text-[#4D192B] mb-4">
-      Add New Address
-    </h4>
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mt-6 bg-gray-50 border border-gray-200 rounded-2xl p-5"
+        >
+          <h4 className="text-sm font-semibold text-[#4D192B] mb-4">
+            Add New Address
+          </h4>
 
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-      {/* LABEL */}
-      <div>
-        <label className="text-xs text-gray-600 mb-1 block">
-          Address Label
-        </label>
-        <input
-          placeholder="Home / Office"
-          className="w-full border rounded-lg px-3 py-2 text-sm
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* LABEL */}
+            <div>
+              <label className="text-xs text-gray-600 mb-1 block">
+                Address Label
+              </label>
+              <input
+                placeholder="Home / Office"
+                className="w-full border rounded-lg px-3 py-2 text-sm
                      focus:outline-none focus:ring-2 focus:ring-[#4D192B]/30"
-          value={form.label}
-          onChange={(e) =>
-            setForm({ ...form, label: e.target.value })
-          }
-        />
-      </div>
+                value={form.label}
+                onChange={(e) => setForm({ ...form, label: e.target.value })}
+              />
+            </div>
 
-      {/* PINCODE */}
-      <div>
-        <label className="text-xs text-gray-600 mb-1 block">
-          Pincode
-        </label>
-        <input
-          placeholder="6-digit pincode"
-          className="w-full border rounded-lg px-3 py-2 text-sm
+            {/* PINCODE */}
+            <div>
+              <label className="text-xs text-gray-600 mb-1 block">
+                Pincode
+              </label>
+              <input
+                placeholder="6-digit pincode"
+                className="w-full border rounded-lg px-3 py-2 text-sm
                      focus:outline-none focus:ring-2 focus:ring-[#4D192B]/30"
-          value={form.pincode}
-          onChange={(e) =>
-            setForm({ ...form, pincode: e.target.value })
-          }
-        />
-      </div>
+                value={form.pincode}
+                onChange={(e) => setForm({ ...form, pincode: e.target.value })}
+              />
+            </div>
 
-      {/* PHONE */}
-<div>
-  <label className="text-xs text-gray-600 mb-1 block">
-    Phone Number
-  </label>
-  <input
-    placeholder="10 digit phone"
-    className="w-full border rounded-lg px-3 py-2 text-sm
+            {/* PHONE */}
+            <div>
+              <label className="text-xs text-gray-600 mb-1 block">
+                Phone Number
+              </label>
+              <input
+                placeholder="10 digit phone"
+                className="w-full border rounded-lg px-3 py-2 text-sm
                focus:outline-none focus:ring-2 focus:ring-[#4D192B]/30"
-    value={form.phone}
-    onChange={(e) => setForm({ ...form, phone: e.target.value })}
-  />
-</div>
+                value={form.phone}
+                onChange={(e) => setForm({ ...form, phone: e.target.value })}
+              />
+            </div>
 
-
-      {/* ADDRESS LINE */}
-      <div className="sm:col-span-2">
-        <label className="text-xs text-gray-600 mb-1 block">
-          Address Line
-        </label>
-        <input
-          placeholder="House no, street, area"
-          className="w-full border rounded-lg px-3 py-2 text-sm
+            {/* ADDRESS LINE */}
+            <div className="sm:col-span-2">
+              <label className="text-xs text-gray-600 mb-1 block">
+                Address Line
+              </label>
+              <input
+                placeholder="House no, street, area"
+                className="w-full border rounded-lg px-3 py-2 text-sm
                      focus:outline-none focus:ring-2 focus:ring-[#4D192B]/30"
-          value={form.addressLine}
-          onChange={(e) =>
-            setForm({ ...form, addressLine: e.target.value })
-          }
-        />
-      </div>
+                value={form.addressLine}
+                onChange={(e) =>
+                  setForm({ ...form, addressLine: e.target.value })
+                }
+              />
+            </div>
 
-      {/* CITY */}
-      <div>
-        <label className="text-xs text-gray-600 mb-1 block">
-          City
-        </label>
-        <input
-          placeholder="City"
-          className="w-full border rounded-lg px-3 py-2 text-sm
+            {/* CITY */}
+            <div>
+              <label className="text-xs text-gray-600 mb-1 block">City</label>
+              <input
+                placeholder="City"
+                className="w-full border rounded-lg px-3 py-2 text-sm
                      focus:outline-none focus:ring-2 focus:ring-[#4D192B]/30"
-          value={form.city}
-          onChange={(e) =>
-            setForm({ ...form, city: e.target.value })
-          }
-        />
-      </div>
+                value={form.city}
+                onChange={(e) => setForm({ ...form, city: e.target.value })}
+              />
+            </div>
 
-      {/* STATE */}
-      <div>
-        <label className="text-xs text-gray-600 mb-1 block">
-          State
-        </label>
-        <input
-          placeholder="State"
-          className="w-full border rounded-lg px-3 py-2 text-sm
+            {/* STATE */}
+            <div>
+              <label className="text-xs text-gray-600 mb-1 block">State</label>
+              <input
+                placeholder="State"
+                className="w-full border rounded-lg px-3 py-2 text-sm
                      focus:outline-none focus:ring-2 focus:ring-[#4D192B]/30"
-          value={form.state}
-          onChange={(e) =>
-            setForm({ ...form, state: e.target.value })
-          }
-        />
-      </div>
-    </div>
+                value={form.state}
+                onChange={(e) => setForm({ ...form, state: e.target.value })}
+              />
+            </div>
+          </div>
 
-    {/* ACTION BUTTONS */}
-    <div className="flex gap-3 mt-6">
-      <button
-        onClick={addAddress}
-        className="flex-1 bg-[#4D192B] text-white py-2 rounded-xl
+          {/* ACTION BUTTONS */}
+          <div className="flex gap-3 mt-6">
+            <button
+              onClick={addAddress}
+              className="flex-1 bg-[#4D192B] text-white py-2 rounded-xl
                    text-sm font-medium hover:bg-[#3A1322] transition"
-      >
-        Save Address
-      </button>
+            >
+              Save Address
+            </button>
 
-      <button
-        onClick={() => setShowForm(false)}
-        className="flex-1 border border-gray-300 py-2 rounded-xl
+            <button
+              onClick={() => setShowForm(false)}
+              className="flex-1 border border-gray-300 py-2 rounded-xl
                    text-sm text-gray-600 hover:bg-gray-100 transition"
-      >
-        Cancel
-      </button>
-    </div>
-  </motion.div>
-)}
-
+            >
+              Cancel
+            </button>
+          </div>
+        </motion.div>
+      )}
     </div>
   );
 }
-
 
 /* ---------- INFO ROW ---------- */
 function InfoRow({ icon, label, value }) {

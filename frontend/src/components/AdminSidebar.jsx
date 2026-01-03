@@ -161,18 +161,7 @@ export default function AdminSidebar() {
               )}
             </NavLink>
 
-            <NavLink to="/admin/orders" className={navLinkClass}>
-              <span className={iconClass}>
-                <FiShoppingCart />
-              </span>
-              {!collapse && "Orders"}
-
-              {collapse && (
-                <span className="absolute left-full ml-3 px-3 py-1 rounded-md bg-black text-white text-xs opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap">
-                  Orders
-                </span>
-              )}
-            </NavLink>
+            
 
                         <NavLink to="/admin/change-credentials" className={navLinkClass}>
               <span className={iconClass}>

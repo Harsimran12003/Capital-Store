@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { useParams, Link } from "react-router-dom";
+import { useCart } from "../context/CartContext";
+
 
 export default function OrderSuccess() {
   const { id } = useParams();
@@ -81,7 +83,7 @@ export default function OrderSuccess() {
 
         <Link
           to="/"
-          className="mt-6 inline-block text-[#4D192B] underline"
+          className="mt-6 inline-block text-[#4D192B] underline cursor-pointer"
         >
           Continue Shopping
         </Link>

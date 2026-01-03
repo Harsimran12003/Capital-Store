@@ -143,7 +143,7 @@ export default function OrderSummary() {
       {/* ================= STICKY CTA ================= */}
       <div className="fixed bottom-0 left-0 w-full bg-white/80 backdrop-blur-xl py-5 border-t">
         <div className="max-w-5xl mx-auto px-6 flex justify-between items-center">
-          <span className="text-sm text-gray-600">
+          <span className="text-sm text-gray-600 ">
             Review complete? Continue to payment
           </span>
 
@@ -151,7 +151,7 @@ export default function OrderSummary() {
             whileTap={{ scale: 0.98 }}
             onClick={() => navigate("/payment")}
             className="px-10 py-3.5 rounded-full text-lg font-semibold
-              bg-gradient-to-r from-[#d4b98c] to-[#b88a4a]"
+              bg-gradient-to-r from-[#d4b98c] to-[#b88a4a] cursor-pointer"
           >
             Continue to Payment
           </motion.button>

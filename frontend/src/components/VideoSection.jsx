@@ -58,9 +58,9 @@ export default function VideoSection() {
           {/* Founder Card */}
           <div className="mt-6 flex items-center gap-4">
             <img
-              src="https://via.placeholder.com/120" 
+              src="./harish-chander.jpeg" 
               alt="Harish Chander Makkar"
-              className="w-24 h-24 object-cover rounded-full border-4 border-white shadow-lg"
+              className="w-30 h-32 object-cover rounded-full border-4 border-white shadow-lg"
             />
             <div>
               <h4 className="text-xl font-bold text-[#7B1F2E]">

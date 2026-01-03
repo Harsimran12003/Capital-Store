@@ -303,7 +303,7 @@ const steps = [
         <motion.button
           whileTap={{ scale: 0.98 }}
           onClick={() => setShowNewAddress(false)}
-          className="flex-1 py-3 rounded-lg border-2 border-[#d4b98c]"
+          className="flex-1 py-3 rounded-lg border-2 border-[#d4b98c] cursor-pointer"
         >
           Cancel
         </motion.button>
@@ -312,7 +312,7 @@ const steps = [
           whileTap={{ scale: 0.98 }}
           disabled={saving}
           onClick={addNewAddress}
-          className="flex-1 py-3 rounded-lg bg-gradient-to-r from-[#d4b98c] to-[#b88a4a]"
+          className="flex-1 py-3 rounded-lg bg-gradient-to-r from-[#d4b98c] to-[#b88a4a] cursor-pointer"
         >
           {saving ? "Saving..." : "Save Address"}
         </motion.button>
@@ -338,7 +338,7 @@ const steps = [
             whileTap={{ scale: 0.98 }}
             disabled={selected === null}
             onClick={continueToPayment}
-            className={`px-10 py-3.5 rounded-full text-lg font-semibold bg-gradient-to-r from-[#d4b98c] to-[#b88a4a] ${
+            className={`px-10 py-3.5 rounded-full text-lg font-semibold bg-gradient-to-r from-[#d4b98c] to-[#b88a4a] cursor-pointer ${
               selected === null ? "opacity-50 cursor-not-allowed" : ""
             }`}
           >

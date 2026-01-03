@@ -1,4 +1,4 @@
-import React, { useState , useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import ProductCard from "../components/ProductCard2";
@@ -8,30 +8,29 @@ import Breadcrumb from "../components/Breadcrumb";
 
 export default function ReadymadeCottonPage() {
   const [products, setProducts] = useState([]);
-const [loading, setLoading] = useState(true);
-useEffect(() => {
-  const fetchProducts = async () => {
-    try {
-      const res = await fetch(
-        "https://capital-store-backend.vercel.app/api/products?category=Readymade&subCategory=Cotton"
-      );
-      const data = await res.json();
-      setProducts(data);
-    } catch (err) {
-      console.error("Failed to fetch readymade cotton products", err);
-    } finally {
-      setLoading(false);
-    }
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const res = await fetch(
+          "https://capital-store-backend.vercel.app/api/products?category=Readymade&subCategory=Cotton"
+        );
+        const data = await res.json();
+        setProducts(data);
+      } catch (err) {
+        console.error("Failed to fetch readymade cotton products", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  const isNew = (date) => {
+    const diffDays = (new Date() - new Date(date)) / (1000 * 60 * 60 * 24);
+    return diffDays <= 20;
   };
-
-  fetchProducts();
-}, []);
-
-const isNew = (date) => {
-  const diffDays =
-    (new Date() - new Date(date)) / (1000 * 60 * 60 * 24);
-  return diffDays <= 20;
-};
 
   const [filters, setFilters] = useState({
     above1000: false,
@@ -44,55 +43,47 @@ const isNew = (date) => {
   const [sort, setSort] = useState("");
   const [showMobileFilters, setShowMobileFilters] = useState(false);
 
-const getEffectivePrice = (p) => {
-  return p.discountedPrice && p.discountedPrice > 0
-    ? p.discountedPrice
-    : p.originalPrice;
-};
-
+  const getEffectivePrice = (p) => {
+    return p.discountedPrice && p.discountedPrice > 0
+      ? p.discountedPrice
+      : p.originalPrice;
+  };
 
   // FILTER LOGIC
- let filtered = products.filter((p) => {
-  const price = getEffectivePrice(p);
+  let filtered = products.filter((p) => {
+    const price = getEffectivePrice(p);
 
-  if (filters.maxPrice && price > filters.maxPrice) return false;
-  if (filters.above1000 && price <= 1000) return false;
-  if (filters.below1000 && price >= 1000) return false;
-  if (filters.newArrival && !isNew(p.createdAt)) return false;
-  if (filters.discount && p.discountPercent < Number(filters.discount)) return false;
-  if (filters.rating && p.rating < Number(filters.rating)) return false;
+    if (filters.maxPrice && price > filters.maxPrice) return false;
+    if (filters.above1000 && price <= 1000) return false;
+    if (filters.below1000 && price >= 1000) return false;
+    if (filters.newArrival && !isNew(p.createdAt)) return false;
+    if (filters.discount && p.discountPercent < Number(filters.discount))
+      return false;
+    if (filters.rating && p.rating < Number(filters.rating)) return false;
 
-  return true;
-});
-
+    return true;
+  });
 
   // SORTING LOGIC
-let sorted = [...filtered];
+  let sorted = [...filtered];
 
-if (sort === "low-high") {
-  sorted.sort(
-    (a, b) => getEffectivePrice(a) - getEffectivePrice(b)
-  );
-}
+  if (sort === "low-high") {
+    sorted.sort((a, b) => getEffectivePrice(a) - getEffectivePrice(b));
+  }
 
-if (sort === "high-low") {
-  sorted.sort(
-    (a, b) => getEffectivePrice(b) - getEffectivePrice(a)
-  );
-}
+  if (sort === "high-low") {
+    sorted.sort((a, b) => getEffectivePrice(b) - getEffectivePrice(a));
+  }
 
-if (sort === "new") {
-  sorted.sort(
-    (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-  );
-}
+  if (sort === "new") {
+    sorted.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  }
   return (
     <>
       <Navbar />
 
       {/* MAIN WRAPPER */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 mt-5 mb-20">
-
         <Breadcrumb category="Readymade Cotton" />
 
         <h1 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8">
@@ -101,7 +92,6 @@ if (sort === "new") {
 
         {/* ============= MOBILE FILTER + SORT ROW ============= */}
         <div className="sm:hidden mb-6 flex items-center justify-between gap-3">
-
           {/* FILTER BUTTON */}
           <button
             onClick={() => setShowMobileFilters(true)}
@@ -119,11 +109,9 @@ if (sort === "new") {
           <div className="flex-1">
             <SortBar setSort={setSort} mobile={true} />
           </div>
-
         </div>
 
         <div className="flex gap-10">
-
           {/* ============= DESKTOP SIDEBAR ============= */}
           <div className="hidden sm:block w-64 flex-shrink-0">
             <FilterSidebar filters={filters} setFilters={setFilters} />
@@ -131,51 +119,41 @@ if (sort === "new") {
 
           {/* ============= RIGHT CONTENT ============= */}
           <div className="flex-1">
-
             {/* SORT BAR DESKTOP */}
             <div className="hidden sm:block mb-6">
               <SortBar setSort={setSort} />
             </div>
 
             {loading && (
-  <p className="text-center text-gray-500">
-    Loading readymade cotton products...
-  </p>
-)}
+              <p className="text-center text-gray-500">
+                Loading readymade cotton products...
+              </p>
+            )}
 
-{!loading && filtered.length === 0 && (
-  <p className="text-center text-gray-500">
-    No readymade cotton products found.
-  </p>
-)}
-
+            {!loading && filtered.length === 0 && (
+              <p className="text-center text-gray-500">
+                No readymade cotton products found.
+              </p>
+            )}
 
             {/* PRODUCT GRID */}
             <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-10">
-                            {sorted.map((p) => (
-                              <ProductCard key={p._id} product={p} />
-                            ))}
-                          </div>
-
+              {sorted.map((p) => (
+                <ProductCard key={p._id} product={p} />
+              ))}
+            </div>
           </div>
         </div>
 
         {/* ============= MOBILE FILTER SLIDE-IN PANEL ============= */}
         {showMobileFilters && (
           <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex">
-
             {/* LEFT DRAWER */}
             <div className="w-[80%] sm:w-[45%] bg-white h-full p-6 pt-0 overflow-y-auto shadow-xl">
               <h2 className="text-xl font-semibold mb-4">Filters</h2>
 
               <FilterSidebar filters={filters} setFilters={setFilters} />
 
-              <button
-                onClick={() => setShowMobileFilters(false)}
-                className="w-full mt-25 py-2 bg-black text-white rounded-full"
-              >
-                Apply Filters
-              </button>
             </div>
 
             {/* BACKDROP CLICK CLOSE */}
@@ -185,7 +163,6 @@ if (sort === "new") {
             />
           </div>
         )}
-
       </div>
 
       <Footer />

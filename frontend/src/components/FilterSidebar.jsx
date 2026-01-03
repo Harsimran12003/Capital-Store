@@ -121,7 +121,7 @@ export default function FilterSidebar({ filters, setFilters }) {
             onChange={(e) =>
               setFilters({ ...filters, below1000: e.target.checked })
             }
-            className="accent-[#4D192B]"
+            className="accent-[#4D192B] cursor-pointer"
           />
           Below ₹1000
         </label>
@@ -133,7 +133,7 @@ export default function FilterSidebar({ filters, setFilters }) {
             onChange={(e) =>
               setFilters({ ...filters, above1000: e.target.checked })
             }
-            className="accent-[#4D192B]"
+            className="accent-[#4D192B] cursor-pointer"
           />
           Above ₹1000
         </label>
@@ -163,16 +163,17 @@ export default function FilterSidebar({ filters, setFilters }) {
       <Section sectionId="rating" title="Ratings" open={open} setOpen={setOpen}>
         <div className="relative">
           <CustomDropdown
-  label="All Ratings"
-  value={filters.rating}
-  onChange={(val) => setFilters({ ...filters, rating: val })}
-  options={[
-    { value: "", label: "All Ratings" },
-    { value: "4", label: "4 ★ & above" },
-    { value: "3", label: "3 ★ & above" },
-  ]}
-/>
-
+            label="All Ratings"
+            value={filters.rating}
+            onChange={(val) => setFilters({ ...filters, rating: val })}
+            options={[
+              { value: "", label: "All Ratings" },
+              { value: "4", label: "4 ★ & above" },
+              { value: "3", label: "3 ★ & above" },
+              { value: "2", label: "2 ★ & above" },
+              
+            ]}
+          />
 
         </div>
       </Section>

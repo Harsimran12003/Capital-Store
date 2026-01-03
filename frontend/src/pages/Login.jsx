@@ -85,7 +85,7 @@ export default function Login() {
             onClick={handleGoogleLogin}
             type="button"
             className="w-full flex items-center justify-center gap-3 py-3 rounded-xl
-            border border-gray-200 bg-white hover:bg-gray-50 transition font-medium"
+            border border-gray-200 bg-white hover:bg-gray-50 transition font-medium cursor-pointer"
           >
             <FcGoogle className="text-xl" />
             Continue with Google
@@ -126,7 +126,7 @@ export default function Login() {
               />
               <button
                 type="button"
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 cursor-pointer"
                 onClick={() => setShowPass(!showPass)}
               >
                 {showPass ? <FiEyeOff /> : <FiEye />}
@@ -148,7 +148,7 @@ export default function Login() {
               disabled={loading}
               className="w-full mt-2 py-3 rounded-xl
               bg-[#4D192B] text-white font-semibold tracking-wide
-              hover:bg-[#3A1322] transition disabled:opacity-60"
+              hover:bg-[#3A1322] transition disabled:opacity-60 cursor-pointer"
             >
               {loading ? "Logging in..." : "Login"}
             </motion.button>
