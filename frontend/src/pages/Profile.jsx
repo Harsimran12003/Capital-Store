@@ -304,13 +304,14 @@ function Addresses() {
     pincode: "",
     phone: "",
   });
-  if (!/^\d{10}$/.test(form.phone)) {
-    alert("Enter a valid 10 digit phone number");
-    return;
-  }
 
   const addAddress = async () => {
     if (!form.label || !form.addressLine) return;
+
+    if (!/^\d{10}$/.test(form.phone)) {
+      alert("Enter a valid 10 digit phone number");
+      return;
+    }
 
     const res = await fetch(
       "https://capital-store-backend.vercel.app/api/auth/address",
@@ -378,7 +379,7 @@ function Addresses() {
 
             <button
               onClick={() => deleteAddress(i)}
-              className="text-xs text-red-500 hover:underline"
+              className="text-xs text-red-500 hover:underline cursor-pointer"
             >
               Delete
             </button>
@@ -389,7 +390,7 @@ function Addresses() {
       {/* ADD NEW ADDRESS */}
       <button
         onClick={() => setShowForm(!showForm)}
-        className="mt-6 text-sm text-[#4D192B] font-medium hover:underline"
+        className="mt-6 text-sm text-[#4D192B] font-medium hover:underline cursor-pointer"
       >
         + Add New Address
       </button>
@@ -406,16 +407,23 @@ function Addresses() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {/* LABEL */}
+
+            {/* PHONE */}
             <div>
               <label className="text-xs text-gray-600 mb-1 block">
-                Address Label
+                Phone Number
               </label>
               <input
-                placeholder="Home / Office"
+                placeholder="10 digit phone"
                 className="w-full border rounded-lg px-3 py-2 text-sm
-                     focus:outline-none focus:ring-2 focus:ring-[#4D192B]/30"
-                value={form.label}
-                onChange={(e) => setForm({ ...form, label: e.target.value })}
+  focus:outline-none focus:ring-2 focus:ring-[#4D192B]/30"
+                value={form.phone}
+                maxLength={10}
+                inputMode="numeric"
+                onChange={(e) => {
+                  const digits = e.target.value.replace(/\D/g, "");
+                  setForm({ ...form, phone: digits.slice(0, 10) });
+                }}
               />
             </div>
 
@@ -427,23 +435,14 @@ function Addresses() {
               <input
                 placeholder="6-digit pincode"
                 className="w-full border rounded-lg px-3 py-2 text-sm
-                     focus:outline-none focus:ring-2 focus:ring-[#4D192B]/30"
+  focus:outline-none focus:ring-2 focus:ring-[#4D192B]/30"
                 value={form.pincode}
-                onChange={(e) => setForm({ ...form, pincode: e.target.value })}
-              />
-            </div>
-
-            {/* PHONE */}
-            <div>
-              <label className="text-xs text-gray-600 mb-1 block">
-                Phone Number
-              </label>
-              <input
-                placeholder="10 digit phone"
-                className="w-full border rounded-lg px-3 py-2 text-sm
-               focus:outline-none focus:ring-2 focus:ring-[#4D192B]/30"
-                value={form.phone}
-                onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                maxLength={6}
+                inputMode="numeric"
+                onChange={(e) => {
+                  const digits = e.target.value.replace(/\D/g, "");
+                  setForm({ ...form, pincode: digits.slice(0, 6) });
+                }}
               />
             </div>
 
@@ -486,6 +485,19 @@ function Addresses() {
                 onChange={(e) => setForm({ ...form, state: e.target.value })}
               />
             </div>
+
+            <div>
+              <label className="text-xs text-gray-600 mb-1 block">
+                Address Label
+              </label>
+              <input
+                placeholder="Home / Office"
+                className="w-full border rounded-lg px-3 py-2 text-sm
+                     focus:outline-none focus:ring-2 focus:ring-[#4D192B]/30"
+                value={form.label}
+                onChange={(e) => setForm({ ...form, label: e.target.value })}
+              />
+            </div>
           </div>
 
           {/* ACTION BUTTONS */}
@@ -493,7 +505,7 @@ function Addresses() {
             <button
               onClick={addAddress}
               className="flex-1 bg-[#4D192B] text-white py-2 rounded-xl
-                   text-sm font-medium hover:bg-[#3A1322] transition"
+                   text-sm font-medium hover:bg-[#3A1322] transition cursor-pointer"
             >
               Save Address
             </button>
@@ -501,7 +513,7 @@ function Addresses() {
             <button
               onClick={() => setShowForm(false)}
               className="flex-1 border border-gray-300 py-2 rounded-xl
-                   text-sm text-gray-600 hover:bg-gray-100 transition"
+                   text-sm text-gray-600 hover:bg-gray-100 transition cursor-pointer"
             >
               Cancel
             </button>
