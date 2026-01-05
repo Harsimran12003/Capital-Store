@@ -12,10 +12,10 @@ import uploadProductImages from "../middleware/uploadProductImages.js";
 const router = express.Router();
 
 /* ================= ADMIN ROUTES ================= */
-router.post("/", protect, createProduct);
+router.post("/", createProduct);
 router.get("/", getAllProducts); 
 router.get("/:id", getProductById);
-router.put("/:id", protect, uploadProductImages.array("images", 10), updateProduct);
+router.put("/:id", uploadProductImages.array("images", 10), updateProduct);
 router.delete("/:id", protect, deleteProduct);
 
 export default router;
