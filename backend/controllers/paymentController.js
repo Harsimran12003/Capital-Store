@@ -7,13 +7,19 @@ const BASE_URL =
     ? "https://api.phonepe.com/apis/pg"
     : "https://api-preprod.phonepe.com/apis/pg-sandbox";
 
+const AUTH_URL =
+  process.env.PHONEPE_ENV === "PROD"
+    ? "https://api.phonepe.com/apis/identity-manager"
+    : "https://api-preprod.phonepe.com/apis/pg";
+
+
 
 /****************************************
  * 1️⃣ GENERATE AUTH TOKEN
  ****************************************/
 const getPhonePeToken = async () => {
   const res = await axios.post(
-    `${BASE_URL}/v1/oauth/token`,
+    `${AUTH_URL}/v1/oauth/token`,
     new URLSearchParams({
       client_id: process.env.PHONEPE_CLIENT_ID,
       client_version: "1",
@@ -29,6 +35,7 @@ const getPhonePeToken = async () => {
 
   return res.data.access_token;
 };
+
 
 
 /****************************************
