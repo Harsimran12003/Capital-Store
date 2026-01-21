@@ -3,6 +3,8 @@ import AdminLayout from "./AdminLayout";
 import { FiEdit, FiTrash2, FiX, FiUpload } from "react-icons/fi";
 
 export default function ViewProducts() {
+  const [stock, setStock] = useState({});
+
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -28,7 +30,7 @@ export default function ViewProducts() {
     const fetchProducts = async () => {
       try {
         const res = await fetch(
-          "https://capital-store-backend.vercel.app/api/products",
+          "https://capital-store-backend.vercel.app/api/admin/products",
           { credentials: "include" }
         );
         const data = await res.json();
@@ -85,11 +87,28 @@ export default function ViewProducts() {
 
   /* ================= OPEN EDIT ================= */
   const openEdit = (product) => {
-    setEditProduct({ ...product });
-    setImages(product.images || []);
-    setVideo(product.video || "");
-    setEditOpen(true);
-  };
+  setEditProduct({ ...product });
+  setImages(product.images || []);
+  setVideo(product.video || "");
+
+  // 🔥 Initialize stock safely
+  if (product.category === "Unstitched") {
+    setStock({
+      quantity: product.stock?.quantity || 0,
+    });
+  } else {
+    setStock({
+      S: product.stock?.S || 0,
+      M: product.stock?.M || 0,
+      L: product.stock?.L || 0,
+      XL: product.stock?.XL || 0,
+      XXL: product.stock?.XXL || 0,
+    });
+  }
+
+  setEditOpen(true);
+};
+
 
   /* ================= CLOUDINARY UPLOADS ================= */
   const uploadImage = async (file) => {
@@ -126,6 +145,7 @@ export default function ViewProducts() {
       ...editProduct,
       images,
       video,
+      stock,
     };
 
     const res = await fetch(
@@ -184,6 +204,7 @@ export default function ViewProducts() {
           <option>Winter</option>
           <option>Partywear</option>
         </select>
+        
 
         <select
           className="border rounded-lg px-3 py-2"
@@ -472,6 +493,50 @@ export default function ViewProducts() {
                   <option>Partywear</option>
                 </select>
               </div>
+
+              {/* ================= STOCK (ADDED) ================= */}
+<div>
+  <label className="font-semibold text-sm text-gray-700">
+    Stock
+  </label>
+
+  {/* UNSTITCHED */}
+  {editProduct.category === "Unstitched" && (
+    <input
+      type="number"
+      min="0"
+      className="mt-2 w-full px-4 py-2 border rounded"
+      placeholder="Total Quantity"
+      value={stock.quantity}
+      onChange={(e) =>
+        setStock({ quantity: Number(e.target.value) })
+      }
+    />
+  )}
+
+  {/* READYMADE */}
+  {editProduct.category === "Readymade" && (
+    <div className="grid grid-cols-3 gap-3 mt-2">
+      {["S", "M", "L", "XL", "XXL"].map((size) => (
+        <input
+          key={size}
+          type="number"
+          min="0"
+          className="px-3 py-2 border rounded"
+          placeholder={size}
+          value={stock[size]}
+          onChange={(e) =>
+            setStock({
+              ...stock,
+              [size]: Number(e.target.value),
+            })
+          }
+        />
+      ))}
+    </div>
+  )}
+</div>
+
 
               <div className="space-y-4">
                 <p className="font-semibold">Images</p>

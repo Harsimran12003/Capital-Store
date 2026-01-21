@@ -145,6 +145,17 @@ export default function ProductDetails() {
   }
 
   const isUnstitched = product?.category?.toLowerCase() === "unstitched";
+  // ✅ Sizes available based on stock (Readymade only)
+const availableSizes =
+  product &&
+  !isUnstitched &&
+  product.stock &&
+  typeof product.stock === "object"
+    ? Object.entries(product.stock)
+        .filter(([_, qty]) => qty > 0)
+        .map(([size]) => size)
+    : [];
+
 
   /* ================= MEDIA ================= */
   const media = [
