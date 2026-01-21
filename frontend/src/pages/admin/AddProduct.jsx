@@ -60,23 +60,30 @@ export default function AddProduct() {
 
   const handleSave = async () => {
     const payload = {
-  ...form,
-  originalPrice: Number(form.originalPrice),
-  discountedPrice: Number(form.discountedPrice),
-  images: images.filter(Boolean),
-  video,
-  stock:
-    form.category === "Unstitched"
-      ? { quantity: stock.quantity }
-      : {
-          S: stock.S,
-          M: stock.M,
-          L: stock.L,
-          XL: stock.XL,
-          XXL: stock.XXL,
-        },
-};
+      ...form,
+      originalPrice: Number(form.originalPrice),
+      discountedPrice: Number(form.discountedPrice),
+      images: images.filter(Boolean),
+      video,
+      stock:
+        form.category === "Unstitched"
+          ? { quantity: stock.quantity }
+          : {
+              S: stock.S,
+              M: stock.M,
+              L: stock.L,
+              XL: stock.XL,
+              XXL: stock.XXL,
+            },
+    };
 
+    const isUnstitched = product?.category?.toLowerCase() === "unstitched";
+
+    const availableSizes = !isUnstitched
+      ? Object.entries(product.stock || {})
+          .filter(([_, qty]) => qty > 0)
+          .map(([size]) => size)
+      : [];
 
     await fetch("https://capital-store-backend.vercel.app/api/products", {
       method: "POST",

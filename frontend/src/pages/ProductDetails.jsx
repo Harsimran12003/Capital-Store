@@ -164,21 +164,38 @@ export default function ProductDetails() {
   };
 
   const handleAddToCart = () => {
-    if (!user) {
-      setLoginPrompt("cart");
-      return;
-    }
+  if (!user) {
+    setLoginPrompt("cart");
+    return;
+  }
 
-    const sizeToAdd = isUnstitched ? "FREE" : selectedSize;
+  if (!isUnstitched && !selectedSize) {
+    alert("Please select a size");
+    return;
+  }
 
-    if (!sizeToAdd) {
-      alert("Please select a size");
-      return;
-    }
+  // EXTRA SAFETY
+  if (
+    isUnstitched &&
+    product.stock?.quantity === 0
+  ) {
+    alert("This product is out of stock");
+    return;
+  }
 
-    addToCart(product, sizeToAdd);
-    setAdded(true);
-  };
+  if (
+    !isUnstitched &&
+    product.stock?.[selectedSize] === 0
+  ) {
+    alert("Selected size is out of stock");
+    return;
+  }
+
+  const sizeToAdd = isUnstitched ? "FREE" : selectedSize;
+  addToCart(product, sizeToAdd);
+  setAdded(true);
+};
+
 
   const overallRating =
     reviews.length > 0
@@ -324,41 +341,44 @@ export default function ProductDetails() {
 
             {/* SIZE SECTION */}
             <div className="mt-6">
-              {/* UNSTITCHED → ONLY FREE SIZE BADGE */}
-              {isUnstitched ? (
-                <div className="px-5 py-2 inline-block rounded-full border bg-[#4D192B] text-white font-semibold">
-                  Free Size
-                </div>
-              ) : (
-                <>
-                  <p className="font-semibold text-[#4D192B] mb-2">
-                    Select Size
-                  </p>
+  {isUnstitched ? (
+    <div className="px-5 py-2 inline-block rounded-full border bg-[#4D192B] text-white font-semibold">
+      Free Size
+    </div>
+  ) : availableSizes.length > 0 ? (
+    <>
+      <p className="font-semibold text-[#4D192B] mb-2">
+        Select Size
+      </p>
 
-                  <div className="flex gap-3 flex-wrap">
-                    {sizes.map((size) => (
-                      <button
-                        key={size}
-                        onClick={() => setSelectedSize(size)}
-                        className={`px-4 py-2 rounded-full border font-semibold text-sm cursor-pointer ${
-                          selectedSize === size
-                            ? "bg-[#4D192B] text-white border-[#4D192B]"
-                            : "bg-white text-[#4D192B] border-gray-300 hover:border-[#4D192B]"
-                        }`}
-                      >
-                        {size}
-                      </button>
-                    ))}
-                  </div>
+      <div className="flex gap-3 flex-wrap">
+        {availableSizes.map((size) => (
+          <button
+            key={size}
+            onClick={() => setSelectedSize(size)}
+            className={`px-4 py-2 rounded-full border font-semibold text-sm cursor-pointer ${
+              selectedSize === size
+                ? "bg-[#4D192B] text-white border-[#4D192B]"
+                : "bg-white text-[#4D192B] border-gray-300 hover:border-[#4D192B]"
+            }`}
+          >
+            {size}
+          </button>
+        ))}
+      </div>
 
-                  {!selectedSize && (
-                    <p className="text-xs text-red-500 mt-2">
-                      Please select a size
-                    </p>
-                  )}
-                </>
-              )}
-            </div>
+      {!selectedSize && (
+        <p className="text-xs text-red-500 mt-2">
+          Please select a size
+        </p>
+      )}
+    </>
+  ) : (
+    <p className="text-red-500 font-semibold">
+      Out of Stock
+    </p>
+  )}
+</div>
 
             <p
               className="mt-4 text-gray-700"

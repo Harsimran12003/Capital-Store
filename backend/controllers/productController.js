@@ -42,12 +42,29 @@ export const getAllProducts = async (req, res) => {
     if (category) query.category = category;
     if (subCategory) query.subCategory = subCategory;
 
-    const products = await Product.find(query).sort({ createdAt: -1 });
+    let products = await Product.find(query).sort({ createdAt: -1 });
+
+    // 🔥 FILTER OUT OF STOCK PRODUCTS
+    products = products.filter((p) => {
+      // UNSTITCHED
+      if (p.category?.toLowerCase() === "unstitched") {
+        return p.stock?.quantity > 0;
+      }
+
+      // READYMADE → at least one size should have stock > 0
+      if (p.category?.toLowerCase() === "readymade") {
+        return Object.values(p.stock || {}).some((qty) => qty > 0);
+      }
+
+      return true;
+    });
+
     res.json(products);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
+
 
 /* ================= GET SINGLE PRODUCT ================= */
 export const getProductById = async (req, res) => {
