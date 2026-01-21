@@ -18,6 +18,6 @@ router.get("/", getAllProducts);
 router.get("/:id", getProductById);
 router.put("/:id", uploadProductImages.array("images", 10), updateProduct);
 router.delete("/:id", protect, deleteProduct);
-router.get("/", protect, admin, getAllProductsAdmin);
+router.get("/admin", protect, admin, getAllProductsAdmin);
 
 export default router;
