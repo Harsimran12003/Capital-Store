@@ -52,3 +52,22 @@ export const updateAdminCredentials = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+/* ================= ADMIN: GET ALL PRODUCTS (NO STOCK FILTER) ================= */
+export const getAllProductsAdmin = async (req, res) => {
+  try {
+    const { category, subCategory } = req.query;
+
+    const query = {};
+    if (category) query.category = category;
+    if (subCategory) query.subCategory = subCategory;
+
+    // 🔥 NO STOCK FILTER HERE
+    const products = await Product.find(query).sort({ createdAt: -1 });
+
+    res.json(products);
+  } catch (err) {
+    console.error("Admin get products error:", err);
+    res.status(500).json({ message: err.message });
+  }
+};
