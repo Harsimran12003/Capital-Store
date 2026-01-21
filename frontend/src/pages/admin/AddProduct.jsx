@@ -4,78 +4,6 @@ import { FiUpload, FiSave } from "react-icons/fi";
 
 export default function AddProduct() {
   const [form, setForm] = useState({
-  name: "",
-  description: "",
-  originalPrice: "",
-  discountedPrice: "",
-  category: "",
-  subCategory: "",
-});
-
-
-const handleChange = (e) => {
-  setForm({ ...form, [e.target.name]: e.target.value });
-};
-
-  const [images, setImages] = useState(Array(5).fill(null));
-  const [video, setVideo] = useState(null);
-
-  const handleImageChange = async (index, file) => {
-  const formData = new FormData();
-  formData.append("file", file);
-  formData.append(
-    "upload_preset",
-    "capitalstore_unsigned"
-  );
-
-  const res = await fetch(
-    `https://api.cloudinary.com/v1_1/daffddkqb/image/upload`,
-    { method: "POST", body: formData }
-  );
-
-  const data = await res.json();
-
-  const updated = [...images];
-  updated[index] = data.secure_url; 
-  setImages(updated);
-};
-
-  const handleVideoChange = async (file) => {
-  const formData = new FormData();
-  formData.append("file", file);
-  formData.append(
-    "upload_preset",
-    "capitalstore_unsigned"
-  );
-
-  const res = await fetch(
-    `https://api.cloudinary.com/v1_1/daffddkqb/video/upload`,
-    { method: "POST", body: formData }
-  );
-
-  const data = await res.json();
-  setVideo(data.secure_url);
-};
-
-const handleSave = async () => {
-  const payload = {
-    ...form,
-    originalPrice: Number(form.originalPrice),
-    discountedPrice: Number(form.discountedPrice),
-    images: images.filter(Boolean),
-    video,
-  };
-
-  await fetch("https://capital-store-backend.vercel.app/api/products", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    credentials: "include",
-    body: JSON.stringify(payload),
-  });
-
-  alert("✅ Product added successfully");
-
-  setForm({
     name: "",
     description: "",
     originalPrice: "",
@@ -83,19 +11,100 @@ const handleSave = async () => {
     category: "",
     subCategory: "",
   });
+  const [stock, setStock] = useState({
+    quantity: "", // for Unstitched
+    S: "",
+    M: "",
+    L: "",
+    XL: "",
+    XXL: "",
+  });
 
-  setImages(Array(5).fill(null));
-  setVideo(null);
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
+  const [images, setImages] = useState(Array(5).fill(null));
+  const [video, setVideo] = useState(null);
+
+  const handleImageChange = async (index, file) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "capitalstore_unsigned");
+
+    const res = await fetch(
+      `https://api.cloudinary.com/v1_1/daffddkqb/image/upload`,
+      { method: "POST", body: formData },
+    );
+
+    const data = await res.json();
+
+    const updated = [...images];
+    updated[index] = data.secure_url;
+    setImages(updated);
+  };
+
+  const handleVideoChange = async (file) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "capitalstore_unsigned");
+
+    const res = await fetch(
+      `https://api.cloudinary.com/v1_1/daffddkqb/video/upload`,
+      { method: "POST", body: formData },
+    );
+
+    const data = await res.json();
+    setVideo(data.secure_url);
+  };
+
+  const handleSave = async () => {
+    const payload = {
+  ...form,
+  originalPrice: Number(form.originalPrice),
+  discountedPrice: Number(form.discountedPrice),
+  images: images.filter(Boolean),
+  video,
+  stock:
+    form.category === "Unstitched"
+      ? { quantity: stock.quantity }
+      : {
+          S: stock.S,
+          M: stock.M,
+          L: stock.L,
+          XL: stock.XL,
+          XXL: stock.XXL,
+        },
 };
+
+
+    await fetch("https://capital-store-backend.vercel.app/api/products", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify(payload),
+    });
+
+    alert("✅ Product added successfully");
+
+    setForm({
+      name: "",
+      description: "",
+      originalPrice: "",
+      discountedPrice: "",
+      category: "",
+      subCategory: "",
+    });
+
+    setImages(Array(5).fill(null));
+    setVideo(null);
+  };
 
   return (
     <AdminLayout>
       {/* HEADER */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-800">
-          Add New Product
-        </h1>
+        <h1 className="text-3xl font-bold text-gray-800">Add New Product</h1>
         <p className="text-gray-500 mt-1">
           Fill product details and upload media
         </p>
@@ -104,7 +113,6 @@ const handleSave = async () => {
       {/* FORM */}
       <div className="bg-white rounded-2xl shadow-lg p-8">
         <form className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          
           {/* LEFT SECTION */}
           <div className="space-y-6">
             {/* PRODUCT NAME */}
@@ -113,7 +121,7 @@ const handleSave = async () => {
                 Product Name
               </label>
               <input
-              name="name"
+                name="name"
                 type="text"
                 onChange={handleChange}
                 placeholder="Enter product name"
@@ -127,7 +135,7 @@ const handleSave = async () => {
                 Description
               </label>
               <textarea
-              name="description"
+                name="description"
                 rows="4"
                 onChange={handleChange}
                 placeholder="Product description"
@@ -167,7 +175,11 @@ const handleSave = async () => {
               <label className="font-semibold text-sm text-gray-700">
                 Category
               </label>
-              <select className="mt-2 w-full px-4 py-3 border rounded-xl" name="category" onChange={handleChange}>
+              <select
+                className="mt-2 w-full px-4 py-3 border rounded-xl"
+                name="category"
+                onChange={handleChange}
+              >
                 <option value="">Select category</option>
                 <option>Readymade</option>
                 <option>Unstitched</option>
@@ -179,16 +191,51 @@ const handleSave = async () => {
               <label className="font-semibold text-sm text-gray-700">
                 Sub Category
               </label>
-              <select className="mt-2 w-full px-4 py-3 border rounded-xl " name="subCategory" onChange={handleChange}>
+              <select
+                className="mt-2 w-full px-4 py-3 border rounded-xl "
+                name="subCategory"
+                onChange={handleChange}
+              >
                 <option value="">Select sub-category</option>
                 <option>Cotton</option>
                 <option>Winter</option>
                 <option>Partywear</option>
               </select>
             </div>
-
-                        
           </div>
+          {form.category === "Unstitched" && (
+            <div>
+              <label className="font-semibold text-sm text-gray-700">
+                Stock Quantity
+              </label>
+              <input
+                type="number"
+                className="mt-2 w-full px-4 py-3 border rounded-xl"
+                onChange={(e) => setStock({ quantity: Number(e.target.value) })}
+              />
+            </div>
+          )}
+          {form.category === "Readymade" && (
+            <div>
+              <label className="font-semibold text-sm text-gray-700 mb-2 block">
+                Stock per Size
+              </label>
+
+              <div className="grid grid-cols-3 gap-3">
+                {["S", "M", "L", "XL", "XXL"].map((size) => (
+                  <input
+                    key={size}
+                    type="number"
+                    placeholder={size}
+                    className="px-3 py-2 border rounded-lg"
+                    onChange={(e) =>
+                      setStock({ ...stock, [size]: Number(e.target.value) })
+                    }
+                  />
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* RIGHT SECTION */}
           <div className="space-y-6">
@@ -216,13 +263,10 @@ const handleSave = async () => {
                       </span>
                     )}
                     <input
-                      
                       type="file"
                       accept="image/*"
                       hidden
-                      onChange={(e) =>
-                        handleImageChange(i, e.target.files[0])
-                      }
+                      onChange={(e) => handleImageChange(i, e.target.files[0])}
                     />
                   </label>
                 ))}

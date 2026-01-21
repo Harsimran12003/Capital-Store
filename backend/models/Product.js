@@ -13,15 +13,25 @@ const productSchema = new mongoose.Schema(
       default: 0,
     },
 
-    category: String,
+    category: String, // Readymade | Unstitched
     subCategory: String,
 
     images: [String],
     video: String,
-    
+
     rating: {
       type: Number,
       default: 0,
+    },
+
+    // 🔥 NEW: Stock Management
+    stock: {
+      type: mongoose.Schema.Types.Mixed,
+      default: {},
+      /*
+        Unstitched → { quantity: 50 }
+        Readymade → { S: 10, M: 20, L: 15, XL: 5, XXL: 2 }
+      */
     },
   },
   { timestamps: true }

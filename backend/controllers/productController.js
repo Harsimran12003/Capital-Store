@@ -3,15 +3,16 @@ import Product from "../models/Product.js";
 /* ================= CREATE PRODUCT ================= */
 export const createProduct = async (req, res) => {
   try {
-    const { originalPrice, discountedPrice } = req.body;
+    const {
+      originalPrice,
+      discountedPrice,
+      category,
+      stock,
+    } = req.body;
 
     let discountPercent = 0;
 
-    if (
-      originalPrice &&
-      discountedPrice &&
-      originalPrice > discountedPrice
-    ) {
+    if (originalPrice && discountedPrice && originalPrice > discountedPrice) {
       discountPercent = Math.round(
         ((originalPrice - discountedPrice) / originalPrice) * 100
       );
@@ -20,7 +21,8 @@ export const createProduct = async (req, res) => {
     const product = await Product.create({
       ...req.body,
       discountPercent,
-      rating: 0, // initial rating
+      rating: 0,
+      stock, // 🔥 save stock
     });
 
     res.status(201).json(product);
@@ -29,6 +31,7 @@ export const createProduct = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
 
 /* ================= GET ALL PRODUCTS ================= */
 export const getAllProducts = async (req, res) => {
@@ -65,6 +68,11 @@ export const updateProduct = async (req, res) => {
     const product = await Product.findById(req.params.id);
     if (!product)
       return res.status(404).json({ message: "Product not found" });
+    const { stock } = req.body;
+
+if (stock) {
+  product.stock = stock;
+}
 
     const {
       name,
