@@ -1,6 +1,8 @@
 import Admin from "../models/Admin.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import Product from "../models/Product.js";
+
 
 export const adminLogin = async (req, res) => {
   try {
@@ -53,7 +55,6 @@ export const updateAdminCredentials = async (req, res) => {
   }
 };
 
-/* ================= ADMIN: GET ALL PRODUCTS (NO STOCK FILTER) ================= */
 export const getAllProductsAdmin = async (req, res) => {
   try {
     const { category, subCategory } = req.query;
@@ -62,7 +63,7 @@ export const getAllProductsAdmin = async (req, res) => {
     if (category) query.category = category;
     if (subCategory) query.subCategory = subCategory;
 
-    // 🔥 NO STOCK FILTER HERE
+    // 🔥 NO STOCK FILTER
     const products = await Product.find(query).sort({ createdAt: -1 });
 
     res.json(products);

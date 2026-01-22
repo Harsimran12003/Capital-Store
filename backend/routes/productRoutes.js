@@ -5,7 +5,7 @@ import {
   getProductById,
   updateProduct,
   deleteProduct,
-  getAllProductsAdmin
+  
 } from "../controllers/productController.js";
 import protect from "../middleware/authMiddleware.js";
 import uploadProductImages from "../middleware/uploadProductImages.js";
