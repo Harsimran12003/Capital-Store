@@ -60,6 +60,11 @@ const orderSchema = new mongoose.Schema(
       enum: ["pending", "placed", "confirmed", "shipped", "delivered"],
       default: "pending",
     },
+    courierName: {
+  type: String,
+  default: "",
+},
+
   },
   { timestamps: true },
 );

@@ -88,16 +88,21 @@ export const getAllOrdersAdmin = async (req, res) => {
 
 export const updateOrderStatusAdmin = async (req, res) => {
   try {
-    const { status } = req.body;
+    const { status, courierName } = req.body;
 
     const order = await Order.findById(req.params.id);
-    if (!order) return res.status(404).json({ message: "Order not found" });
+    if (!order)
+      return res.status(404).json({ message: "Order not found" });
 
-    order.orderStatus = status;
+    if (status) order.orderStatus = status;
+    if (courierName !== undefined) order.courierName = courierName;
+
     await order.save();
 
     res.json(order);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error("Admin update order error:", err);
+    res.status(500).json({ message: "Failed to update order" });
   }
 };
+
