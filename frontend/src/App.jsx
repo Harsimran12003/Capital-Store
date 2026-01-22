@@ -40,6 +40,8 @@ import TrackOrder from "./pages/TrackOrder.jsx";
 import AdminLogin from "./pages/admin/AdminLogin.jsx";
 import ChangeCredentials from "./pages/admin/ChangeCredentials.jsx";
 import ScrollToTop from "./components/ScrollToTop.jsx";
+import AdminSidebar from "./components/AdminSidebar.jsx";
+import AdminOrders from "./pages/admin/AdminOrders.jsx";
 
 function App() {
   const { user, loading } = useAuth();
@@ -97,6 +99,7 @@ function App() {
           <Route path="/admin/slider" element={<AddSliderImages />} />
           <Route path="/admin/add-product" element={<AddProduct />} />
           <Route path="/admin/products" element={<ViewProducts />} />
+          <Route path="/admin/orders" element={<AdminOrders />} />
           <Route
             path="/admin/change-credentials"
             element={<ChangeCredentials />}
