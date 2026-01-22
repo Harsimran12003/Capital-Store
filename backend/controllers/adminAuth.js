@@ -2,6 +2,7 @@ import Admin from "../models/Admin.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import Product from "../models/Product.js";
+import Orders from "../models/Order.js";
 
 
 export const adminLogin = async (req, res) => {
@@ -69,6 +70,34 @@ export const getAllProductsAdmin = async (req, res) => {
     res.json(products);
   } catch (err) {
     console.error("Admin get products error:", err);
+    res.status(500).json({ message: err.message });
+  }
+};
+
+export const getAllOrdersAdmin = async (req, res) => {
+  try {
+    const orders = await Order.find()
+      .populate("user", "name email")
+      .sort({ createdAt: -1 });
+
+    res.json(orders);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+export const updateOrderStatusAdmin = async (req, res) => {
+  try {
+    const { status } = req.body;
+
+    const order = await Order.findById(req.params.id);
+    if (!order) return res.status(404).json({ message: "Order not found" });
+
+    order.orderStatus = status;
+    await order.save();
+
+    res.json(order);
+  } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };

@@ -56,20 +56,12 @@ const orderSchema = new mongoose.Schema(
     },
 
     orderStatus: {
-  type: String,
-  enum: ["pending", "placed", "confirmed", "shipped", "delivered"],
-  default: "pending",
-},
-
-    shipment: {
-      shiprocket_order_id: String,
-      shipment_id: String,
-      awb: String,
-      courier: String,
-      status: String,
-    }
+      type: String,
+      enum: ["pending", "placed", "confirmed", "shipped", "delivered"],
+      default: "pending",
+    },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export default mongoose.model("Order", orderSchema);

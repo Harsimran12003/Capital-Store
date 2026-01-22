@@ -12,8 +12,6 @@ const AUTH_URL =
     ? "https://api.phonepe.com/apis/identity-manager"
     : "https://api-preprod.phonepe.com/apis/pg";
 
-
-
 /****************************************
  * 1️⃣ GENERATE AUTH TOKEN
  ****************************************/
@@ -30,13 +28,11 @@ const getPhonePeToken = async () => {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
-    }
+    },
   );
 
   return res.data.access_token;
 };
-
-
 
 /****************************************
  * 2️⃣ CREATE PAYMENT (Checkout V2)
@@ -58,23 +54,18 @@ export const createPhonePePayment = async (req, res) => {
       },
     };
 
-    const response = await axios.post(
-      `${BASE_URL}/checkout/v2/pay`,
-      payload,
-      {
-        headers: {
-          Authorization: `O-Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const response = await axios.post(`${BASE_URL}/checkout/v2/pay`, payload, {
+      headers: {
+        Authorization: `O-Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
 
     return res.json({
       success: true,
       redirectUrl: response?.data?.redirectUrl,
       orderId: response?.data?.orderId,
     });
-
   } catch (err) {
     console.log("Create Payment Error:", err?.response?.data || err.message);
 
@@ -84,8 +75,6 @@ export const createPhonePePayment = async (req, res) => {
     });
   }
 };
-
-
 
 /****************************************
  * 3️⃣ VERIFY STATUS (Callback)
@@ -102,48 +91,27 @@ export const phonePeCallback = async (req, res) => {
         headers: {
           Authorization: `O-Bearer ${token}`,
         },
-      }
+      },
     );
     console.log("PHONEPE STATUS RAW ---->");
-console.log(JSON.stringify(status.data, null, 2));
+    console.log(JSON.stringify(status.data, null, 2));
 
     const state = status?.data?.state;
 
-
     if (state === "COMPLETED") {
-  let order = await Order.findById(orderId).populate("user");
+      const order = await Order.findById(orderId);
 
-  order.paymentStatus = "paid";
-  order.orderStatus = "placed";
+      order.paymentStatus = "paid";
+      order.orderStatus = "placed";
 
-  try {
-    const ship = await createShiprocketOrder({
-      order,
-      user: order.user,
-      address: order.address
-    });
+      await order.save();
 
-    order.shipment = {
-      shiprocket_order_id: ship.order_id,
-      shipment_id: ship.shipment_id,
-      awb: ship.awb,
-      courier: ship.courier_name || "",
-      status: "created"
-    };
-
-  } catch (err) {
-    console.log("Shiprocket Online Failed:", err.response?.data || err.message);
-  }
-
-  await order.save();
-
-  return res.redirect(
-    `${process.env.FRONTEND_URL}/order-summary/${orderId}`
-  );
-}
+      return res.redirect(
+        `${process.env.FRONTEND_URL}/order-summary/${orderId}`,
+      );
+    }
 
     return res.redirect(`${process.env.FRONTEND_URL}/payment-failed`);
-
   } catch (err) {
     console.log("Status Error:", err?.response?.data || err.message);
     res.redirect(`${process.env.FRONTEND_URL}/payment-failed`);

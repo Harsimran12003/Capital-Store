@@ -20,22 +20,23 @@ export default function AdminSidebar() {
   });
 
   const toggleCollapse = () => {
-  setCollapse(prev => {
-    const newState = !prev;
-    localStorage.setItem("adminSidebarCollapse", newState);
+    setCollapse((prev) => {
+      const newState = !prev;
+      localStorage.setItem("adminSidebarCollapse", newState);
 
-    // 🔥 Notify layout instantly
-    window.dispatchEvent(new CustomEvent("sidebar-collapse-change", {
-      detail: newState,
-    }));
+      // 🔥 Notify layout instantly
+      window.dispatchEvent(
+        new CustomEvent("sidebar-collapse-change", {
+          detail: newState,
+        }),
+      );
 
-    return newState;
-  });
-};
+      return newState;
+    });
+  };
 
-
-    const navLinkClass = ({ isActive }) =>
-      `group relative flex items-center
+  const navLinkClass = ({ isActive }) =>
+    `group relative flex items-center
       ${collapse ? "md:justify-center md:px-0 gap-3 px-4" : "gap-3 px-4"}
       py-2.5 rounded-lg transition-all duration-300
       ${
@@ -44,9 +45,7 @@ export default function AdminSidebar() {
           : "text-[#F5E9ED] hover:bg-white/10"
       }`;
 
-
-
-      const iconClass = `
+  const iconClass = `
       p-1.5 rounded-lg bg-white/10 text-[#F5E9ED]
       group-hover:bg-white/20 shrink-0
       ${collapse ? "md:mx-auto" : ""}
@@ -105,7 +104,10 @@ export default function AdminSidebar() {
             )}
 
             {/* Mobile close */}
-            <button className="ml-auto md:hidden" onClick={() => setOpen(false)}>
+            <button
+              className="ml-auto md:hidden"
+              onClick={() => setOpen(false)}
+            >
               <FiX size={18} />
             </button>
 
@@ -120,7 +122,6 @@ export default function AdminSidebar() {
 
           {/* Navigation */}
           <nav className="flex-1 px-3 py-4 space-y-2">
-
             <NavLink to="/admin/slider" className={navLinkClass}>
               <span className={iconClass}>
                 <FiImage />
@@ -161,9 +162,20 @@ export default function AdminSidebar() {
               )}
             </NavLink>
 
-            
+            <NavLink to="/admin/orders" className={navLinkClass}>
+              <span className={iconClass}>
+                <FiShoppingCart />
+              </span>
+              {!collapse && "Orders"}
 
-                        <NavLink to="/admin/change-credentials" className={navLinkClass}>
+              {collapse && (
+                <span className="absolute left-full ml-3 px-3 py-1 rounded-md bg-black text-white text-xs opacity-0 group-hover:opacity-100">
+                  Orders
+                </span>
+              )}
+            </NavLink>
+
+            <NavLink to="/admin/change-credentials" className={navLinkClass}>
               <span className={iconClass}>
                 <FiSettings />
               </span>
@@ -179,31 +191,32 @@ export default function AdminSidebar() {
 
           {/* Footer */}
           <div className="px-5 py-6 border-t border-white/10">
-           <Link
-  to="/"
-  className="group relative flex items-center gap-4 px-4 py-3 rounded-xl
+            <Link
+              to="/"
+              className="group relative flex items-center gap-4 px-4 py-3 rounded-xl
    text-[#F5E9ED] w-full transition"
->
-  <span className="p-2 rounded-lg bg-white/15">
-    <FiLogOut />
-  </span>
+            >
+              <span className="p-2 rounded-lg bg-white/15">
+                <FiLogOut />
+              </span>
 
-  {/* Text visible:
+              {/* Text visible:
       - Always on mobile
       - On desktop when NOT collapsed
   */}
-  <span className={`${collapse ? "hidden md:hidden" : "inline md:inline"}`}>
-    Logout
-  </span>
+              <span
+                className={`${collapse ? "hidden md:hidden" : "inline md:inline"}`}
+              >
+                Logout
+              </span>
 
-  {/* Tooltip only for collapsed desktop */}
-  {collapse && (
-    <span className="absolute left-full ml-3 px-3 py-1 rounded-md bg-black text-white text-xs opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap">
-      Logout
-    </span>
-  )}
-</Link>
-
+              {/* Tooltip only for collapsed desktop */}
+              {collapse && (
+                <span className="absolute left-full ml-3 px-3 py-1 rounded-md bg-black text-white text-xs opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap">
+                  Logout
+                </span>
+              )}
+            </Link>
 
             {!collapse && (
               <p className="text-[11px] text-[#D8BFC7] mt-4 text-center tracking-wide">

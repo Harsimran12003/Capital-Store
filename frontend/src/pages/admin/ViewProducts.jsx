@@ -31,7 +31,7 @@ export default function ViewProducts() {
       try {
         const res = await fetch(
           "https://capital-store-backend.vercel.app/api/admin/products",
-          { credentials: "include" }
+          { credentials: "include" },
         );
         const data = await res.json();
         setProducts(data);
@@ -57,9 +57,11 @@ export default function ViewProducts() {
 
       if (priceRange) {
         const price =
-        !p.discountedPrice || p.discountedPrice === 0 || p.discountedPrice === p.originalPrice
-          ? p.originalPrice
-          : p.discountedPrice;
+          !p.discountedPrice ||
+          p.discountedPrice === 0 ||
+          p.discountedPrice === p.originalPrice
+            ? p.originalPrice
+            : p.discountedPrice;
 
         if (priceRange === "0-999" && !(price <= 999)) return false;
         if (priceRange === "1000-1999" && !(price >= 1000 && price <= 1999))
@@ -79,7 +81,7 @@ export default function ViewProducts() {
 
     await fetch(
       `https://capital-store-backend.vercel.app/api/products/${_id}`,
-      { method: "DELETE", credentials: "include" }
+      { method: "DELETE", credentials: "include" },
     );
 
     setProducts(products.filter((p) => p._id !== _id));
@@ -87,28 +89,27 @@ export default function ViewProducts() {
 
   /* ================= OPEN EDIT ================= */
   const openEdit = (product) => {
-  setEditProduct({ ...product });
-  setImages(product.images || []);
-  setVideo(product.video || "");
+    setEditProduct({ ...product });
+    setImages(product.images || []);
+    setVideo(product.video || "");
 
-  // 🔥 Initialize stock safely
-  if (product.category === "Unstitched") {
-    setStock({
-      quantity: product.stock?.quantity || 0,
-    });
-  } else {
-    setStock({
-      S: product.stock?.S || 0,
-      M: product.stock?.M || 0,
-      L: product.stock?.L || 0,
-      XL: product.stock?.XL || 0,
-      XXL: product.stock?.XXL || 0,
-    });
-  }
+    // 🔥 Initialize stock safely
+    if (product.category === "Unstitched") {
+      setStock({
+        quantity: product.stock?.quantity || 0,
+      });
+    } else {
+      setStock({
+        S: product.stock?.S || 0,
+        M: product.stock?.M || 0,
+        L: product.stock?.L || 0,
+        XL: product.stock?.XL || 0,
+        XXL: product.stock?.XXL || 0,
+      });
+    }
 
-  setEditOpen(true);
-};
-
+    setEditOpen(true);
+  };
 
   /* ================= CLOUDINARY UPLOADS ================= */
   const uploadImage = async (file) => {
@@ -118,7 +119,7 @@ export default function ViewProducts() {
 
     const res = await fetch(
       "https://api.cloudinary.com/v1_1/daffddkqb/image/upload",
-      { method: "POST", body: f }
+      { method: "POST", body: f },
     );
 
     const data = await res.json();
@@ -132,7 +133,7 @@ export default function ViewProducts() {
 
     const res = await fetch(
       "https://api.cloudinary.com/v1_1/daffddkqb/video/upload",
-      { method: "POST", body: f }
+      { method: "POST", body: f },
     );
 
     const data = await res.json();
@@ -155,7 +156,7 @@ export default function ViewProducts() {
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify(payload),
-      }
+      },
     );
 
     const updated = await res.json();
@@ -204,7 +205,6 @@ export default function ViewProducts() {
           <option>Winter</option>
           <option>Partywear</option>
         </select>
-        
 
         <select
           className="border rounded-lg px-3 py-2"
@@ -277,9 +277,7 @@ export default function ViewProducts() {
                           </p>
                           <button
                             onClick={() =>
-                              setExpandedId(
-                                expandedId === p._id ? null : p._id
-                              )
+                              setExpandedId(expandedId === p._id ? null : p._id)
                             }
                             className="text-[13px] text-[#4D192B] hover:underline cursor-pointer mt-1 "
                           >
@@ -342,6 +340,32 @@ export default function ViewProducts() {
                   {expandedId === p._id && (
                     <tr className="bg-gray-50">
                       <td colSpan={7} className="px-8 py-6">
+                        {/* ================= STOCK DETAILS ================= */}
+                        <div className="mt-4">
+                          <h4 className="font-semibold mb-1">Stock</h4>
+
+                          {/* UNSTITCHED */}
+                          {p.category === "Unstitched" && (
+                            <p className="text-gray-700 mb-2">
+                              {p.stock?.quantity ?? 0} units available
+                            </p>
+                          )}
+
+                          {/* READYMADE */}
+                          {p.category === "Readymade" && (
+                            <div className="flex flex-wrap gap-3 text-gray-700 text-sm mb-1">
+                              {["S", "M", "L", "XL", "XXL"].map((size) => (
+                                <span
+                                  key={size}
+                                  className="px-3 py-1 border rounded-full bg-white"
+                                >
+                                  {size}: {p.stock?.[size] ?? 0}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+
                         <h4 className="font-semibold mb-2">Description</h4>
                         <p className="text-gray-600">{p.description}</p>
 
@@ -495,48 +519,47 @@ export default function ViewProducts() {
               </div>
 
               {/* ================= STOCK (ADDED) ================= */}
-<div>
-  <label className="font-semibold text-sm text-gray-700">
-    Stock
-  </label>
+              <div>
+                <label className="font-semibold text-sm text-gray-700">
+                  Stock
+                </label>
 
-  {/* UNSTITCHED */}
-  {editProduct.category === "Unstitched" && (
-    <input
-      type="number"
-      min="0"
-      className="mt-2 w-full px-4 py-2 border rounded"
-      placeholder="Total Quantity"
-      value={stock.quantity}
-      onChange={(e) =>
-        setStock({ quantity: Number(e.target.value) })
-      }
-    />
-  )}
+                {/* UNSTITCHED */}
+                {editProduct.category === "Unstitched" && (
+                  <input
+                    type="number"
+                    min="0"
+                    className="mt-2 w-full px-4 py-2 border rounded"
+                    placeholder="Total Quantity"
+                    value={stock.quantity}
+                    onChange={(e) =>
+                      setStock({ quantity: Number(e.target.value) })
+                    }
+                  />
+                )}
 
-  {/* READYMADE */}
-  {editProduct.category === "Readymade" && (
-    <div className="grid grid-cols-3 gap-3 mt-2">
-      {["S", "M", "L", "XL", "XXL"].map((size) => (
-        <input
-          key={size}
-          type="number"
-          min="0"
-          className="px-3 py-2 border rounded"
-          placeholder={size}
-          value={stock[size]}
-          onChange={(e) =>
-            setStock({
-              ...stock,
-              [size]: Number(e.target.value),
-            })
-          }
-        />
-      ))}
-    </div>
-  )}
-</div>
-
+                {/* READYMADE */}
+                {editProduct.category === "Readymade" && (
+                  <div className="grid grid-cols-3 gap-3 mt-2">
+                    {["S", "M", "L", "XL", "XXL"].map((size) => (
+                      <input
+                        key={size}
+                        type="number"
+                        min="0"
+                        className="px-3 py-2 border rounded"
+                        placeholder={size}
+                        value={stock[size]}
+                        onChange={(e) =>
+                          setStock({
+                            ...stock,
+                            [size]: Number(e.target.value),
+                          })
+                        }
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
 
               <div className="space-y-4">
                 <p className="font-semibold">Images</p>

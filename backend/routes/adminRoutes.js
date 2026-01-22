@@ -3,6 +3,8 @@ import {
   adminLogin,
   updateAdminCredentials,
   getAllProductsAdmin,
+  getAllOrdersAdmin,
+  updateOrderStatusAdmin,
 } from "../controllers/adminAuth.js";
 import { verifyAdmin } from "../middleware/adminMiddleware.js";
 
@@ -17,5 +19,7 @@ router.get("/check", verifyAdmin, (req, res) => {
 router.get("/products", verifyAdmin, getAllProductsAdmin);
 
 router.put("/update-credentials", verifyAdmin, updateAdminCredentials);
+router.get("/orders", verifyAdmin, getAllOrdersAdmin);
+router.put("/orders/:id/status", verifyAdmin, updateOrderStatusAdmin);
 
 export default router;
