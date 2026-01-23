@@ -88,16 +88,27 @@ export const getAllOrdersAdmin = async (req, res) => {
 
 export const updateOrderStatusAdmin = async (req, res) => {
   try {
-    const { status, courierName } = req.body;
+    const { orderStatus, courierName } = req.body;
 
     const order = await Order.findById(req.params.id);
-    if (!order)
+    if (!order) {
       return res.status(404).json({ message: "Order not found" });
+    }
 
-    if (status) order.orderStatus = status;
-    if (courierName !== undefined) order.courierName = courierName;
+    // ✅ update status
+    if (orderStatus) {
+      order.orderStatus = orderStatus;
+    }
+
+    // ✅ update courier
+    if (courierName !== undefined) {
+      order.courierName = courierName;
+    }
 
     await order.save();
+
+    // populate user again so frontend doesn’t lose it
+    await order.populate("user", "name email");
 
     res.json(order);
   } catch (err) {

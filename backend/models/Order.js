@@ -56,10 +56,10 @@ const orderSchema = new mongoose.Schema(
     },
 
     orderStatus: {
-      type: String,
-      enum: ["pending", "placed", "confirmed", "shipped", "delivered"],
-      default: "pending",
-    },
+  type: String,
+  enum: ["pending", "placed", "dispatched", "in_transit", "delivered"],
+  default: "pending",
+},
     courierName: {
   type: String,
   default: "",
