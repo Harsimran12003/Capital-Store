@@ -11,8 +11,9 @@ export default function AddProduct() {
     category: "",
     subCategory: "",
   });
+
   const [stock, setStock] = useState({
-    quantity: "", // for Unstitched
+    quantity: "",
     S: "",
     M: "",
     L: "",
@@ -20,38 +21,43 @@ export default function AddProduct() {
     XXL: "",
   });
 
+  const [images, setImages] = useState(Array(5).fill(null));
+  const [video, setVideo] = useState(null);
+
+  /* ---------------- HANDLERS ---------------- */
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const [images, setImages] = useState(Array(5).fill(null));
-  const [video, setVideo] = useState(null);
-
   const handleImageChange = async (index, file) => {
+    if (!file) return;
+
     const formData = new FormData();
     formData.append("file", file);
     formData.append("upload_preset", "capitalstore_unsigned");
 
     const res = await fetch(
-      `https://api.cloudinary.com/v1_1/daffddkqb/image/upload`,
-      { method: "POST", body: formData },
+      "https://api.cloudinary.com/v1_1/daffddkqb/image/upload",
+      { method: "POST", body: formData }
     );
 
     const data = await res.json();
-
     const updated = [...images];
     updated[index] = data.secure_url;
     setImages(updated);
   };
 
   const handleVideoChange = async (file) => {
+    if (!file) return;
+
     const formData = new FormData();
     formData.append("file", file);
     formData.append("upload_preset", "capitalstore_unsigned");
 
     const res = await fetch(
-      `https://api.cloudinary.com/v1_1/daffddkqb/video/upload`,
-      { method: "POST", body: formData },
+      "https://api.cloudinary.com/v1_1/daffddkqb/video/upload",
+      { method: "POST", body: formData }
     );
 
     const data = await res.json();
@@ -59,6 +65,11 @@ export default function AddProduct() {
   };
 
   const handleSave = async () => {
+    if (!form.name || !form.category) {
+      alert("Please fill required fields");
+      return;
+    }
+
     const payload = {
       ...form,
       originalPrice: Number(form.originalPrice),
@@ -67,23 +78,15 @@ export default function AddProduct() {
       video,
       stock:
         form.category === "Unstitched"
-          ? { quantity: stock.quantity }
+          ? { quantity: Number(stock.quantity) }
           : {
-              S: stock.S,
-              M: stock.M,
-              L: stock.L,
-              XL: stock.XL,
-              XXL: stock.XXL,
+              S: Number(stock.S || 0),
+              M: Number(stock.M || 0),
+              L: Number(stock.L || 0),
+              XL: Number(stock.XL || 0),
+              XXL: Number(stock.XXL || 0),
             },
     };
-
-    const isUnstitched = product?.category?.toLowerCase() === "unstitched";
-
-    const availableSizes = !isUnstitched
-      ? Object.entries(product.stock || {})
-          .filter(([_, qty]) => qty > 0)
-          .map(([size]) => size)
-      : [];
 
     await fetch("https://capital-store-backend.vercel.app/api/products", {
       method: "POST",
@@ -103,131 +106,94 @@ export default function AddProduct() {
       subCategory: "",
     });
 
+    setStock({
+      quantity: "",
+      S: "",
+      M: "",
+      L: "",
+      XL: "",
+      XXL: "",
+    });
+
     setImages(Array(5).fill(null));
     setVideo(null);
   };
 
+  /* ---------------- UI ---------------- */
+
   return (
     <AdminLayout>
-      {/* HEADER */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-800">Add New Product</h1>
-        <p className="text-gray-500 mt-1">
-          Fill product details and upload media
-        </p>
-      </div>
+      <h1 className="text-3xl font-bold mb-6">Add New Product</h1>
 
-      {/* FORM */}
       <div className="bg-white rounded-2xl shadow-lg p-8">
         <form className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* LEFT SECTION */}
+          {/* LEFT */}
           <div className="space-y-6">
-            {/* PRODUCT NAME */}
-            <div>
-              <label className="font-semibold text-sm text-gray-700">
-                Product Name
-              </label>
-              <input
-                name="name"
-                type="text"
-                onChange={handleChange}
-                placeholder="Enter product name"
-                className="mt-2 w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-green-500 outline-none"
-              />
-            </div>
+            <input
+              name="name"
+              placeholder="Product Name"
+              className="w-full px-4 py-3 border rounded-xl"
+              onChange={handleChange}
+            />
 
-            {/* DESCRIPTION */}
-            <div>
-              <label className="font-semibold text-sm text-gray-700">
-                Description
-              </label>
-              <textarea
-                name="description"
-                rows="4"
-                onChange={handleChange}
-                placeholder="Product description"
-                className="mt-2 w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-green-500 outline-none"
-              />
-            </div>
+            <textarea
+              name="description"
+              placeholder="Description"
+              rows="4"
+              className="w-full px-4 py-3 border rounded-xl"
+              onChange={handleChange}
+            />
 
-            {/* PRICES */}
             <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="font-semibold text-sm text-gray-700">
-                  Original Price (₹)
-                </label>
-                <input
-                  name="originalPrice"
-                  type="number"
-                  onChange={handleChange}
-                  className="mt-2 w-full px-4 py-3 border rounded-xl"
-                />
-              </div>
-
-              <div>
-                <label className="font-semibold text-sm text-gray-700">
-                  Discounted Price (₹)
-                </label>
-                <input
-                  name="discountedPrice"
-                  type="number"
-                  onChange={handleChange}
-                  className="mt-2 w-full px-4 py-3 border rounded-xl"
-                />
-              </div>
-            </div>
-
-            {/* CATEGORY */}
-            <div>
-              <label className="font-semibold text-sm text-gray-700">
-                Category
-              </label>
-              <select
-                className="mt-2 w-full px-4 py-3 border rounded-xl"
-                name="category"
+              <input
+                name="originalPrice"
+                type="number"
+                placeholder="Original Price"
+                className="px-4 py-3 border rounded-xl"
                 onChange={handleChange}
-              >
-                <option value="">Select category</option>
-                <option>Readymade</option>
-                <option>Unstitched</option>
-              </select>
+              />
+              <input
+                name="discountedPrice"
+                type="number"
+                placeholder="Discounted Price"
+                className="px-4 py-3 border rounded-xl"
+                onChange={handleChange}
+              />
             </div>
 
-            {/* SUBCATEGORY */}
-            <div>
-              <label className="font-semibold text-sm text-gray-700">
-                Sub Category
-              </label>
-              <select
-                className="mt-2 w-full px-4 py-3 border rounded-xl "
-                name="subCategory"
-                onChange={handleChange}
-              >
-                <option value="">Select sub-category</option>
-                <option>Cotton</option>
-                <option>Winter</option>
-                <option>Partywear</option>
-              </select>
-            </div>
-          </div>
-          {form.category === "Unstitched" && (
-            <div>
-              <label className="font-semibold text-sm text-gray-700">
-                Stock Quantity
-              </label>
+            <select
+              name="category"
+              className="px-4 py-3 border rounded-xl"
+              onChange={handleChange}
+            >
+              <option value="">Select Category</option>
+              <option>Readymade</option>
+              <option>Unstitched</option>
+            </select>
+
+            <select
+              name="subCategory"
+              className="px-4 py-3 border rounded-xl"
+              onChange={handleChange}
+            >
+              <option value="">Select Subcategory</option>
+              <option>Cotton</option>
+              <option>Winter</option>
+              <option>Partywear</option>
+            </select>
+
+            {form.category === "Unstitched" && (
               <input
                 type="number"
-                className="mt-2 w-full px-4 py-3 border rounded-xl"
-                onChange={(e) => setStock({ quantity: Number(e.target.value) })}
+                placeholder="Stock Quantity"
+                className="px-4 py-3 border rounded-xl"
+                onChange={(e) =>
+                  setStock({ ...stock, quantity: e.target.value })
+                }
               />
-            </div>
-          )}
-          {form.category === "Readymade" && (
-            <div>
-              <label className="font-semibold text-sm text-gray-700 mb-2 block">
-                Stock per Size
-              </label>
+            )}
 
+            {form.category === "Readymade" && (
               <div className="grid grid-cols-3 gap-3">
                 {["S", "M", "L", "XL", "XXL"].map((size) => (
                   <input
@@ -236,92 +202,66 @@ export default function AddProduct() {
                     placeholder={size}
                     className="px-3 py-2 border rounded-lg"
                     onChange={(e) =>
-                      setStock({ ...stock, [size]: Number(e.target.value) })
+                      setStock({ ...stock, [size]: e.target.value })
                     }
                   />
                 ))}
               </div>
-            </div>
-          )}
+            )}
+          </div>
 
-          {/* RIGHT SECTION */}
+          {/* RIGHT */}
           <div className="space-y-6">
-            {/* IMAGE UPLOAD */}
-            <div>
-              <h3 className="font-semibold text-gray-700 mb-3">
-                Product Images (5)
-              </h3>
-
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                {images.map((img, i) => (
-                  <label
-                    key={i}
-                    className="h-28 border-2 border-dashed rounded-xl flex items-center justify-center cursor-pointer hover:border-green-500 transition"
-                  >
-                    {img ? (
-                      <img
-                        src={img}
-                        alt=""
-                        className="h-full w-full object-cover rounded-xl"
-                      />
-                    ) : (
-                      <span className="text-xs text-gray-400 text-center px-2">
-                        Upload Image {i + 1}
-                      </span>
-                    )}
-                    <input
-                      type="file"
-                      accept="image/*"
-                      hidden
-                      onChange={(e) => handleImageChange(i, e.target.files[0])}
-                    />
-                  </label>
-                ))}
-              </div>
-            </div>
-
-            {/* VIDEO UPLOAD */}
-            <div>
-              <h3 className="font-semibold text-gray-700 mb-3">
-                Product Video (1)
-              </h3>
-
-              <label className="h-40 border-2 border-dashed rounded-xl flex flex-col items-center justify-center cursor-pointer hover:border-green-500 transition">
-                {video ? (
-                  <video
-                    src={video}
-                    controls
-                    className="h-full w-full object-cover rounded-xl"
+            <div className="grid grid-cols-2 gap-4">
+              {images.map((img, i) => (
+                <label
+                  key={i}
+                  className="h-28 border-2 border-dashed rounded-xl flex items-center justify-center cursor-pointer"
+                >
+                  {img ? (
+                    <img src={img} className="h-full w-full object-cover rounded-xl" />
+                  ) : (
+                    <span className="text-xs text-gray-400">Upload Image</span>
+                  )}
+                  <input
+                    hidden
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) =>
+                      handleImageChange(i, e.target.files[0])
+                    }
                   />
-                ) : (
-                  <>
-                    <FiUpload className="text-2xl text-gray-400 mb-2" />
-                    <span className="text-sm text-gray-400">
-                      Upload product video
-                    </span>
-                  </>
-                )}
-                <input
-                  type="file"
-                  accept="video/*"
-                  hidden
-                  onChange={(e) => handleVideoChange(e.target.files[0])}
-                />
-              </label>
+                </label>
+              ))}
             </div>
+
+            <label className="h-40 border-2 border-dashed rounded-xl flex flex-col items-center justify-center cursor-pointer">
+              {video ? (
+                <video src={video} controls className="h-full w-full rounded-xl" />
+              ) : (
+                <>
+                  <FiUpload />
+                  <span className="text-sm text-gray-400">
+                    Upload Product Video
+                  </span>
+                </>
+              )}
+              <input
+                hidden
+                type="file"
+                accept="video/*"
+                onChange={(e) => handleVideoChange(e.target.files[0])}
+              />
+            </label>
           </div>
         </form>
 
-        {/* SAVE BUTTON */}
         <div className="mt-10 flex justify-end">
           <button
-            type="button"
-            className="flex items-center gap-2 px-7 py-3 rounded-xl bg-green-600 text-white font-semibold
-            hover:bg-green-700 transition shadow-lg cursor-pointer"
             onClick={handleSave}
+            className="flex items-center gap-2 px-7 py-3 bg-green-600 text-white rounded-xl"
           >
-            <FiSave />
-            Save Product
+            <FiSave /> Save Product
           </button>
         </div>
       </div>
