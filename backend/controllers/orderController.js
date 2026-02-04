@@ -2,6 +2,8 @@ import Order from "../models/Order.js";
 import User from "../models/User.js";
 import { createShiprocketOrder } from "../services/shiprocketService.js";
 
+import { sendOrderConfirmationEmail } from "../utils/sendEmail.js";
+
 export const createOrder = async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
@@ -23,10 +25,12 @@ export const createOrder = async (req, res) => {
       orderStatus: paymentMethod === "cod" ? "placed" : "pending",
     });
 
-    return res.status(201).json(order);
+    if (paymentMethod === "cod") {
+      await sendOrderConfirmationEmail(user.email, order);
+    }
 
+    res.status(201).json(order);
   } catch (err) {
-    console.error("Create Order Error:", err);
     res.status(500).json({ message: err.message });
   }
 };

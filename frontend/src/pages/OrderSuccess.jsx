@@ -1,28 +1,53 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { useParams, Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
-
+import emailjs from "emailjs-com";
 
 export default function OrderSuccess() {
   const { id } = useParams();
   const [order, setOrder] = useState(null);
-  const { clearCart } = useCart(); 
+  const { clearCart } = useCart();
+  const emailSentRef = useRef(false); 
 
   useEffect(() => {
     fetch(`https://capital-store-backend.vercel.app/api/orders/${id}`, {
-      credentials: "include"
+      credentials: "include",
     })
-      .then(res => res.json())
-      .then(data => { 
+      .then((res) => res.json())
+      .then((data) => {
         setOrder(data);
         clearCart();
-  });
-      
+      });
   }, [id, clearCart]);
 
-  
+  /* ================= SEND EMAIL USING EMAILJS ================= */
+  useEffect(() => {
+    if (!order || emailSentRef.current) return;
+
+    emailSentRef.current = true;
+
+    emailjs
+      .send(
+        "service_cldj7to",    
+        "template_ut6t1do",   
+        {
+          to_email: order.user?.email, 
+          order_id: order._id,
+          total: order.pricing.total,
+          payment_method: order.paymentMethod.toUpperCase(),
+          address: `${order.address.addressLine}, ${order.address.city}, ${order.address.state} - ${order.address.pincode}`,
+        },
+        "gElbIlin_Gvn2LL0d"      
+      )
+      .then(() => {
+        console.log("✅ Order confirmation email sent");
+      })
+      .catch((err) => {
+        console.error("❌ EmailJS error:", err);
+      });
+  }, [order]);
 
   if (!order)
     return (
@@ -36,7 +61,6 @@ export default function OrderSuccess() {
       <Navbar />
 
       <div className="max-w-4xl mx-auto px-6 py-16 mt-6 text-center">
-        
         <h1 className="text-4xl font-bold text-green-700">
           🎉 Order Placed Successfully!
         </h1>

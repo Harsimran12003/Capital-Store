@@ -1,6 +1,8 @@
 import axios from "axios";
 import Order from "../models/Order.js";
 import { createShiprocketOrder } from "../services/shiprocketService.js";
+import { sendOrderConfirmationEmail } from "../utils/sendEmail.js";
+import User from "../models/User.js";
 
 const BASE_URL =
   process.env.PHONEPE_ENV === "PROD"
@@ -79,41 +81,35 @@ export const createPhonePePayment = async (req, res) => {
 /****************************************
  * 3️⃣ VERIFY STATUS (Callback)
  ****************************************/
+
+
 export const phonePeCallback = async (req, res) => {
   try {
     const { orderId } = req.params;
-
     const token = await getPhonePeToken();
 
     const status = await axios.get(
       `${BASE_URL}/checkout/v2/order/${orderId}/status`,
-      {
-        headers: {
-          Authorization: `O-Bearer ${token}`,
-        },
-      },
+      { headers: { Authorization: `O-Bearer ${token}` } }
     );
-    console.log("PHONEPE STATUS RAW ---->");
-    console.log(JSON.stringify(status.data, null, 2));
 
-    const state = status?.data?.state;
-
-    if (state === "COMPLETED") {
+    if (status?.data?.state === "COMPLETED") {
       const order = await Order.findById(orderId);
+      const user = await User.findById(order.user);
 
       order.paymentStatus = "paid";
       order.orderStatus = "placed";
-
       await order.save();
 
+      await sendOrderConfirmationEmail(user.email, order);
+
       return res.redirect(
-        `${process.env.FRONTEND_URL}/order-summary/${orderId}`,
+        `${process.env.FRONTEND_URL}/order-summary/${orderId}`
       );
     }
 
-    return res.redirect(`${process.env.FRONTEND_URL}/payment-failed`);
+    res.redirect(`${process.env.FRONTEND_URL}/payment-failed`);
   } catch (err) {
-    console.log("Status Error:", err?.response?.data || err.message);
     res.redirect(`${process.env.FRONTEND_URL}/payment-failed`);
   }
 };
