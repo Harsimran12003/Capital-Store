@@ -23,7 +23,7 @@ router.get("/:id", authMiddleware, async (req, res) => {
     }
 
     // Security: user can only view their own order
-    if (order.user.toString() !== req.user._id.toString()) {
+    if (order.user._id.toString() !== req.user._id.toString()) {
       return res.status(401).json({ message: "Not authorized" });
     }
 
