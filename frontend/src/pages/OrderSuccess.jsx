@@ -30,7 +30,7 @@ export default function OrderSuccess() {
 
     emailjs
       .send(
-        "service_cldj7to",    
+        "service_dp4jzds",    
         "template_ut6t1do",   
         {
           to_email: order.user?.email || order.address?.email,
