@@ -33,7 +33,8 @@ export default function OrderSuccess() {
         "service_cldj7to",    
         "template_ut6t1do",   
         {
-          to_email: order.user?.email, 
+          to_email: order.user?.email || order.address?.email,
+
           order_id: order._id,
           total: order.pricing.total,
           payment_method: order.paymentMethod.toUpperCase(),
@@ -43,9 +44,12 @@ export default function OrderSuccess() {
       )
       .then(() => {
         console.log("✅ Order confirmation email sent");
+        console.log("ORDER USER:", order.user);
       })
       .catch((err) => {
         console.error("❌ EmailJS error:", err);
+        console.log("ORDER USER:", order.user);
+
       });
   }, [order]);
 
