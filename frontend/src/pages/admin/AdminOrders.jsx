@@ -42,14 +42,14 @@ export default function AdminOrders() {
           credentials: "include",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
-        }
+        },
       );
 
       const updated = await res.json();
 
       // update table data
       setOrders((prev) =>
-        prev.map((o) => (o._id === updated._id ? updated : o))
+        prev.map((o) => (o._id === updated._id ? updated : o)),
       );
 
       // sync edit state
@@ -62,6 +62,43 @@ export default function AdminOrders() {
       }));
     } catch {
       alert("Failed to update order");
+    }
+  };
+
+  const deleteOrder = async (id) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this order?",
+    );
+
+    if (!confirmDelete) return;
+
+    try {
+      const res = await fetch(
+        `https://capital-store-backend.vercel.app/api/admin/orders/${id}`,
+        {
+          method: "DELETE",
+          credentials: "include",
+        },
+      );
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.message || "Failed to delete order");
+        return;
+      }
+
+      // remove from UI
+      setOrders((prev) => prev.filter((o) => o._id !== id));
+
+      // clean editMap
+      setEditMap((prev) => {
+        const copy = { ...prev };
+        delete copy[id];
+        return copy;
+      });
+    } catch {
+      alert("Server error while deleting order");
     }
   };
 
@@ -87,9 +124,7 @@ export default function AdminOrders() {
             <Fragment key={order._id}>
               {/* MAIN ROW */}
               <tr className="border-b bg-gray-50">
-                <td className="px-4 py-2 font-mono text-xs">
-                  {order._id}
-                </td>
+                <td className="px-4 py-2 font-mono text-xs">{order._id}</td>
 
                 <td className="px-4 py-2">
                   <div className="font-semibold">
@@ -100,9 +135,7 @@ export default function AdminOrders() {
                   </div>
                 </td>
 
-                <td className="px-4 py-2 capitalize">
-                  {order.paymentMethod}
-                </td>
+                <td className="px-4 py-2 capitalize">{order.paymentMethod}</td>
 
                 <td className="px-4 py-2">
                   <span className="px-3 py-1 rounded-full text-xs bg-blue-100">
@@ -152,6 +185,12 @@ export default function AdminOrders() {
                   >
                     Save
                   </button>
+                  <button
+                    onClick={() => deleteOrder(order._id)}
+                    className="w-full bg-red-600 text-white text-xs py-1.5 rounded hover:bg-red-700 transition"
+                  >
+                    Delete Order
+                  </button>
                 </td>
               </tr>
 
@@ -170,10 +209,8 @@ export default function AdminOrders() {
                   <div>
                     <h4 className="font-semibold mb-1">Delivery Address</h4>
                     <p className="text-gray-700">
-                      {order.address?.addressLine},{" "}
-                      {order.address?.city},{" "}
-                      {order.address?.state} –{" "}
-                      {order.address?.pincode}
+                      {order.address?.addressLine}, {order.address?.city},{" "}
+                      {order.address?.state} – {order.address?.pincode}
                       <br />
                       📞 {order.address?.phone}
                     </p>

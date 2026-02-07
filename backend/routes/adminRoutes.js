@@ -5,6 +5,7 @@ import {
   getAllProductsAdmin,
   getAllOrdersAdmin,
   updateOrderStatusAdmin,
+   deleteOrderAdmin,
 } from "../controllers/adminAuth.js";
 import { verifyAdmin } from "../middleware/adminMiddleware.js";
 
@@ -21,5 +22,6 @@ router.get("/products", verifyAdmin, getAllProductsAdmin);
 router.put("/update-credentials", verifyAdmin, updateAdminCredentials);
 router.get("/orders", verifyAdmin, getAllOrdersAdmin);
 router.put("/orders/:id/status", verifyAdmin, updateOrderStatusAdmin);
+router.delete("/orders/:id", verifyAdmin, deleteOrderAdmin);
 
 export default router;
