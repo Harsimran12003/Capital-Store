@@ -25,6 +25,7 @@ export default function AdminOrders() {
   const [editMap, setEditMap] = useState({});
   const [searchQuery, setSearchQuery] = useState("");
   const [expandedId, setExpandedId] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     fetch("https://capital-store-backend.vercel.app/api/admin/orders", {
@@ -34,6 +35,7 @@ export default function AdminOrders() {
       .then((data) => {
         if (!Array.isArray(data)) {
           setError(data.message || "Failed to load orders");
+          setIsLoading(false);
           return;
         }
 
@@ -47,8 +49,12 @@ export default function AdminOrders() {
           };
         });
         setEditMap(map);
+        setIsLoading(false);
       })
-      .catch(() => setError("Server error"));
+      .catch(() => {
+        setError("Server error");
+        setIsLoading(false);
+      });
   }, []);
 
   const updateStatus = async (id) => {
@@ -158,7 +164,13 @@ export default function AdminOrders() {
         </div>
       )}
 
-      {orders.length === 0 && !error ? (
+      {isLoading ? (
+        <div className="bg-white p-10 rounded-[2rem] shadow-sm border border-gray-100 text-center flex flex-col items-center justify-center min-h-[300px]">
+           <div className="w-12 h-12 border-4 border-[#4D192B]/20 border-t-[#4D192B] rounded-full animate-spin mb-4"></div>
+           <h3 className="text-xl font-bold text-gray-800">Loading Orders...</h3>
+           <p className="text-gray-500 mt-2">Please wait while we fetch the latest data.</p>
+        </div>
+      ) : orders.length === 0 && !error ? (
         <div className="bg-white p-10 rounded-[2rem] shadow-sm border border-gray-100 text-center">
            <FiBox className="text-5xl text-gray-300 mx-auto mb-4" />
            <h3 className="text-xl font-bold text-gray-800">No Orders Found</h3>
