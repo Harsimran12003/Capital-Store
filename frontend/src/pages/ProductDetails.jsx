@@ -5,7 +5,7 @@ import Footer from "../components/Footer";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiHeart, FiShoppingCart } from "react-icons/fi";
 import { FaStar } from "react-icons/fa";
-import useAuth from "../hooks/useAuth";
+import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
 import { useWishlist } from "../context/WishlistContext";
 

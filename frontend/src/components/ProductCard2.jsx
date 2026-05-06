@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FiHeart, FiShoppingCart } from "react-icons/fi";
 import { FaStar } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import useAuth from "../hooks/useAuth.js";
+import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
 import { useWishlist } from "../context/WishlistContext";
 
