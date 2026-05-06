@@ -25,21 +25,22 @@ export function CartProvider({ children }) {
   }, [cart, user]);
 
   /* ================= ADD TO CART ================= */
-  const addToCart = (product, size) => {
+  const addToCart = (product, size, selectedImage) => {
     const finalSize =
       product?.category?.toLowerCase() === "unstitched"
         ? "FREE"
         : size;
+    const finalImage = selectedImage || product.images?.[0];
 
     setCart((prev) => {
       const exists = prev.find(
         (p) =>
-          p.productId === product._id && p.size === finalSize
+          p.productId === product._id && p.size === finalSize && p.image === finalImage
       );
 
       if (exists) {
         return prev.map((p) =>
-          p.productId === product._id && p.size === finalSize
+          p.productId === product._id && p.size === finalSize && p.image === finalImage
             ? { ...p, qty: p.qty + 1 }
             : p
         );
@@ -50,7 +51,7 @@ export function CartProvider({ children }) {
         {
           productId: product._id,
           name: product.name,
-          image: product.images?.[0],
+          image: finalImage,
           category: product.category, // ⭐ important
           discountedPrice: product.discountedPrice,
           originalPrice: product.originalPrice,
@@ -62,24 +63,24 @@ export function CartProvider({ children }) {
   };
 
   /* ================= UPDATE SIZE ================= */
-  const updateSize = (productId, oldSize, newSize) => {
+  const updateSize = (productId, image, oldSize, newSize) => {
     setCart((prev) => {
       const currentItem = prev.find(
-        (p) => p.productId === productId && p.size === oldSize
+        (p) => p.productId === productId && p.size === oldSize && p.image === image
       );
       if (!currentItem) return prev;
 
       const existing = prev.find(
-        (p) => p.productId === productId && p.size === newSize
+        (p) => p.productId === productId && p.size === newSize && p.image === image
       );
 
       let updated = prev.filter(
-        (p) => !(p.productId === productId && p.size === oldSize)
+        (p) => !(p.productId === productId && p.size === oldSize && p.image === image)
       );
 
       if (existing) {
         updated = updated.map((p) =>
-          p.productId === productId && p.size === newSize
+          p.productId === productId && p.size === newSize && p.image === image
             ? { ...p, qty: p.qty + currentItem.qty }
             : p
         );
@@ -92,10 +93,10 @@ export function CartProvider({ children }) {
   };
 
   /* ================= UPDATE QTY ================= */
-  const updateQty = (productId, size, qty) => {
+  const updateQty = (productId, size, image, qty) => {
     setCart((prev) =>
       prev.map((p) =>
-        p.productId === productId && p.size === size
+        p.productId === productId && p.size === size && p.image === image
           ? { ...p, qty }
           : p
       )
@@ -109,10 +110,10 @@ export function CartProvider({ children }) {
 
 
   /* ================= REMOVE ================= */
-  const removeFromCart = (productId, size) => {
+  const removeFromCart = (productId, size, image) => {
     setCart((prev) =>
       prev.filter(
-        (p) => !(p.productId === productId && p.size === size)
+        (p) => !(p.productId === productId && p.size === size && p.image === image)
       )
     );
   };

@@ -28,6 +28,7 @@ export default function ProductDetails() {
 
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
   const [liked, setLiked] = useState(false);
   const [qty, setQty] = useState(0);
@@ -203,7 +204,8 @@ const availableSizes =
   }
 
   const sizeToAdd = isUnstitched ? "FREE" : selectedSize;
-  addToCart(product, sizeToAdd);
+  const selectedImage = product.images?.[activeImageIndex] || product.images?.[0];
+  addToCart(product, sizeToAdd, selectedImage);
   setAdded(true);
 };
 
@@ -259,6 +261,7 @@ const availableSizes =
               pagination={{ clickable: true }}
               thumbs={{ swiper: thumbsSwiper }}
               className="rounded-2xl shadow-lg"
+              onSlideChange={(swiper) => setActiveImageIndex(swiper.activeIndex)}
             >
               {media.map((item, i) => (
                 <SwiperSlide key={i}>

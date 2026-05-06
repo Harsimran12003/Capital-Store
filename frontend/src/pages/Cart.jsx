@@ -80,7 +80,7 @@ export default function Cart() {
           ) : (
             cart.map((item) => (
               <motion.div
-                key={`${item.productId}-${item.size}`}
+                key={`${item.productId}-${item.size}-${item.image}`}
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="flex flex-col sm:flex-row gap-5 bg-white p-5 rounded-3xl shadow-xl mt-3"
@@ -112,7 +112,7 @@ export default function Cart() {
                       <select
                         value={item.size || ""}
                         onChange={(e) =>
-                          updateSize(item.productId, item.size, e.target.value)
+                          updateSize(item.productId, item.image, item.size, e.target.value)
                         }
                         className="border border-gray-300 rounded-lg px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-[#4D192B]/30 cursor-pointer"
                       >
@@ -150,9 +150,9 @@ export default function Cart() {
                     <button
                       onClick={() => {
                         if (item.qty === 1) {
-                          removeFromCart(item.productId, item.size);
+                          removeFromCart(item.productId, item.size, item.image);
                         } else {
-                          updateQty(item.productId, item.size, item.qty - 1);
+                          updateQty(item.productId, item.size, item.image, item.qty - 1);
                         }
                       }}
                       className="w-9 h-9 bg-gray-200 rounded-full text-xl cursor-pointer"
@@ -164,7 +164,7 @@ export default function Cart() {
 
                     <button
                       onClick={() =>
-                        updateQty(item.productId, item.size, item.qty + 1)
+                        updateQty(item.productId, item.size, item.image, item.qty + 1)
                       }
                       className="w-9 h-9 bg-gray-200 rounded-full text-xl cursor-pointer"
                     >
@@ -176,7 +176,7 @@ export default function Cart() {
                 {/* DELETE */}
                 <button
                   onClick={() =>
-                    removeFromCart(item.productId, item.size)
+                    removeFromCart(item.productId, item.size, item.image)
                   }
                   className="self-start sm:self-center"
                 >

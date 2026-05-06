@@ -277,8 +277,12 @@ export default function AdminOrders() {
                             {order.items.map((item, i) => (
                               <div key={i} className="flex justify-between items-center bg-gray-50 p-3 rounded-lg border border-gray-100">
                                 <div className="flex items-center gap-4">
-                                  <div className="h-10 w-10 bg-[#4D192B]/5 border border-[#4D192B]/10 rounded-lg flex items-center justify-center text-[#4D192B]">
-                                    <FiBox className="text-lg" />
+                                  <div className="h-10 w-10 bg-[#4D192B]/5 border border-[#4D192B]/10 rounded-lg flex items-center justify-center text-[#4D192B] overflow-hidden">
+                                    {item.image ? (
+                                      <img src={item.image} alt={item.name} className="h-full w-full object-cover" />
+                                    ) : (
+                                      <FiBox className="text-lg" />
+                                    )}
                                   </div>
                                   <div>
                                     <p className="font-bold text-gray-800 text-sm">{item.name}</p>
