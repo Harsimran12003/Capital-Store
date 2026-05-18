@@ -70,7 +70,7 @@ export default function CategoryCards() {
                 <motion.img
                   src={c.img}
                   alt={c.name}
-                  className="w-full h-64 sm:h-80 object-cover rounded-3xl"
+                  className="w-full h-64 sm:h-80 object-full rounded-3xl"
                   whileHover={{
                     scale: 1.04,
                     filter: "brightness(1.04)",
