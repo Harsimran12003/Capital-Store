@@ -5,7 +5,7 @@ import protect from "../middleware/authMiddleware.js";
 const router = express.Router();
 
 router.get("/", getHeroSlides);
-router.post("/", protect, saveHeroSlides);
+router.post("/", saveHeroSlides);
 
 
 export default router;
