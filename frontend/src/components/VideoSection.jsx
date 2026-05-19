@@ -106,13 +106,16 @@ export default function VideoSection() {
           />
 
        
-          <motion.iframe
+          <motion.video
             whileHover={{ scale: 1.035 }}
             transition={{ duration: 0.4 }}
-            className="w-full h-64 md:h-60 lg:h-72 rounded-2xl shadow-2xl border border-white/40"
-            src="https://www.youtube.com/embed/12rN7hpbpIo?si=085YZoJzC1pIac9b"
-            title="Brand Video"
-            allowFullScreen
+            className="w-full h-64 md:h-60 lg:h-72 rounded-2xl shadow-2xl border border-white/40 object-cover"
+            src="/video.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="auto"
           />
         </motion.div>
       </motion.div>
