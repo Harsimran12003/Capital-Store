@@ -103,6 +103,7 @@ export default function ProductDetails() {
             "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
+          credentials: "include",
           body: JSON.stringify(newReview),
         }
       );
@@ -121,6 +122,27 @@ export default function ProductDetails() {
       setNewReview({ rating: 0, text: "", images: [] });
     } catch (err) {
       console.log("Submit review error:", err);
+    }
+  };
+
+  const deleteReview = async (reviewId) => {
+    if (!window.confirm("Are you sure you want to delete this review?")) return;
+    try {
+      const res = await fetch(
+        `https://capital-store-backend.vercel.app/api/reviews/${reviewId}`,
+        {
+          method: "DELETE",
+          credentials: "include",
+        }
+      );
+      if (res.ok) {
+        setReviews(reviews.filter((r) => r._id !== reviewId));
+      } else {
+        const data = await res.json();
+        alert(data.message || "Failed to delete review");
+      }
+    } catch (err) {
+      console.error("Delete review error:", err);
     }
   };
 
